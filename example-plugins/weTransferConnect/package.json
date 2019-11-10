@@ -1,0 +1,22 @@
+{
+  "name": "weTransferConnect",
+  "version": "1.0.0",
+  "description": "We Transfer plugin",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack -c webpack.config.js --progress"
+  },
+  "dependencies": {
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7"
+  },
+  "devDependencies": {
+    "@wetransfer/js-sdk": "^1.2.0",
+    "copy-webpack-plugin": "^5.0.4",
+    "request-debug": "^0.2.0",
+    "webpack": "^4.41.2",
+    "webpack-archive-plugin": "^3.0.0",
+    "webpack-cli": "^3.3.9"
+  }
+}

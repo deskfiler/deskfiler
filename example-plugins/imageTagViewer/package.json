@@ -1,0 +1,26 @@
+{
+  "name": "tagExplorer",
+  "version": "1.0.0",
+  "description": "A small plugin for quickly viewing images tags",
+  "main": "index.js",
+  "author": "Ilya Lopukhin",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack -c webpack.config.js --progress"
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "base64-img": "^1.0.4",
+    "image-size": "^0.8.3",
+    "piexifjs": "^1.0.6",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0"
+  },
+  "devDependencies": {
+    "babel-loader": "^8.0.6",
+    "copy-webpack-plugin": "^5.0.4",
+    "webpack": "^4.41.2",
+    "webpack-archive-plugin": "^3.0.0"
+  }
+}

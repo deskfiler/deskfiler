@@ -1,0 +1,17 @@
+{
+  "name": "Zip Pw",
+  "author": "Ilya Lopukhin",
+  "version": "1.0.0",
+  "icon": "webicon.svg",
+  "settings": [{
+    "type": "section",
+    "name": "general",
+    "children": [{
+      "elementType": "input",
+      "name": "password",
+      "type": "password",
+      "label": "Default Password for compressed archive:",
+      "value": ""
+    }]
+  }]
+}

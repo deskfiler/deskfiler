@@ -1,0 +1,424 @@
+{
+  "toc": {
+    "sections": [
+      {
+        "title": "Deskfiler",
+        "source": "README.md",
+        "url": "index.html",
+        "slug": "index",
+        "headings": [
+          {
+            "title": "Table of Contents",
+            "depth": 2,
+            "id": "table-of-contents"
+          },
+          {
+            "title": "Features",
+            "depth": 2,
+            "id": "features"
+          },
+          {
+            "title": "Contributing",
+            "depth": 2,
+            "id": "contributing"
+          },
+          {
+            "title": "Documentation",
+            "depth": 2,
+            "id": "documentation"
+          },
+          {
+            "title": "License",
+            "depth": 2,
+            "id": "license"
+          }
+        ]
+      },
+      {
+        "title": "Installation and development",
+        "source": "docs/getting-started/readme.md",
+        "url": "getting-started/readme.html",
+        "slug": "getting-startedreadme",
+        "sections": [
+          {
+            "title": "Quick start",
+            "source": "docs/getting-started/quick-start.md",
+            "url": "getting-started/quick-start.html",
+            "slug": "getting-startedquick-start"
+          },
+          {
+            "title": "Installing node",
+            "source": "docs/getting-started/installing-node.md",
+            "url": "getting-started/installing-node.html",
+            "slug": "getting-startedinstalling-node"
+          },
+          {
+            "title": "OS-specific instructions",
+            "source": "docs/getting-started/os-specific.md",
+            "url": "getting-started/os-specific.html",
+            "slug": "getting-startedos-specific",
+            "headings": [
+              {
+                "title": "Windows related",
+                "depth": 2,
+                "id": "windows-related"
+              },
+              {
+                "title": "Mac related",
+                "depth": 2,
+                "id": "mac-related"
+              }
+            ]
+          },
+          {
+            "title": "Builing distributables",
+            "source": "docs/getting-started/building-production-distributables.md",
+            "url": "getting-started/building-production-distributables.html",
+            "slug": "getting-startedbuilding-production-distributables",
+            "headings": [
+              {
+                "title": "Building production distributable",
+                "depth": 2,
+                "id": "building-production-distributable"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Plugins",
+        "source": "docs/PLUGINS.md",
+        "url": "PLUGINS.html",
+        "slug": "plugins",
+        "headings": [
+          {
+            "title": "Plugin development",
+            "depth": 2,
+            "id": "plugin-development"
+          }
+        ]
+      },
+      {
+        "title": "Api",
+        "source": "docs/API.md",
+        "url": "API.html",
+        "slug": "api",
+        "headings": [
+          {
+            "title": "API docs",
+            "depth": 2,
+            "id": "api-docs"
+          }
+        ]
+      },
+      {
+        "title": "Code of conduct",
+        "source": "docs/CONTRIBUTING.md",
+        "url": "CONTRIBUTING.html",
+        "slug": "contributing",
+        "headings": [
+          {
+            "title": "GitFlow",
+            "depth": 2,
+            "id": "gitflow"
+          },
+          {
+            "title": "Commit changes",
+            "depth": 2,
+            "id": "commit-changes"
+          },
+          {
+            "title": "Developing",
+            "depth": 2,
+            "id": "developing"
+          },
+          {
+            "title": "Packaging",
+            "depth": 2,
+            "id": "packaging"
+          },
+          {
+            "title": "Naming convention",
+            "depth": 2,
+            "id": "naming-convention"
+          },
+          {
+            "title": "Containers and Components",
+            "depth": 2,
+            "id": "containers-and-components",
+            "headings": [
+              {
+                "title": "Module Structure",
+                "depth": 3,
+                "id": "module-structure"
+              },
+              {
+                "title": "Which `package.json` file to use",
+                "depth": 3,
+                "id": "which-package.json-file-to-use"
+              }
+            ]
+          },
+          {
+            "title": "Pull Request Process",
+            "depth": 2,
+            "id": "pull-request-process"
+          }
+        ]
+      },
+      {
+        "title": "Code of conduct",
+        "source": "docs/CODE_OF_CONDUCT.md",
+        "url": "CODE_OF_CONDUCT.html",
+        "slug": "code_of_conduct",
+        "headings": [
+          {
+            "title": "Our Pledge",
+            "depth": 2,
+            "id": "our-pledge"
+          },
+          {
+            "title": "Our Standards",
+            "depth": 2,
+            "id": "our-standards"
+          },
+          {
+            "title": "Our Responsibilities",
+            "depth": 2,
+            "id": "our-responsibilities"
+          },
+          {
+            "title": "Scope",
+            "depth": 2,
+            "id": "scope"
+          },
+          {
+            "title": "Enforcement",
+            "depth": 2,
+            "id": "enforcement"
+          },
+          {
+            "title": "Attribution",
+            "depth": 2,
+            "id": "attribution"
+          }
+        ]
+      }
+    ]
+  },
+  "index": {
+    "index.html": {
+      "source": "README.md",
+      "title": "Deskfiler",
+      "pageTitle": "Deskfiler",
+      "slug": "index",
+      "headings": [
+        {
+          "title": "Table of Contents",
+          "depth": 2,
+          "id": "table-of-contents"
+        },
+        {
+          "title": "Features",
+          "depth": 2,
+          "id": "features"
+        },
+        {
+          "title": "Contributing",
+          "depth": 2,
+          "id": "contributing"
+        },
+        {
+          "title": "Documentation",
+          "depth": 2,
+          "id": "documentation"
+        },
+        {
+          "title": "License",
+          "depth": 2,
+          "id": "license"
+        }
+      ]
+    },
+    "getting-started/readme.html": {
+      "source": "docs/getting-started/readme.md",
+      "title": "Installation and development - Deskfiler",
+      "pageTitle": "Installation and development",
+      "slug": "getting-startedreadme"
+    },
+    "getting-started/quick-start.html": {
+      "source": "docs/getting-started/quick-start.md",
+      "title": "Quick start - Deskfiler",
+      "pageTitle": "Quick start",
+      "slug": "getting-startedquick-start"
+    },
+    "getting-started/installing-node.html": {
+      "source": "docs/getting-started/installing-node.md",
+      "title": "Installing node - Deskfiler",
+      "pageTitle": "Installing node",
+      "slug": "getting-startedinstalling-node"
+    },
+    "getting-started/os-specific.html": {
+      "source": "docs/getting-started/os-specific.md",
+      "title": "OS-specific instructions - Deskfiler",
+      "pageTitle": "OS-specific instructions",
+      "slug": "getting-startedos-specific",
+      "headings": [
+        {
+          "title": "Windows related",
+          "depth": 2,
+          "id": "windows-related"
+        },
+        {
+          "title": "Mac related",
+          "depth": 2,
+          "id": "mac-related"
+        }
+      ]
+    },
+    "getting-started/building-production-distributables.html": {
+      "source": "docs/getting-started/building-production-distributables.md",
+      "title": "Builing distributables - Deskfiler",
+      "pageTitle": "Builing distributables",
+      "slug": "getting-startedbuilding-production-distributables",
+      "headings": [
+        {
+          "title": "Building production distributable",
+          "depth": 2,
+          "id": "building-production-distributable"
+        }
+      ]
+    },
+    "PLUGINS.html": {
+      "source": "docs/PLUGINS.md",
+      "title": "Plugins - Deskfiler",
+      "pageTitle": "Plugins",
+      "slug": "plugins",
+      "headings": [
+        {
+          "title": "Plugin development",
+          "depth": 2,
+          "id": "plugin-development"
+        }
+      ]
+    },
+    "API.html": {
+      "source": "docs/API.md",
+      "title": "Api - Deskfiler",
+      "pageTitle": "Api",
+      "slug": "api",
+      "headings": [
+        {
+          "title": "API docs",
+          "depth": 2,
+          "id": "api-docs"
+        }
+      ]
+    },
+    "CONTRIBUTING.html": {
+      "source": "docs/CONTRIBUTING.md",
+      "title": "Code of conduct - Deskfiler",
+      "pageTitle": "Code of conduct",
+      "slug": "contributing",
+      "headings": [
+        {
+          "title": "GitFlow",
+          "depth": 2,
+          "id": "gitflow"
+        },
+        {
+          "title": "Commit changes",
+          "depth": 2,
+          "id": "commit-changes"
+        },
+        {
+          "title": "Developing",
+          "depth": 2,
+          "id": "developing"
+        },
+        {
+          "title": "Packaging",
+          "depth": 2,
+          "id": "packaging"
+        },
+        {
+          "title": "Naming convention",
+          "depth": 2,
+          "id": "naming-convention"
+        },
+        {
+          "title": "Containers and Components",
+          "depth": 2,
+          "id": "containers-and-components",
+          "headings": [
+            {
+              "title": "Module Structure",
+              "depth": 3,
+              "id": "module-structure"
+            },
+            {
+              "title": "Which `package.json` file to use",
+              "depth": 3,
+              "id": "which-package.json-file-to-use"
+            }
+          ]
+        },
+        {
+          "title": "Pull Request Process",
+          "depth": 2,
+          "id": "pull-request-process"
+        }
+      ]
+    },
+    "CODE_OF_CONDUCT.html": {
+      "source": "docs/CODE_OF_CONDUCT.md",
+      "title": "Code of conduct - Deskfiler",
+      "pageTitle": "Code of conduct",
+      "slug": "code_of_conduct",
+      "headings": [
+        {
+          "title": "Our Pledge",
+          "depth": 2,
+          "id": "our-pledge"
+        },
+        {
+          "title": "Our Standards",
+          "depth": 2,
+          "id": "our-standards"
+        },
+        {
+          "title": "Our Responsibilities",
+          "depth": 2,
+          "id": "our-responsibilities"
+        },
+        {
+          "title": "Scope",
+          "depth": 2,
+          "id": "scope"
+        },
+        {
+          "title": "Enforcement",
+          "depth": 2,
+          "id": "enforcement"
+        },
+        {
+          "title": "Attribution",
+          "depth": 2,
+          "id": "attribution"
+        }
+      ]
+    }
+  },
+  "sources": {
+    "README.md": "index.html",
+    "docs/getting-started/readme.md": "getting-started/readme.html",
+    "docs/getting-started/quick-start.md": "getting-started/quick-start.html",
+    "docs/getting-started/installing-node.md": "getting-started/installing-node.html",
+    "docs/getting-started/os-specific.md": "getting-started/os-specific.html",
+    "docs/getting-started/building-production-distributables.md": "getting-started/building-production-distributables.html",
+    "docs/PLUGINS.md": "PLUGINS.html",
+    "docs/API.md": "API.html",
+    "docs/CONTRIBUTING.md": "CONTRIBUTING.html",
+    "docs/CODE_OF_CONDUCT.md": "CODE_OF_CONDUCT.html"
+  }
+}

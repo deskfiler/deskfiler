@@ -1,0 +1,176 @@
+{
+  "name": "Deskfiler",
+  "version": "0.0.1-alpha.4",
+  "description": "Open-source Electron.js plugin platform",
+  "main": "./src/main/main.js",
+  "build": {
+    "appId": "com.electron.deskfiler",
+    "productName": "Deskfiler",
+    "compression": "normal",
+    "files": [
+      "!node_modules",
+      "**/preloads/*",
+      "dist/app/**/*",
+      "dist/public/*",
+      "dist/*.js",
+      "dist/*.js.map",
+      "dist/*.js.map",
+      "dist/*.woff",
+      "dist/*.ttf",
+      "dist/*.svg",
+      "package.json"
+    ],
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "mac": {
+      "category": "public.app-category.productivity-tool"
+    },
+    "protocols": [
+      {
+        "name": "deskfiler",
+        "schemes": [
+          "deskfiler"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": true
+    },
+    "directories": {
+      "app": "src",
+      "output": "dist",
+      "buildResources": "resources"
+    }
+  },
+  "scripts": {
+    "postinstall": "electron-builder install-app-deps",
+    "dev": "yarn start-renderer-dev",
+    "dist": "electron-builder",
+    "ship": "yarn dist -p always",
+    "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
+    "package": "yarn build && yarn dist --dir",
+    "release": "yarn build && yarn ship",
+    "build-main": "cross-env webpack --env.NODE_ENV=production -r \"@babel/register\" --config webpack.main.prod.js --colors --progress --profile",
+    "build-renderer": "cross-env webpack --env.NODE_ENV=production -r \"@babel/register\" --config  webpack.renderer.prod.js --colors --progress --profile",
+    "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server -r \"@babel/register\" --config webpack.renderer.dev.js --colors",
+    "start-main-dev": "cross-env electron -r '@babel/register' app/main",
+    "bootstrap:plugins:bareBone": "cd example-plugins && cd bareBone && yarn",
+    "bootstrap:plugins:gVision": "cd example-plugins && cd gVision && yarn",
+    "bootstrap:plugins:imageTagViewer": "cd example-plugins && cd imageTagViewer && yarn",
+    "bootstrap:plugins:pdfSplitter": "cd example-plugins && cd pdfSplitter && yarn",
+    "bootstrap:plugins:zipPw": "cd example-plugins && cd zipPw && yarn",
+    "bootstrap:plugins:weTransferConnect": "cd example-plugins && cd weTransferConnect && yarn",
+    "bootstrap:plugins:all": "concurrently \"yarn bootstrap:plugins:bareBone\" \"yarn bootstrap:plugins:gVision\" \"yarn bootstrap:plugins:imageTagViewer\" \"yarn bootstrap:plugins:pdfSplitter\" \"yarn bootstrap:plugins:zipPw\" \"yarn bootstrap:plugins:weTransferConnect\"",
+    "build:plugins:bareBone": "cd example-plugins && cd bareBone && yarn build",
+    "build:plugins:gVision": "cd example-plugins && cd gVision && yarn build",
+    "build:plugins:imageTagViewer": "cd example-plugins && cd imageTagViewer && yarn build",
+    "build:plugins:pdfSplitter": "cd example-plugins && cd pdfSplitter && yarn build",
+    "build:plugins:zipPw": "cd example-plugins && cd zipPw && yarn build",
+    "build:plugins:weTransferConnect": "cd example-plugins && cd weTransferConnect && yarn build",
+    "build:plugins:all": "concurrently \"yarn build:plugins:bareBone\" \"yarn build:plugins:gVision\" \"yarn build:plugins:imageTagViewer\" \"yarn build:plugins:pdfSplitter\" \"yarn build:plugins:zipPw\" \"yarn build:plugins:weTransferConnect\"",
+    "docs:preview": "docpress s",
+    "docs:build": "docpress b",
+    "docs:publish": "yarn docs:build && yarn gh-pages -d _docpress -o ext-origin"
+  },
+  "repository": "https://github.com/deskfiler/deskfiler",
+  "keywords": [
+    "Electron"
+  ],
+  "author": "Deskfiler.org",
+  "license": "CC0-1.0",
+  "dependencies": {
+    "animejs": "^3.1.0",
+    "colors": "^1.4.0",
+    "css-loader": "^3.2.0",
+    "dotenv": "^8.1.0",
+    "electron-store": "^5.0.0",
+    "fast-csv": "^3.4.0",
+    "fetch-cookie": "^0.7.3",
+    "file-type": "^12.4.0",
+    "formik": "^1.5.8",
+    "foundation-sites": "^6.5.3",
+    "fs": "^0.0.1-security",
+    "hotkeys-js": "^3.7.2",
+    "hummus": "^1.0.107",
+    "luxon": "^1.19.3",
+    "mkdirp": "^0.5.1",
+    "ramda": "^0.26.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-dropzone": "^10.1.9",
+    "react-foundation": "^0.9.6",
+    "react-virtualized": "^9.21.1",
+    "request": "^2.88.0",
+    "request-debug": "^0.2.0",
+    "request-promise-native": "^1.0.8",
+    "rimraf": "^3.0.0",
+    "serve-handler": "^6.1.1",
+    "styled-components": "^4.3.2",
+    "tar": "^4.4.11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-external-helpers": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/plugin-proposal-do-expressions": "^7.2.0",
+    "@babel/plugin-proposal-export-default-from": "^7.2.0",
+    "@babel/plugin-proposal-export-namespace-from": "7.2.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.2.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.4.0",
+    "@hot-loader/react-dom": "^16.8.6",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-redux-saga": "^1.0.2",
+    "babel-plugin-styled-components": "^1.10.0",
+    "babili-webpack-plugin": "^0.1.2",
+    "concurrently": "^5.0.0",
+    "cross-env": "^6.0.3",
+    "docpress": "^0.8.0",
+    "dotenv-webpack": "^1.7.0",
+    "electron": "^6.0.9",
+    "electron-builder": "^21.2.0",
+    "electron-packager": "^14.0.5",
+    "electron-rebuild": "^1.8.6",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-import-resolver-webpack": "^0.11.1",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "file-loader": "^4.2.0",
+    "gh-pages": "^2.1.1",
+    "html-webpack-plugin": "^3.2.0",
+    "react-hot-loader": "^4.12.16",
+    "style-loader": "^1.0.0",
+    "url-loader": "^2.1.0",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0",
+    "webpack-merge": "^4.2.2"
+  }
+}

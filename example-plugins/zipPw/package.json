@@ -1,0 +1,32 @@
+{
+  "name": "ZipPw",
+  "version": "1.0.0",
+  "description": "Simple zip plugin which creates a password-protected zip archive from dropped files",
+  "main": "index.js",
+  "author": "Ilya Lopukhin",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack -c webpack.config.js --progress"
+  },
+  "dependencies": {
+    "adm-zip": "^0.4.13",
+    "archiver": "^3.1.1",
+    "archiver-zip-encryptable": "^1.0.5",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "foundation-sites": "^6.5.3",
+    "original-fs": "^1.1.0",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-foundation": "^0.9.6"
+  },
+  "devDependencies": {
+    "babel-loader": "^8.0.6",
+    "style-loader": "^1.0.0",
+    "css-loader": "^3.2.0",
+    "copy-webpack-plugin": "^5.0.4",
+    "webpack": "^4.41.2",
+    "webpack-archive-plugin": "^3.0.0",
+    "webpack-cli": "^3.3.9"
+  }
+}

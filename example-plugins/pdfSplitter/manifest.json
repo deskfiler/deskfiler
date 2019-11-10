@@ -1,0 +1,10 @@
+{
+  "name": "PDF Splitter",
+  "author": "Ilya Lopukhin",
+  "version": "1.0.0",
+  "icon": "icon.svg",
+  "acceptRestrictions": {
+    "mime": ["application/pdf", "application/x-pdf"],
+    "ext": ["pdf"]
+  }
+}
