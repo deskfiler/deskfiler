@@ -14,16 +14,17 @@ const AuthModal = () => {
 
   if (!modal.isOpen) return null;
 
+  const {
+    params: {
+      customBody,
+    },
+  } = modal;
+
   return (
     <Modal.Container>
       <Modal.Medium>
         <Flex background="#fff">
-          {skipRegistration ? (
-            <Flex align="center">
-              <Text size="16px">This plugin requires a valid account on deskfiler.org:</Text>
-              <Text size="16px">Please login or sign up:</Text>
-            </Flex>
-          ) : (
+          {customBody || (
             <>
               <Flex
                 row
@@ -31,6 +32,7 @@ const AuthModal = () => {
                 width="100%"
               >
                 <img src={logoImage} alt="deskfiler logo" />
+                {/* eslint-disable-next-line */}
                 <div
                   style={{ cursor: 'pointer' }}
                   onClick={() => {
