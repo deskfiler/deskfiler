@@ -8,7 +8,7 @@ import AlertModal from './Alert';
 import AuthModal from './Auth';
 
 export default () => ReactDOM.createPortal(
-  <Flex.Absolute>
+  <Flex.Absolute z={9}>
     <InstallPluginModal />
     <ConfirmationModal />
     <AlertModal />

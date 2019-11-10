@@ -15,7 +15,12 @@ const Plugin = ({ pluginKey }) => {
   const [_, { openModal }] = useModals();
   const [plugin, { run, remove, openSettings }] = usePlugin(pluginKey);
 
-  const { acceptRestrictions, icon, name } = plugin;
+  const {
+    acceptRestrictions,
+    icon,
+    name,
+    isInstalling,
+  } = plugin;
 
   const [isFileRejected, setIsFileRejected] = useState(false);
 
@@ -52,6 +57,7 @@ const Plugin = ({ pluginKey }) => {
           run();
         }}
       >
+        <S.InstallingOverlay active={isInstalling} />
         <S.DropFilesTitle>{isFileRejected ? 'Wrong file format' : 'Drop files'}</S.DropFilesTitle>
         <S.AppCard>
           <input {...getInputProps()} />

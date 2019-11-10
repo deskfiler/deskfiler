@@ -271,6 +271,15 @@ async function createWindow() {
 
       log('generated plugin key', pluginKey);
 
+      const pluginData = await store.get('pluginData');
+
+      store.set(`pluginData.${pluginKey}`, {
+        key: pluginKey,
+        name,
+        icon,
+        isInstalling: true,
+      });
+
       mainWindow.webContents.send('unpacked-plugin', {
         pluginKey,
         name,
@@ -286,6 +295,7 @@ async function createWindow() {
       await new Promise((resolve, reject) => {
         ipcMain.once('cancel-plugin-installation', async () => {
           log('installation cancelled by user');
+          store.delete(`pluginData.${pluginKey}`);
           reject(new Error('Installation Cancelled'));
         });
         ipcMain.once('install-plugin', async () => {
@@ -309,23 +319,6 @@ async function createWindow() {
       });
 
       log('plugin unpacked');
-
-      const pluginData = await store.get('pluginData');
-
-      store.set('pluginData', {
-        ...(pluginData || {}),
-        [pluginKey]: {
-          key: pluginKey,
-          name,
-          author,
-          version,
-          icon,
-          pluginSettings,
-          acceptRestrictions,
-          isLoading: false,
-          isWorking: 'idle',
-        },
-      });
 
       log('added plugin to plugins list');
 
@@ -365,6 +358,19 @@ async function createWindow() {
       }
 
       log('plugin installed!');
+
+      store.set(`pluginData.${pluginKey}`, {
+        key: pluginKey,
+        name,
+        author,
+        version,
+        icon,
+        pluginSettings,
+        acceptRestrictions,
+        isLoading: false,
+        isInstalling: false,
+        isWorking: 'idle',
+      });
       return manifestData;
     } catch (err) {
       console.log(err);
