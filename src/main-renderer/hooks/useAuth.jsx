@@ -30,6 +30,7 @@ function authReducer(state, action) {
         profile: action.payload,
       };
     case 'setAuthToken':
+      console.log('setAuthToken', action.payload);
       return {
         ...state,
         token: action.payload,

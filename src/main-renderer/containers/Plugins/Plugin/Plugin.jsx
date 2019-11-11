@@ -26,7 +26,7 @@ const Plugin = ({ pluginKey }) => {
 
   const [isFileRejected, setIsFileRejected] = useState(false);
 
-  const onDrop = useCallback((files) => {
+  const onDrop = (files) => {
     console.log('plugin file dropped', files, acceptRestrictions);
     let acceptedFiles = files;
 
@@ -43,7 +43,7 @@ const Plugin = ({ pluginKey }) => {
     }
 
     run({ filePaths: Array.from(acceptedFiles).map(file => file.path) });
-  }, []);
+  };
 
   const {
     getRootProps,

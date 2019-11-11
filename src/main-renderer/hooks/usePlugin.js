@@ -21,10 +21,12 @@ export default function usePlugin(pluginKey) {
 
   const isRequireAuth = pluginsWithAuth.includes(pluginKey);
 
-  const run = useCallback(async ({ filePaths } = {}) => {
+  const run = async ({ filePaths } = {}) => {
+    console.log('run', filePaths);
     const showOnStart = !!filePaths;
     let ticket = null;
     if (isRequireAuth) {
+      console.log('isRequireAuth', isRequireAuth, auth.token);
       if (!auth.token) {
         openModal('auth', {
           customBody: (
@@ -60,7 +62,7 @@ export default function usePlugin(pluginKey) {
       inDevelopment,
       devPluginUrl,
     });
-  }, [pluginKey, auth.token]);
+  };
 
   const remove = useCallback(async () => {
     if (isRequireAuth && auth) {
