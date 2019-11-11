@@ -42,7 +42,7 @@ const AlertModal = () => {
                       <Text.Medium size="16px">{`${key.charAt(0).toUpperCase()}${key.slice(1)}: ${it[key]}`}</Text.Medium>
                       <Button
                         color={isCopied ? 'success' : 'warning'}
-                        style={{ margin: '0 0 0 10px', outline: 'none' }}
+                        style={{ margin: 0, outline: 'none' }}
                         onClick={(e) => {
                           e.preventDefault();
                           copyToClipboard(it[key]);

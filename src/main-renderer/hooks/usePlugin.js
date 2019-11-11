@@ -22,11 +22,9 @@ export default function usePlugin(pluginKey) {
   const isRequireAuth = pluginsWithAuth.includes(pluginKey);
 
   const run = async ({ filePaths } = {}) => {
-    console.log('run', filePaths);
     const showOnStart = !!filePaths;
     let ticket = null;
     if (isRequireAuth) {
-      console.log('isRequireAuth', isRequireAuth, auth.token);
       if (!auth.token) {
         openModal('auth', {
           customBody: (

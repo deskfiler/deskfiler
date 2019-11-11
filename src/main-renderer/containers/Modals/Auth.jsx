@@ -23,7 +23,7 @@ const AuthModal = () => {
   return (
     <Modal.Container>
       <Modal.Medium>
-        <Flex background="#fff">
+        <Flex width="100%" background="#fff">
           {customBody || (
             <>
               <Flex
