@@ -30,7 +30,7 @@ export default () => {
       return json;
     } catch (err) {
       if (err.message.startsWith('Session expired')) {
-        await store.set('authToken', null);
+        await store.set('user', null);
         logout();
         openModal(
           'auth',

@@ -160,7 +160,7 @@ async function createLoginWindow() {
     },
   });
 
-  await loginWindow.loadURL('https://plugins.deskfiler.org/?hidehead=yes&hideinfo=yes');
+  await loginWindow.loadURL('https://plugins.deskfiler.org/?hidehead=yes&hideinfo=yes&json=yes');
 
   if (process.env.NODE_ENV === 'development') {
     loginWindow.webContents.openDevTools();
@@ -439,10 +439,14 @@ async function createWindow() {
     }
   });
 
+  ipcMain.on('logged-in', (event, user) => {
+    log('logged in as', user.email);
+    store.set('user', user);
+    mainWindow.webContents.send('logged-in');
+  })
+
   ipcMain.on('send-auth-token', (event, token) => {
     log('got auth token', token);
-    store.set('authToken', token);
-    mainWindow.webContents.send('new-auth-token');
   });
 
   ipcMain.on('manifest-delete-all', async () => {

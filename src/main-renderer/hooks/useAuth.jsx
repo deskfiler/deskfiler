@@ -52,7 +52,7 @@ function authReducer(state, action) {
 
 export const ProvideAuth = ({ children }) => {
   const [auth, dispatch] = useReducer(authReducer, initialState);
-  const [_, { closeModal, openModal }] = useModals();
+  const [_, { closeModal }] = useModals();
 
   const fillProfile = profile => dispatch({
     type: 'fillProfile',
@@ -70,74 +70,27 @@ export const ProvideAuth = ({ children }) => {
   });
 
   const logout = async () => {
-    await store.set('authToken', null);
+    await store.set('user', null);
     dispatch({ type: 'logout' });
   };
 
-  const getUser = async () => {
-    const jar = request.jar();
-    const cookie = request.cookie(`PHPSESSID=${auth.token}`);
-    const url = 'https://plugins.deskfiler.org/api?appaction=showuser&appname=deskfiler';
-    jar.setCookie(cookie, url);
-    try {
-      const response = await request({ url, jar }).auth('a', 'b', false);
-
-      const { data, success } = JSON.parse(response);
-      if (success) {
-        fillProfile(data);
-      } else {
-        throw new Error(response.error);
-      }
-    } catch (err) {
-      await store.set('authToken', null);
-      logout();
-      openModal(
-        'auth',
-        {
-          customBody: (
-            <Flex align="center">
-              <Text>
-                Oops... Looks like your session has expired.
-              </Text>
-            </Flex>
-          ),
-        },
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    const getAuthToken = async () => {
-      const token = await store.get('authToken');
-      console.log('useAuth authToken', token);
-      if (token) {
-        setAuthToken(token);
+    const getUser = async () => {
+      const user = await store.get('user');
+      if (user) {
+        fillProfile(user);
+        setAuthToken(user.token);
         closeModal('auth');
-      } else {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
 
-    getAuthToken();
+    getUser();
 
-    ipcRenderer.on('new-auth-token', async () => {
-      getAuthToken();
+    ipcRenderer.on('logged-in', async () => {
+      getUser();
     });
   }, []);
-
-
-  useEffect(() => {
-    const processToken = async () => {
-      await store.set('authToken', auth.token);
-      await getUser();
-    };
-
-    if (auth.token) {
-      processToken();
-    }
-  }, [auth.token]);
 
   return (
     <authContext.Provider

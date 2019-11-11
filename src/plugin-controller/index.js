@@ -103,8 +103,8 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
   mainId,
   selfId,
 }) => {
-  const token = await store.get('authToken');
-  console.log(token, store.store);
+  const user = await store.get('user');
+  const { token } = user;
   // Context var which provides simple methods to communicate with main app
   const context = {
     pdf: () => console.log('sorry, working with pdf is under development'),
