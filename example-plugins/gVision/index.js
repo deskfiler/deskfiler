@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 import request from 'request-promise-native';
@@ -19,7 +19,8 @@ async function getGVisionTags({
   fs,
   path,
 }) {
-  const { name, ext } = path.parse(filePath);
+  console.log('getGVisionTags', filePath, token, settings);
+  const { base, ext } = path.parse(filePath);
 
   try {
     const url = 'https://plugins.deskfiler.org/api/index.php';
@@ -28,9 +29,18 @@ async function getGVisionTags({
       appaction: 'bridge',
       appid: 'gvision',
       appname: 'deskfiler',
-      appsortstr: settings.labelsLanguage,
-      file: [new Blob([fs.readFileSync(filePath)]), `${name}${ext}`],
+      // file: {
+        // value: fs.createReadStream(filePath),
+        // options: {
+          // filepath: filePath,
+          // contentType: `image/${ext}`,
+        // },
+      // },
+      file: [new Blob([fs.readFileSync(filePath)]), `${base}`],
+      ...(settings.labelsLanguage ? { appsortstr: settings.labelsLanguage } : {}),
     };
+
+    console.log('formData', formData);
 
     const body = new FormData();
 
@@ -44,15 +54,19 @@ async function getGVisionTags({
 
     const response = await fetch(url, {
       method: 'POST',
+      body,
       headers: {
         credentials: 'include',
         Cookie: `PHPSESSID=${token}`,
         Authorization: 'Basic YTpi',
       },
-      body,
     });
 
+    console.log(response);
+
     const json = await response.json();
+
+    console.log(json);
 
     if (json.error) throw new Error(json.error);
 
@@ -123,13 +137,11 @@ window.PLUGIN = {
       exit,
       settings,
       openDialog,
-      hidePluginWindow,
+      alert,
+      token,
       showPluginWindow,
       openOutputFolder,
       openPaymentWindow,
-      startProgress,
-      finishProgress,
-      resetProgress,
     } = context;
     const { filePaths } = inputs;
 
@@ -139,80 +151,108 @@ window.PLUGIN = {
 
     await showPluginWindow();
 
-    const App = () => (
-      <PluginSettings
-        ticket={ticket}
-        settings={pluginSettings}
-        setSettings={settings.set}
-        filesCount={filePaths.length}
-        openPaymentWindow={openPaymentWindow}
-        startProcessing={async (updatedSettings) => {
-          try {
-            // hidePluginWindow();
+    const App = () => {
+      const [processing, setProcessing] = useState(false);
+      const [filesToProcess, setFilesToProcess] = useState(0);
 
-            const { copyTaggedToExtraFolder } = updatedSettings;
-
-            let saveDir = null;
-            const promises = [];
-
-            if (copyTaggedToExtraFolder) {
-              saveDir = await openDialog({ options: { title: 'Select saving directory' }, properties: ['openDirectory'] });
-            }
-
-            const processFile = async (filePath) => {
-              // eslint-disable-next-line no-await-in-loop
-              const { tags, response } = await getGVisionTags({
-                filePath,
-                token: context.token,
-                settings: updatedSettings,
-                fs,
-                path,
-              });
-
-              if (updatedSettings.saveToJson) {
-                const parsedPath = path.parse(filePath);
-                fs.writeFileSync(path.join(saveDir, `${parsedPath.base}-gvision-data.json`), JSON.stringify(response.data, null, 2));
-              }
-
-              writeTagsToExif({
-                path: filePath,
-                tags,
-                dirPath: saveDir,
-                saveCopy: copyTaggedToExtraFolder,
-              });
-            };
-
-            startProgress();
-            for (const filePath of filePaths) { // eslint-disable-line no-restricted-syntax
+      return (
+        <div>
+          {processing && (
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: '#fff',
+              }}
+            >
+              <span style={{ fontWeight: 900, size: '20px' }}>
+                processing... {filesToProcess} images left
+              </span>
+            </div>
+          )}
+          <PluginSettings
+            ticket={ticket}
+            settings={pluginSettings}
+            setSettings={settings.set}
+            filesCount={filePaths.length}
+            openPaymentWindow={openPaymentWindow}
+            startProcessing={async (updatedSettings) => {
               try {
-                promises.push(processFile(filePath));
-              } catch (e) {
-                alert(`Error: ${e.message}`);
-                resetProgress();
-                // exit();
-              }
-            }
-
-            await Promise.all(promises)
-              .then(
-                async () => {
-                  if (copyTaggedToExtraFolder) {
-                    await openOutputFolder(saveDir);
+                // hidePluginWindow();
+                setProcessing(true);
+                setFilesToProcess(filePaths.length);
+          
+                const { copyTaggedToExtraFolder } = updatedSettings;
+          
+                let saveDir = null;
+                const promises = [];
+          
+                if (copyTaggedToExtraFolder) {
+                  saveDir = await openDialog({ options: { title: 'Select saving directory' }, properties: ['openDirectory'] });
+                }
+          
+                const processFile = async (filePath) => {
+                  console.log('process file');
+                  // eslint-disable-next-line no-await-in-loop
+                  const { tags, response } = await getGVisionTags({
+                    filePath,
+                    token,
+                    settings: updatedSettings,
+                    fs,
+                    path,
+                  });
+          
+                  if (updatedSettings.saveToJson) {
+                    const parsedPath = path.parse(filePath);
+                    fs.writeFileSync(path.join(saveDir, `${parsedPath.base}-gvision-data.json`), JSON.stringify(response.data, null, 2));
                   }
-                  finishProgress();
-                  // exit();
-                },
-              );
-          } catch (err) {
-            resetProgress();
-            console.log('Error during processing', err);
-          }
-        }}
-        cancel={() => {
-          // exit();
-        }}
-      />
-    );
+          
+                  writeTagsToExif({
+                    path: filePath,
+                    tags,
+                    dirPath: saveDir,
+                    saveCopy: copyTaggedToExtraFolder,
+                  });
+          
+                  setFilesToProcess(filesToProcess - 1);
+                };
+          
+                for (const filePath of filePaths) { // eslint-disable-line no-restricted-syntax
+                  try {
+                    promises.push(processFile(filePath));
+                  } catch (e) {
+                    setProcessing(false);
+                    alert([`Error: ${e.message}`]);
+                    exit();
+                  }
+                }
+          
+                await Promise.all(promises)
+                  .then(
+                    async () => {
+                      setProcessing(false);
+                      if (copyTaggedToExtraFolder) {
+                        await openOutputFolder(saveDir);
+                      }
+                      exit();
+                    },
+                  );
+              } catch (err) {
+                console.error(err);
+                alert([`Error during processing \n ${err}`]);
+              }
+            }}
+            cancel={() => {
+              exit();
+            }}
+          />
+        </div>
+      );
+    }
 
     ReactDOM.render(<App />, root);
   },
