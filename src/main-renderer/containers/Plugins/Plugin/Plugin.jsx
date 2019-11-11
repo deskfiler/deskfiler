@@ -17,6 +17,8 @@ const Plugin = ({ pluginKey }) => {
 
   const {
     acceptRestrictions,
+    devPluginUrl,
+    inDevelopment,
     icon,
     name,
     isInstalling,
@@ -52,6 +54,10 @@ const Plugin = ({ pluginKey }) => {
     noKeyboard: true,
   });
 
+  const iconUrl = inDevelopment
+    ? `${devPluginUrl}/${icon}`
+    : `${process.env.LOCAL_URL}/${pluginKey}/${icon}`;
+
   return (
     <Flex width="33%" height="50%" padding="0px 12px 12px 0px">
       <S.CardOverlay
@@ -66,7 +72,7 @@ const Plugin = ({ pluginKey }) => {
         <S.DropFilesTitle>{isFileRejected ? 'Wrong file format' : 'Drop files'}</S.DropFilesTitle>
         <S.AppCard>
           <input {...getInputProps()} />
-          <S.AppIcon src={`${process.env.LOCAL_URL}/${pluginKey}/${icon}`} />
+          <S.AppIcon src={`${iconUrl}`} />
           <S.AppInfo>
             <Flex width="50%" height="1px" background="black" marginBottom="8px" />
             <Text size="18px">{name}</Text>

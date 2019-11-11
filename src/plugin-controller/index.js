@@ -20,6 +20,8 @@ const currentWindow = remote.getCurrentWindow();
 
 function injectPlugin({
   pluginKey,
+  inDevelopment,
+  devPluginUrl,
   allowedExtensions,
   filePaths,
   pluginAPIs,
@@ -27,9 +29,12 @@ function injectPlugin({
   selfId,
   ticket,
 }) {
-  const newScriptSrc = `http://localhost:${PORT}/${pluginKey}/index.js?version=${Date.now().toString()}`;
+  const newScriptSrc = inDevelopment
+    ? `${devPluginUrl}/index.js?version=${Date.now().toString()}`
+    : `http://localhost:${PORT}/${pluginKey}/index.js?version=${Date.now().toString()}`;
 
   const oldScriptNode = document.querySelector('#plugin');
+
   if (oldScriptNode) {
     oldScriptNode.parentNode.removeChild(oldScriptNode);
   }
@@ -90,12 +95,16 @@ function injectPlugin({
 
 ipcRenderer.once('new-plugin-loaded', async (event, {
   pluginKey,
+  inDevelopment,
+  devPluginUrl,
   allowedExtensions,
   filePaths,
   ticket,
   mainId,
   selfId,
 }) => {
+  const token = await store.get('authToken');
+  console.log(token, store.store);
   // Context var which provides simple methods to communicate with main app
   const context = {
     pdf: () => console.log('sorry, working with pdf is under development'),
@@ -114,7 +123,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
         }
       },
     },
-    token: store.get('authToken'),
+    token,
     // Fires desktop notification with given message
     notify: (message) => {
       new Notification('Deskfiler', { // eslint-disable-line no-new
@@ -259,6 +268,8 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
   injectPlugin({
     allowedExtensions,
     pluginKey,
+    inDevelopment,
+    devPluginUrl,
     filePaths,
     ticket,
     pluginAPIs,

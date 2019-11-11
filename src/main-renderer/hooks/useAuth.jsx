@@ -110,6 +110,7 @@ export const ProvideAuth = ({ children }) => {
   useEffect(() => {
     const getAuthToken = async () => {
       const token = await store.get('authToken');
+      console.log('useAuth authToken', token);
       if (token) {
         setAuthToken(token);
         closeModal('auth');
@@ -127,7 +128,14 @@ export const ProvideAuth = ({ children }) => {
 
 
   useEffect(() => {
-    if (auth.token) getUser();
+    const processToken = async () => {
+      await store.set('authToken', auth.token);
+      await getUser();
+    };
+
+    if (auth.token) {
+      processToken();
+    }
   }, [auth.token]);
 
   return (

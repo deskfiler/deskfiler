@@ -27,6 +27,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     ipcRenderer.on('open-alert-modal', async (event, payload) => {
+      console.log('open alert modal', payload);
       openModal('alert', payload);
     });
   }, []);

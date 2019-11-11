@@ -52,11 +52,17 @@ export default function usePlugin(pluginKey) {
       ({ ticket } = pluginInfo);
     }
 
+    const { inDevelopment, devPluginUrl } = plugin;
+
+    console.log(inDevelopment, devPluginUrl);
+
     ipcRenderer.send('open-plugin-controller-window', {
       pluginKey,
       filePaths,
       showOnStart,
       ticket,
+      inDevelopment,
+      devPluginUrl,
     });
   }, [pluginKey, auth.token]);
 

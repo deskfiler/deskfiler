@@ -47,6 +47,8 @@ mkdirp.sync(LOGS_DIR);
 async function createPluginControllerWindow({
   pluginKey,
   allowedExtensions,
+  inDevelopment,
+  devPluginUrl,
   filePaths,
   showOnStart,
   ticket,
@@ -69,6 +71,8 @@ async function createPluginControllerWindow({
   pluginControllerWindow.webContents.send('new-plugin-loaded', {
     pluginKey,
     allowedExtensions,
+    inDevelopment,
+    devPluginUrl,
     filePaths,
     ticket,
     mainId: mainWindow.webContents.id,
@@ -391,12 +395,17 @@ async function createWindow() {
 
   ipcMain.on('open-plugin-controller-window', async (event, {
     pluginKey,
+    inDevelopment,
+    devPluginUrl,
     filePaths,
     ticket,
   }) => {
+    console.log(store.store);
     const restrictions = await store.get(`pluginData.${pluginKey}.acceptRestrictions`);
     createPluginControllerWindow({
       pluginKey,
+      inDevelopment,
+      devPluginUrl,
       allowedExtensions: (restrictions && restrictions.ext) || null,
       filePaths,
       showOnStart: false,
