@@ -8,9 +8,7 @@ import useModals from './useModals';
 import useApi from './useApi';
 import useIpc from './useIpc';
 
-console.log('useIpc', useIpc);
-
-const pluginsWithAuth = ['g-vision'];
+const pluginsWithAuth = ['gvision'];
 
 export default function usePlugin(pluginKey) {
   const [plugins] = usePlugins();
@@ -54,8 +52,6 @@ export default function usePlugin(pluginKey) {
 
     const { inDevelopment, devPluginUrl } = plugin;
 
-    console.log(inDevelopment, devPluginUrl);
-
     ipcRenderer.send('open-plugin-controller-window', {
       pluginKey,
       filePaths,
@@ -73,5 +69,5 @@ export default function usePlugin(pluginKey) {
     ipcRenderer.send('remove-plugin', pluginKey);
   }, [auth]);
 
-  return [plugin, { run, remove, openSettings: () => openSettingsWindow(pluginKey)  }];
+  return [plugin, { run, remove, openSettings: () => openSettingsWindow(pluginKey) }];
 }
