@@ -11,7 +11,7 @@ const DevMenu = () => {
   const [devPluginUrl, setDevPluginUrl] = useState('');
 
   useEffect(() => {
-    hotkeys('command+d', () => {
+    hotkeys('command+shift+d', () => {
       setOpen(true);
     });
   }, []);
