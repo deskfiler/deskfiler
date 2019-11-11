@@ -98,9 +98,13 @@ function writeTagsToExif({
   exif[piexif.ExifIFD.UserComment] = `Tagged by Google Vision, in Deskfiler. \n Tags: ${tags.join(', ')}`;
   zeroth[piexif.ImageIFD.ImageDescription] = `${tags.join(', ')}`;
 
-  const { name } = path.parse(filePath);
+  const { name, ext } = path.parse(filePath);
 
   try {
+    if (/(jpg|jpeg)/.test(ext)) {
+      throw new Error('Exif tags not written for', `${name}.${ext}`, 'image not jpeg!');
+    }
+
     const exifObj = { '0th': zeroth, Exif: exif, GPS: gps };
     const exifStr = piexif.dump(exifObj);
 
