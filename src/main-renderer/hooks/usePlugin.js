@@ -6,6 +6,9 @@ import usePlugins from './usePlugins';
 import useAuth from './useAuth';
 import useModals from './useModals';
 import useApi from './useApi';
+import useIpc from './useIpc';
+
+console.log('useIpc', useIpc);
 
 const pluginsWithAuth = ['g-vision'];
 
@@ -14,6 +17,7 @@ export default function usePlugin(pluginKey) {
   const [auth] = useAuth();
   const [_, { openModal }] = useModals();
   const { getPluginInfo, removePluginFromAccount, addPluginToAccount } = useApi();
+  const { openSettingsWindow } = useIpc();
 
   const plugin = plugins[pluginKey];
 
@@ -63,9 +67,5 @@ export default function usePlugin(pluginKey) {
     ipcRenderer.send('remove-plugin', pluginKey);
   }, [auth]);
 
-  const openSettings = () => {
-    ipcRenderer.send('open-plugin-config-window', pluginKey);
-  };
-
-  return [plugin, { run, remove, openSettings }];
+  return [plugin, { run, remove, openSettings: () => openSettingsWindow(pluginKey)  }];
 }

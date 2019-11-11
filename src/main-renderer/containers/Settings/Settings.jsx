@@ -4,6 +4,7 @@ import { Formik } from 'formik';
 import { Grid, Cell } from 'react-foundation';
 import { useUiState } from 'hooks';
 import { Icon } from 'components';
+import { createOpenDialog } from 'utils';
 
 import closeIcon from 'assets/images/close.svg';
 import folderIcon from 'assets/images/folder.svg';
@@ -16,7 +17,7 @@ import InputGroup from 'components/InputGroup';
 
 import { Flex } from 'styled';
 
-import { useSettings, usePlugins } from 'hooks';
+import { useSettings, usePlugins, useIpc } from 'hooks';
 
 import {
   getPluginPath,
@@ -58,13 +59,11 @@ const languageOptions = [{
   value: 'german',
 }];
 
-const SettingsView = ({
-  openModal,
-  openPluginConfig,
-}) => {
+const SettingsView = () => {
   const [{ sideView }, { setUiState }] = useUiState();
   const [plugins] = usePlugins();
   const [settings, { updateSettings }] = useSettings();
+  const { openSettingsWindow } = useIpc();
   const [currentTab, setCurrentTab] = useState('general');
   const [order, setOrder] = useState('desc');
   const tabsContent = {
@@ -79,7 +78,27 @@ const SettingsView = ({
         </fieldset> */}
         <Select {...inputs.language} options={languageOptions} />
         <span>Default storage path</span>
-        <InputGroup {...inputs.defaultStoragePath} onButtonClick={openModal} />
+        <InputGroup
+          {...inputs.defaultStoragePath}
+          onButtonClick={async (callback) => {
+            try {
+              const {
+                canceled,
+                filePaths,
+              } = await createOpenDialog({
+                options: {
+                  defaultPath: settings.general.defaultStoragePath,
+                },
+                properties: ['openDirectory'],
+              });
+              if (!canceled) {
+                callback(filePaths[0]);
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+        />
       </>
     ),
     plugins: <div>plugins</div>,
@@ -150,7 +169,7 @@ const SettingsView = ({
                               cursor="pointer"
                               width="fit-content"
                               onClick={() => {
-                                openPluginConfig(key);
+                                openSettingsWindow(key);
                               }}
                             >
                               <Icon type="cog" width="18px" />

@@ -9,8 +9,13 @@ export default () => {
     ipcRenderer.send('open-login-window');
   };
 
+  const openSettingsWindow = (pluginKey) => {
+    ipcRenderer.send('open-plugin-config-window', pluginKey);
+  };
+
   return {
     openRegisterWindow,
     openLoginWindow,
+    openSettingsWindow,
   };
 };
