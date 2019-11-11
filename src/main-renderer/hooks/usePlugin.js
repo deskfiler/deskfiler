@@ -19,8 +19,8 @@ export default function usePlugin(pluginKey) {
 
   const isRequireAuth = pluginsWithAuth.includes(pluginKey);
 
-  const run = useCallback(async ({ files } = {}) => {
-    const showOnStart = !!files;
+  const run = useCallback(async ({ filePaths } = {}) => {
+    const showOnStart = !!filePaths;
     let ticket = null;
     if (isRequireAuth) {
       if (!auth.token) {
@@ -50,7 +50,7 @@ export default function usePlugin(pluginKey) {
 
     ipcRenderer.send('open-plugin-controller-window', {
       pluginKey,
-      files,
+      filePaths,
       showOnStart,
       ticket,
     });

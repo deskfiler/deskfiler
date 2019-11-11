@@ -40,7 +40,7 @@ const Plugin = ({ pluginKey }) => {
       }
     }
 
-    run({ files: acceptedFiles });
+    run({ filePaths: Array.from(acceptedFiles).map(file => file.path) });
   }, []);
 
   const {
@@ -53,7 +53,7 @@ const Plugin = ({ pluginKey }) => {
   });
 
   return (
-    <Flex width="33%" padding="0px 12px 12px 0px">
+    <Flex width="33%" height="50%" padding="0px 12px 12px 0px">
       <S.CardOverlay
         {...getRootProps()}
         isDragActive={isDragActive}

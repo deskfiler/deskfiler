@@ -21,7 +21,7 @@ const currentWindow = remote.getCurrentWindow();
 function injectPlugin({
   pluginKey,
   allowedExtensions,
-  files,
+  filePaths,
   pluginAPIs,
   mainId,
   selfId,
@@ -41,10 +41,10 @@ function injectPlugin({
   scriptNode.setAttribute('id', 'plugin');
 
   scriptNode.onload = async () => {
-    if (files) {
+    if (filePaths) {
       window.PLUGIN.handleFiles({
         inputs: {
-          filePaths: Array.from(files).map(file => file.path),
+          filePaths,
         },
         ticket,
         ...pluginAPIs,
@@ -91,7 +91,7 @@ function injectPlugin({
 ipcRenderer.once('new-plugin-loaded', async (event, {
   pluginKey,
   allowedExtensions,
-  files,
+  filePaths,
   ticket,
   mainId,
   selfId,
@@ -259,7 +259,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
   injectPlugin({
     allowedExtensions,
     pluginKey,
-    files,
+    filePaths,
     ticket,
     pluginAPIs,
     mainId,

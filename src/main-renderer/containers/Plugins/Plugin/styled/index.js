@@ -145,7 +145,6 @@ export const DropFilesTitle = styled.span`
 
 export const CardOverlay = styled.div`
   height: 100%;
-  max-height: 300px;
   width: 100%;
   position: relative;
   overflow: hidden;
