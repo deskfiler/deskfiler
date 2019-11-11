@@ -16,13 +16,13 @@
       "elementType": "checkbox",
       "name": "copyTaggedToExtraFolder",
       "label": "Copy tagged images to extra folder?",
-      "value": false
+      "value": true
     },
     {
       "elementType": "checkbox",
       "name": "saveToJson",
       "label": "Save extensive data in extra file (image-name.json)?",
-      "value": false
+      "value": true
     },
     {
       "elementType": "select",
@@ -35,7 +35,7 @@
       "elementType": "select",
       "name": "certaintyLevel",
       "label": "Certainty level before a label is accepted",
-      "value": 0.8,
+      "value": 0.4,
       "options": [{ "label": "20%", "value": 0.2 }, { "label": "40%", "value": 0.4 }, { "label": "60%", "value": 0.6 }, { "label": "80%", "value": 0.8 }]
     }
   ]
