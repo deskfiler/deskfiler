@@ -195,6 +195,8 @@ export const InstallingOverlay = styled.div`
   background: transparent;
   z-index: 1;
   background-size: auto;
+  background-repeat-x: repeat;
+    background-repeat-y: no-repeat;
   background-image: url(${wave});
   animation: ${waving} .5s infinite linear;
   &:after {
@@ -206,7 +208,7 @@ export const InstallingOverlay = styled.div`
     text-align: center;
     content: 'Installing...';
     position: absolute;
-    top: 45px;
+    top: 44px;
     width: 100%;
     background: #0069FF;
   }

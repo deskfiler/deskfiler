@@ -12,7 +12,16 @@ const Plugins = () => {
   const pluginsKeys = Object.keys(plugins);
 
   return (
-    <Flex padding="8px 0px 0px 8px" width="100%" row wrap height="100%" paddingRight="48px" align="normal">
+    <Flex
+      padding="8px 0px 0px 8px"
+      width="100%"
+      row
+      wrap
+      height="100%"
+      paddingRight="48px"
+      overflow="auto"
+      align="normal"
+    >
       {pluginsKeys.map(key => <Plugin key={key} pluginKey={key} />)}
       <AddPlugin />
     </Flex>
