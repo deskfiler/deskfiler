@@ -9,13 +9,17 @@ export default () => {
   const [auth, { logout }] = useAuth();
   const [_, { openModal }] = useModals();
 
+  const getFormData = (data) => ({
+    token: auth.token,
+    ...data,
+  });
+
   const apiCall = async (url, params) => {
     try {
       const response = await fetch(url, {
         ...params,
         headers: {
           credentials: 'include',
-          Cookie: `PHPSESSID=${auth.token}`,
           Authorization: `Basic ${btoa('a:b')}`,
           ...params.header,
         },
@@ -50,11 +54,11 @@ export default () => {
   const addPluginToAccount = async ({ pluginKey }) => {
     const url = 'https://plugins.deskfiler.org/api/index.php';
 
-    const formData = {
+    const formData = getFormData({
       appaction: 'plugadd',
       appid: pluginKey.split('-').join(''),
       appname: 'deskfiler',
-    };
+    })
 
     const body = new FormData();
 
@@ -71,11 +75,12 @@ export default () => {
   const removePluginFromAccount = async ({ pluginKey }) => {
     const url = 'https://plugins.deskfiler.org/api/index.php';
 
-    const formData = {
-      appaction: 'plugremove',
+    const formData = getFormData({
+      appaction: 'plugadd',
       appid: pluginKey.split('-').join(''),
       appname: 'deskfiler',
-    };
+    });
+
     const body = new FormData();
 
     Object.keys(formData).forEach((key) => {
@@ -92,11 +97,12 @@ export default () => {
   const getPluginInfo = async ({ pluginKey }) => {
     const url = 'https://plugins.deskfiler.org/api/index.php';
 
-    const formData = {
+    const formData = getFormData({
       appaction: 'pluginfo',
       appid: pluginKey.split('-').join(''),
       appname: 'deskfiler',
-    };
+    });
+
     try {
       const body = new FormData();
 

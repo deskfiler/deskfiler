@@ -29,13 +29,7 @@ async function getGVisionTags({
       appaction: 'bridge',
       appid: 'gvision',
       appname: 'deskfiler',
-      // file: {
-        // value: fs.createReadStream(filePath),
-        // options: {
-          // filepath: filePath,
-          // contentType: `image/${ext}`,
-        // },
-      // },
+      token,
       file: [new Blob([fs.readFileSync(filePath)]), `${base}`],
       ...(settings.labelsLanguage ? { appsortstr: settings.labelsLanguage } : {}),
     };
@@ -57,7 +51,6 @@ async function getGVisionTags({
       body,
       headers: {
         credentials: 'include',
-        Cookie: `PHPSESSID=${token}`,
         Authorization: 'Basic YTpi',
       },
     });
