@@ -80,7 +80,6 @@ const Logs = () => {
   }, [selectedPluginKey, sideView]);
 
   useEffect(() => {
-    setSelectedPluginKey(Object.keys(plugins)[0]);
     setSortDirection(SortDirection.DESC);
   }, [plugins, sideView]);
 
@@ -92,72 +91,87 @@ const Logs = () => {
       <Grid style={{ height: '100%' }}>
         <Cell small={10} style={{ height: '100%', display: 'flex', flexFlow: 'column nowrap' }}>
           <Flex width="100%" height="100%" padding="16px" grow={1}>
-            <AutoSizer>
-              {({ width, height }) => (
-                <Table
-                  height={height - 64}
-                  width={width}
-                  headerHeight={50}
-                  rowHeight={35}
-                  rowCount={data.length}
-                  rowGetter={({ index }) => data[index]}
-                  sort={sortData}
-                  sortBy={sortBy}
-                  sortDirection={sortDirection}
+            {selectedPluginKey ? (
+              <AutoSizer>
+                {({ width, height }) => (
+                  <Table
+                    height={height - 64}
+                    width={width}
+                    headerHeight={50}
+                    rowHeight={35}
+                    rowCount={data.length}
+                    rowGetter={({ index }) => data[index]}
+                    sort={sortData}
+                    sortBy={sortBy}
+                    sortDirection={sortDirection}
+                  >
+                    <Column
+                      dataKey="timestamp"
+                      width={150}
+                      cellRenderer={({ cellData }) => (<DateCell timestamp={cellData} />)}
+                      headerRenderer={() => (<HeaderCell title="Date" sortDirection={sortDirection} />)}
+                    />
+                    <Column
+                      dataKey="action"
+                      width={250}
+                      cellRenderer={({ cellData }) => (<TextCell>{cellData}</TextCell>)}
+                      headerRenderer={() => (<HeaderCell title="Action" sortDirection={sortDirection} />)}
+                    />
+                    <Column
+                      dataKey="meta"
+                      disableSort
+                      flexGrow={1}
+                      width={300}
+                      cellRenderer={({ cellData }) => (<TextCell>{cellData.value}</TextCell>)}
+                      headerRenderer={() => (<HeaderCell title="Additional Information" />)}
+                    />
+                  </Table>
+                )}
+              </AutoSizer>
+            ) : (
+              <Flex
+                width="100%"
+                height="100%"
+                padding="16px"
+                grow={1}
+                align="center"
+                justify="center"
+              >
+                <span>Please select a plugin on the right side to see the logs for it</span>
+              </Flex>
+            )}
+          </Flex>
+          {selectedPluginKey && (
+            <Flex>
+              <Flex
+                row
+                justify="flex-end"
+                padding="12px 25px"
+                flex="0 0 auto"
+                width="100%"
+              >
+                <Button
+                  style={{ marginLeft: 16 }}
+                  isHollow
+                  color="alert"
+                  onClick={() => {
+                    const logFilePath = path.join(LOGS_DIR, `${selectedPluginKey}-logs.json`);
+                    fs.writeFileSync(logFilePath, '[]');
+                    setData([]);
+                  }}
                 >
-                  <Column
-                    dataKey="timestamp"
-                    width={150}
-                    cellRenderer={({ cellData }) => (<DateCell timestamp={cellData} />)}
-                    headerRenderer={() => (<HeaderCell title="Date" sortDirection={sortDirection} />)}
-                  />
-                  <Column
-                    dataKey="action"
-                    width={250}
-                    cellRenderer={({ cellData }) => (<TextCell>{cellData}</TextCell>)}
-                    headerRenderer={() => (<HeaderCell title="Action" sortDirection={sortDirection} />)}
-                  />
-                  <Column
-                    dataKey="meta"
-                    disableSort
-                    flexGrow={1}
-                    width={300}
-                    cellRenderer={({ cellData }) => (<TextCell>{cellData.value}</TextCell>)}
-                    headerRenderer={() => (<HeaderCell title="Additional Information" />)}
-                  />
-                </Table>
-              )}
-            </AutoSizer>
-          </Flex>
-          <Flex>
-            <Flex
-              row
-              justify="flex-end"
-              padding="12px 25px"
-              flex="0 0 auto"
-              width="100%"
-            >
-              <Button
-                style={{ marginLeft: 16 }}
-                isHollow
-                color="alert"
-                onClick={() => {
-                  const logFilePath = path.join(LOGS_DIR, `${selectedPluginKey}-logs.json`);
-                  fs.writeFileSync(logFilePath, '[]');
-                  setData([]);
-                }}
-              >
-                Clear Logs
-              </Button>
-              <Button
-                isHollow
-                onClick={() => {
-                }}
-              >
-                Export Log
-              </Button>
+                  Clear Logs
+                </Button>
+                <Button
+                  isHollow
+                  onClick={() => {
+                  }}
+                >
+                  Export Log
+                </Button>
+              </Flex>
             </Flex>
-          </Flex>
+          )}
         </Cell>
         <Cell auto="all" style={{ height: '100%' }}>
           <Flex
