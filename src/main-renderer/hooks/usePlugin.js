@@ -13,13 +13,14 @@ export default function usePlugin(pluginKey) {
   const [plugins] = usePlugins();
   const [auth] = useAuth();
   const [_, { openModal }] = useModals();
-  const { getPluginInfo, removePluginFromAccount } = useApi();
+  const { getPluginInfo, removePluginFromAccount, addPluginToAccount } = useApi();
 
   const plugin = plugins[pluginKey];
 
   const isRequireAuth = pluginsWithAuth.includes(pluginKey);
 
   const run = useCallback(async ({ files, showOnStart } = {}) => {
+    console.log('run', isRequireAuth);
     if (isRequireAuth) {
       if (!auth.token) {
         openModal('auth', {
@@ -40,7 +41,11 @@ export default function usePlugin(pluginKey) {
         return;
       }
       const { isRegistered, ticket } = await getPluginInfo({ token: auth.token, pluginKey });
-      if (!isRegistered) return;
+      console.log(isRegistered);
+      if (!isRegistered) {
+        await addPluginToAccount({ pluginKey });
+      }
+
       ipcRenderer.send('open-plugin-controller-window', {
         pluginKey,
         files: null,

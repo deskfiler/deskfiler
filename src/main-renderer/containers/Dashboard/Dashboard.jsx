@@ -4,7 +4,8 @@ import request from 'request-promise-native';
 import requestDebug from 'request-debug';
 import { createSaveDialog, createOpenDialog } from 'utils';
 import { useSettings, useModals, useAuth } from 'hooks';
-import { Flex } from 'styled';
+import { Flex, Text } from 'styled';
+import { Spinner } from 'components';
 
 import Plugins from '../Plugins';
 import Menu from '../Menu';
@@ -30,7 +31,7 @@ const Dashboard = () => {
     });
   }, []);
 
-  console.log(settings);
+  console.log(auth);
 
   useEffect(() => {
     console.log(isLoading, skipRegistration);
@@ -91,8 +92,14 @@ const Dashboard = () => {
     <Flex height="100%" width="100%">
       <DevMenu onAddDevPlugin={addDevPlugin} />
       {isLoading
-        ? <div>Spinner</div>
-        : (
+        ? (
+          <Flex width="100%" height="100%" justify="center" align="center" spacing="8px">
+            <Spinner />
+            <Text.Bold>
+              Loading...
+            </Text.Bold>
+          </Flex>
+        ) : (
           <Flex row width="100%" height="100%" overflow="hidden">
             <Plugins />
             <Menu />
