@@ -24,7 +24,6 @@ _ignore/
 
 # Log files & folders #
 #######################
-logs/
 *.log
 npm-debug.log*
 .npm
