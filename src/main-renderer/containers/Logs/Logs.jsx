@@ -91,7 +91,7 @@ const Logs = () => {
       <Grid style={{ height: '100%' }}>
         <Cell small={10} style={{ height: '100%', display: 'flex', flexFlow: 'column nowrap' }}>
           <Flex width="100%" height="100%" padding="16px" grow={1}>
-            {selectedPluginKey ? (
+            {(selectedPluginKey && data.length) ? (
               <AutoSizer>
                 {({ width, height }) => (
                   <Table
@@ -137,11 +137,11 @@ const Logs = () => {
                 align="center"
                 justify="center"
               >
-                <span>Please select a plugin on the right side to see the logs for it</span>
+                <span>{!selectedPluginKey ? 'Please select a plugin on the right side to see the logs for it' : 'No logs yet...'}</span>
               </Flex>
             )}
           </Flex>
-          {selectedPluginKey && (
+          {(selectedPluginKey && data.length) && (
             <Flex>
               <Flex
                 row
