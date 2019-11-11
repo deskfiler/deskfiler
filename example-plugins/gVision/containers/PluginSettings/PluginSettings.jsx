@@ -77,7 +77,7 @@ const PluginSettings = ({
   const showPaymentInfo = checkFundsPerFile({ ticket, filesCount });
   return (
     <S.PluginSettings>
-      <S.Title>G Vision</S.Title>
+      <S.Title>gVision</S.Title>
       <S.Title>You have dropped {filesCount} file{filesCount > 1 ? 's' : ''}, what shall I do?</S.Title>
       <Formik
         enableReinitialize
