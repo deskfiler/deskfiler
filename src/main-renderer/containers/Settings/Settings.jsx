@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { shell } from 'electron';
 import { Formik } from 'formik';
 import { Grid, Cell } from 'react-foundation';
 import { useUiState } from 'hooks';
@@ -34,10 +35,10 @@ const tabs = {
     title: 'Plugins',
     value: 'plugins',
   },
-  profile: {
-    title: 'Profile',
-    value: 'profile',
-  },
+  // profile: {
+  //   title: 'Profile',
+  //   value: 'profile',
+  // },
   // cascade: {
   //   title: 'Cascade',
   //   value: 'cascade',
@@ -69,23 +70,44 @@ const SettingsView = ({
   const tabsContent = {
     general: (
       <>
-        <fieldset
+        {/* <fieldset
           className="fieldset"
         >
           <legend>Run on Startup</legend>
           <Radio {...inputs.runOnStartUp} />
           <Radio {...inputs.startWhenOpened} />
-        </fieldset>
+        </fieldset> */}
         <Select {...inputs.language} options={languageOptions} />
         <span>Default storage path</span>
         <InputGroup {...inputs.defaultStoragePath} onButtonClick={openModal} />
       </>
     ),
     plugins: <div>plugins</div>,
-    profile: <div>Profile</div>,
+    // profile: <div>Profile</div>,
     // cascade: <div>Cascade</div>,
-    help: <div>Help</div>,
+    help: (
+      <div>
+        <S.Link
+          onClick={(e) => {
+            e.preventDefault();
+            shell.openExternal('http://deskfiler.org/');
+          }}
+        >
+          Website
+        </S.Link>
+        <S.Link
+          onClick={(e) => {
+            e.preventDefault();
+            shell.openExternal('http://deskfiler.org/docs.php');
+          }}
+        >
+          Help
+        </S.Link>
+      </div>
+    ),
   };
+
+  console.log('plugins', plugins);
 
   return (
     <S.SettingsView
@@ -121,7 +143,7 @@ const SettingsView = ({
                       .sort((a, b) => (order === 'desc' ? b.localeCompare(a) : a.localeCompare(b)))
                       .map(key => (
                         <tr key={key}>
-                          <td key={`${key}-name`}>{key}</td>
+                          <td key={`${key}-name`}>{plugins[key].name}</td>
                           <td key={`${key}-path`}>{getPluginPath(key)}</td>
                           <td key={`${key}-config`} style={{ justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
                             <Flex
