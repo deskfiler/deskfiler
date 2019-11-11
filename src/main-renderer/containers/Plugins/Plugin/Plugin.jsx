@@ -25,17 +25,22 @@ const Plugin = ({ pluginKey }) => {
   const [isFileRejected, setIsFileRejected] = useState(false);
 
   const onDrop = useCallback((files) => {
+    console.log('plugin file dropped', files, acceptRestrictions);
+    let acceptedFiles = files;
+
     if (acceptRestrictions) {
-      const isAllowedFileFormats = files
-        .every(file => acceptRestrictions.mime.find(type => type === file.type));
-      if (!isAllowedFileFormats) {
+      acceptedFiles = files
+        .filter(file => acceptRestrictions.mime.includes(file.type));
+
+      if (!acceptedFiles.length) {
+        console.log('not allowed file');
         setIsFileRejected(true);
         setTimeout(() => setIsFileRejected(false), 1000);
         return;
       }
     }
 
-    run({ files });
+    run({ files: acceptedFiles });
   }, []);
 
   const {

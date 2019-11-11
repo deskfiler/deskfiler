@@ -153,7 +153,7 @@ export const CardOverlay = styled.div`
   box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, .08);
   cursor: pointer;
 
-  ${({ isDragActive, isRestricted }) => ((isDragActive || isRestricted) && css`
+  ${({ isDragActive, isFileRejected }) => ((isDragActive || isFileRejected) && css`
     ${AppCard} {
       opacity: 0.3;
     };
@@ -169,7 +169,7 @@ export const CardOverlay = styled.div`
     };
   `)}
 
-  ${({ isRestricted }) => (isRestricted && css`
+  ${({ isFileRejected }) => (isFileRejected && css`
     ${DropFilesTitle} {
       background: red;
       opacity: 1;

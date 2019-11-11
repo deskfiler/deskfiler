@@ -19,8 +19,9 @@ export default function usePlugin(pluginKey) {
 
   const isRequireAuth = pluginsWithAuth.includes(pluginKey);
 
-  const run = useCallback(async ({ files, showOnStart } = {}) => {
-    console.log('run', isRequireAuth);
+  const run = useCallback(async ({ files } = {}) => {
+    const showOnStart = !!files;
+    let ticket = null;
     if (isRequireAuth) {
       if (!auth.token) {
         openModal('auth', {
@@ -40,26 +41,18 @@ export default function usePlugin(pluginKey) {
         });
         return;
       }
-      const { isRegistered, ticket } = await getPluginInfo({ token: auth.token, pluginKey });
-      console.log(isRegistered);
+      const { isRegistered, ...pluginInfo } = await getPluginInfo({ token: auth.token, pluginKey });
       if (!isRegistered) {
         await addPluginToAccount({ pluginKey });
       }
-
-      ipcRenderer.send('open-plugin-controller-window', {
-        pluginKey,
-        files: null,
-        showOnStart: true,
-        ticket,
-      });
-      return;
+      ({ ticket } = pluginInfo);
     }
 
     ipcRenderer.send('open-plugin-controller-window', {
       pluginKey,
       files,
       showOnStart,
-      ticket: null,
+      ticket,
     });
   }, [pluginKey, auth.token]);
 

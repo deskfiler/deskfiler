@@ -1,9 +1,13 @@
+import React from 'react';
 import store from 'store';
+import { Flex, Text } from 'styled';
 
 import useAuth from './useAuth';
+import useModals from './useModals';
 
 export default () => {
-  const [auth, setAuth] = useAuth();
+  const [auth, { logout }] = useAuth();
+  const [_, { openModal }] = useModals();
 
   const apiCall = async (url, params) => {
     try {
@@ -23,7 +27,19 @@ export default () => {
     } catch (err) {
       if (err.message.startsWith('Session expired')) {
         await store.set('authToken', null);
-        setAuth(null);
+        logout();
+        openModal(
+          'auth',
+          {
+            customBody: (
+              <Flex align="center">
+                <Text>
+                  Oops... Looks like your session has expired.
+                </Text>
+              </Flex>
+            ),
+          },
+        );
       } else {
         throw err;
       }

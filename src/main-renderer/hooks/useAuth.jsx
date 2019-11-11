@@ -2,6 +2,7 @@ import { ipcRenderer } from 'electron';
 import { node } from 'prop-types';
 import store from 'store';
 import request from 'request-promise-native';
+import { Flex, Text } from 'styled';
 import React, {
   createContext,
   useReducer,
@@ -50,7 +51,7 @@ function authReducer(state, action) {
 
 export const ProvideAuth = ({ children }) => {
   const [auth, dispatch] = useReducer(authReducer, initialState);
-  const [_, { closeModal }] = useModals();
+  const [_, { closeModal, openModal }] = useModals();
 
   const fillProfile = profile => dispatch({
     type: 'fillProfile',
@@ -82,11 +83,27 @@ export const ProvideAuth = ({ children }) => {
 
       const { data, success } = JSON.parse(response);
       if (success) {
-        setIsLoading(false);
         fillProfile(data);
+      } else {
+        throw new Error(response.error);
       }
     } catch (err) {
-      console.error(err);
+      await store.set('authToken', null);
+      logout();
+      openModal(
+        'auth',
+        {
+          customBody: (
+            <Flex align="center">
+              <Text>
+                Oops... Looks like your session has expired.
+              </Text>
+            </Flex>
+          ),
+        },
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
