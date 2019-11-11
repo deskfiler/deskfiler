@@ -76,7 +76,7 @@ const SettingsView = () => {
           <Radio {...inputs.runOnStartUp} />
           <Radio {...inputs.startWhenOpened} />
         </fieldset> */}
-        <Select {...inputs.language} options={languageOptions} />
+        {/* <Select {...inputs.language} options={languageOptions} /> */}
         <span>Default storage path</span>
         <InputGroup
           {...inputs.defaultStoragePath}
@@ -112,7 +112,7 @@ const SettingsView = () => {
             shell.openExternal('http://deskfiler.org/');
           }}
         >
-          Website
+          Homepage
         </S.Link>
         <S.Link
           onClick={(e) => {
@@ -201,26 +201,28 @@ const SettingsView = () => {
                       <legend>{currentTab.toUpperCase()}</legend>
                       {tabsContent[currentTab]}
                     </fieldset>
-                    <Flex
-                      row
-                    >
-                      <S.Button
-                        type="submit"
-                        onClick={() => {
-                          handleSubmit();
-                        }}
+                    {currentTab !== 'help' && (
+                      <Flex
+                        row
                       >
-                        Save
-                      </S.Button>
-                      <S.Button
-                        color="secondary"
-                        onClick={() => {
-                          resetForm();
-                        }}
-                      >
-                        Cancel
-                      </S.Button>
-                    </Flex>
+                        <S.Button
+                          type="submit"
+                          onClick={() => {
+                            handleSubmit();
+                          }}
+                        >
+                          Save
+                        </S.Button>
+                        <S.Button
+                          color="secondary"
+                          onClick={() => {
+                            resetForm();
+                          }}
+                        >
+                          Cancel
+                        </S.Button>
+                      </Flex>
+                    )}
                   </form>
                 )}
               />
