@@ -83,12 +83,13 @@ async function getGVisionTags({
 }
 
 function writeTagsToExif({
+  filePath,
   path,
   tags,
   dirPath,
   saveCopy,
 }) {
-  const base64File = b64converter.base64Sync(path);
+  const base64File = b64converter.base64Sync(filePath);
 
   const zeroth = {};
   const exif = {};
@@ -97,12 +98,7 @@ function writeTagsToExif({
   exif[piexif.ExifIFD.UserComment] = `Tagged by Google Vision, in Deskfiler. \n Tags: ${tags.join(', ')}`;
   zeroth[piexif.ImageIFD.ImageDescription] = `${tags.join(', ')}`;
 
-  const pathArray = path.split('/');
-
-  const fileNameWithoutExtension = pathArray[pathArray.length - 1].split('.').slice(0, -1).join('.');
-
-  const filePath = pathArray.slice(0, -1).join('/');
-
+  const { name } = path.parse(filePath);
 
   try {
     const exifObj = { '0th': zeroth, Exif: exif, GPS: gps };
@@ -110,13 +106,10 @@ function writeTagsToExif({
 
     const inserted = piexif.insert(exifStr, base64File);
 
-    b64converter.imgSync(inserted, filePath, fileNameWithoutExtension);
-
+    b64converter.imgSync(inserted, filePath, name);
 
     if (saveCopy) {
-      const copyFileName = `${fileNameWithoutExtension}-tagged`;
-
-      b64converter.imgSync(inserted, dirPath, copyFileName);
+      b64converter.imgSync(inserted, dirPath, `${name}-tagged`);
     }
   } catch (error) {
     console.error(error);
@@ -212,10 +205,11 @@ window.PLUGIN = {
                   }
           
                   writeTagsToExif({
-                    path: filePath,
+                    filePath,
                     tags,
                     dirPath: saveDir,
                     saveCopy: copyTaggedToExtraFolder,
+                    path,
                   });
           
                   setFilesToProcess(filesToProcess - 1);
