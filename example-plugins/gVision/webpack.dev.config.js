@@ -61,7 +61,7 @@ module.exports = {
         from: 'manifest.json',
       },
       {
-        from: 'icon.png',
+        from: 'icon.svg',
       },
     ]),
   ],

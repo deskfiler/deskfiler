@@ -1,4 +1,21 @@
 <a name=""></a>
+#  (2019-11-10)
+
+
+### Bug Fixes
+
+* gVision auth text ([fad6cc6](https://github.com/ilya-lopukhin/deskfiler-private/commit/fad6cc6))
+* plugin icons during installation ([934a7d3](https://github.com/ilya-lopukhin/deskfiler-private/commit/934a7d3))
+* plugin install animation ([ed2dabc](https://github.com/ilya-lopukhin/deskfiler-private/commit/ed2dabc))
+
+
+### Features
+
+* initial commit! ([ec5347c](https://github.com/ilya-lopukhin/deskfiler-private/commit/ec5347c))
+
+
+
+<a name=""></a>
 #  (2019-11-08)
 
 

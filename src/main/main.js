@@ -271,29 +271,8 @@ async function createWindow() {
 
       log('generated plugin key', pluginKey);
 
-      mainWindow.webContents.send('unpacked-plugin', {
-        pluginKey,
-        name,
-        author,
-        version,
-        icon,
-        legallink,
-        legalhint,
-      });
 
       log('waiting for install confirmation...');
-
-      await new Promise((resolve, reject) => {
-        ipcMain.once('cancel-plugin-installation', async () => {
-          log('installation cancelled by user');
-          reject(new Error('Installation Cancelled'));
-        });
-        ipcMain.once('install-plugin', async () => {
-          resolve();
-        });
-      });
-
-      log('install confirmed');
 
       const dirPath = path.join(PLUGINS_DIR, pluginKey);
 
@@ -310,24 +289,37 @@ async function createWindow() {
 
       log('plugin unpacked');
 
-      const pluginData = await store.get('pluginData');
-
-      store.set('pluginData', {
-        ...(pluginData || {}),
-        [pluginKey]: {
-          key: pluginKey,
-          name,
-          author,
-          version,
-          icon,
-          pluginSettings,
-          acceptRestrictions,
-          isLoading: false,
-          isWorking: 'idle',
-        },
+      store.set(`pluginData.${pluginKey}`, {
+        key: pluginKey,
+        name,
+        icon,
+        isInstalling: true,
       });
 
       log('added plugin to plugins list');
+
+      mainWindow.webContents.send('unpacked-plugin', {
+        pluginKey,
+        name,
+        author,
+        version,
+        icon,
+        legallink,
+        legalhint,
+      });
+
+      await new Promise((resolve, reject) => {
+        ipcMain.once('cancel-plugin-installation', async () => {
+          log('installation cancelled by user');
+          store.delete(`pluginData.${pluginKey}`);
+          reject(new Error('Installation Cancelled'));
+        });
+        ipcMain.once('install-plugin', async () => {
+          resolve();
+        });
+      });
+
+      log('install confirmed');
 
       if (pluginSettings) {
         log('found settings definition in manifest', pluginSettings);
@@ -365,6 +357,19 @@ async function createWindow() {
       }
 
       log('plugin installed!');
+
+      store.set(`pluginData.${pluginKey}`, {
+        key: pluginKey,
+        name,
+        author,
+        version,
+        icon,
+        pluginSettings,
+        acceptRestrictions,
+        isLoading: false,
+        isInstalling: false,
+        isWorking: 'idle',
+      });
       return manifestData;
     } catch (err) {
       console.log(err);

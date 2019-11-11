@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
+import { Flex, Text } from 'styled';
 import { ipcRenderer } from 'electron';
 
 import usePlugins from './usePlugins';
@@ -12,20 +13,39 @@ export default function usePlugin(pluginKey) {
   const [plugins] = usePlugins();
   const [auth] = useAuth();
   const [_, { openModal }] = useModals();
-  const { getPluginInfo, removePluginFromAccount } = useApi();
+  const { getPluginInfo, removePluginFromAccount, addPluginToAccount } = useApi();
 
   const plugin = plugins[pluginKey];
 
   const isRequireAuth = pluginsWithAuth.includes(pluginKey);
 
   const run = useCallback(async ({ files, showOnStart } = {}) => {
+    console.log('run', isRequireAuth);
     if (isRequireAuth) {
       if (!auth.token) {
-        openModal('auth');
+        openModal('auth', {
+          customBody: (
+            <Flex align="center" spacing="8px">
+              <Text.Medium size="16px">
+                This plugin allows you to bulk process 100s of images via the
+                Google Vision API and automatically recognize the content.
+                For that, you must identify yourself.
+              </Text.Medium>
+              <Text size="16px">
+                Please register or login to deskfiler,
+                we will give you a certain amount of API calls for free.
+              </Text>
+            </Flex>
+          ),
+        });
         return;
       }
       const { isRegistered, ticket } = await getPluginInfo({ token: auth.token, pluginKey });
-      if (!isRegistered) return;
+      console.log(isRegistered);
+      if (!isRegistered) {
+        await addPluginToAccount({ pluginKey });
+      }
+
       ipcRenderer.send('open-plugin-controller-window', {
         pluginKey,
         files: null,

@@ -1,6 +1,5 @@
-import styled, {
-  css,
-} from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+import wave from 'assets/images/wave.png';
 
 export const Overlay = styled.div`
   position: absolute;
@@ -176,4 +175,41 @@ export const CardOverlay = styled.div`
       opacity: 1;
     };
   `)}
+`;
+
+const waving = keyframes`
+  0% {
+     background-position-x: 0%;
+  }
+  100% {
+     background-position-x: 490%;
+  }
+`;
+
+export const InstallingOverlay = styled.div`
+  position: absolute;
+  transition: height 1s ease-in;
+  height: ${props => (props.active ? '70%' : '0%')};
+  bottom: 0;
+  width: 100%;
+  background: transparent;
+  z-index: 1;
+  background-size: auto;
+  background-repeat-x: repeat;
+    background-repeat-y: no-repeat;
+  background-image: url(${wave});
+  animation: ${waving} .5s infinite linear;
+  &:after {
+    font-family: Roboto;
+    font-weight: 500;
+    font-size: 20px;
+    color: white;
+    line-height: 10em;
+    text-align: center;
+    content: 'Installing...';
+    position: absolute;
+    top: 44px;
+    width: 100%;
+    background: #0069FF;
+  }
 `;
