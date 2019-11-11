@@ -45,10 +45,10 @@ export const AppFigure = styled.figure`
 `;
 
 export const AppIcon = styled.img`
-  height: 190px;
   width: 50%;
   object-fit: scale-down;
   padding: 2px;
+  flex: 0 0 75%;
 `;
 
 export const AppOptions = styled.div`
@@ -104,6 +104,7 @@ export const AppInfo = styled.div`
   align-items: center;
   position: relative;
   margin-top: 8px;
+  flex: 1 1 auto;
   &:hover {
     & > ${AppOptions} {
       background: #fff;
