@@ -86,27 +86,31 @@ function writeTagsToExif({
   exif[piexif.ExifIFD.UserComment] = `Tagged by Google Vision, in Deskfiler. \n Tags: ${tags.join(', ')}`;
   zeroth[piexif.ImageIFD.ImageDescription] = `${tags.join(', ')}`;
 
-  const { name, ext } = path.parse(filePath);
+  const { name, ext, dir } = path.parse(filePath);
 
-  console.log('EXT', ext, '/(jpg|jpeg)/.test', /(jpg|jpeg)/.test(ext));
+  console.log('EXT', ext, '/(jpg|jpeg)/.test', /(jpg|jpeg)/.test(ext))
 
-  try {
-    if (/(jpg|jpeg)/.test(ext)) {
+  try {   
+    if (!/(jpg|jpeg)/.test(ext)) {
       throw new Error('Exif tags not written for', `${name}.${ext}`, 'image not jpeg!');
     }
 
     const exifObj = { '0th': zeroth, Exif: exif, GPS: gps };
+
     const exifStr = piexif.dump(exifObj);
 
     const inserted = piexif.insert(exifStr, base64File);
 
-    b64converter.imgSync(inserted, filePath, name);
+    b64converter.imgSync(inserted, dir, name);
 
     if (saveCopy) {
       b64converter.imgSync(inserted, dirPath, `${name}-tagged`);
     }
   } catch (error) {
-    fs.copyFileSync(filePath, `${dirPath}/${name}-tagged.${ext}`);
+console.log(error);
+    if (saveCopy) {
+      fs.copyFileSync(filePath, `${dirPath}/${name}-tagged.${ext}`);
+    }
   }
 }
 
@@ -198,7 +202,6 @@ window.PLUGIN = {
                     const parsedPath = path.parse(filePath);
                     fs.writeFileSync(path.join(saveDir, `${parsedPath.base}-gvision-data.json`), JSON.stringify(response.data, null, 2));
                   }
-          
                   writeTagsToExif({
                     filePath,
                     tags,
@@ -217,7 +220,7 @@ window.PLUGIN = {
                   } catch (e) {
                     setProcessing(false);
                     alert([`Error: ${e.message}`]);
-                    exit();
+                    //exit();
                   }
                 }
           
@@ -228,7 +231,7 @@ window.PLUGIN = {
                       if (copyTaggedToExtraFolder || saveToJson) {
                         await openOutputFolder(saveDir);
                       }
-                      exit();
+                      //exit();
                     },
                   );
               } catch (err) {
@@ -238,7 +241,7 @@ window.PLUGIN = {
               }
             }}
             cancel={() => {
-              exit();
+              //exit();
             }}
           />
         </div>
