@@ -82,6 +82,10 @@ async function createPluginControllerWindow({
   pluginControllerWindow.on('closed', () => {
     pluginControllerWindow = null;
   });
+
+  pluginControllerWindow.on('focus', () => {
+    pluginControllerWindow.focus();
+  });
 }
 
 // TODO: create payment window in BrowserWindow

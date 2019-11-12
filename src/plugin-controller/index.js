@@ -238,6 +238,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
     alert: (data) => {
       ipcRenderer.sendTo(mainId, 'open-alert-modal', { fromId: selfId, pluginKey, data });
     },
+    focus: () => ipcRenderer.sendTo(mainId, 'focus'),
     startProgress: (steps = -1) => {
       ipcRenderer.sendTo(mainId, 'plugin-start-progress', { fromId: selfId, pluginKey, steps });
     },

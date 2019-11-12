@@ -19,7 +19,6 @@ async function getGVisionTags({
   fs,
   path,
 }) {
-  console.log('getGVisionTags', filePath, token, settings);
   const { base, ext } = path.parse(filePath);
 
   try {
@@ -34,7 +33,6 @@ async function getGVisionTags({
       ...(settings.labelsLanguage ? { appsortstr: settings.labelsLanguage } : {}),
     };
 
-    console.log('formData', formData);
 
     const body = new FormData();
 
@@ -55,11 +53,7 @@ async function getGVisionTags({
       },
     });
 
-    console.log(response);
-
     const json = await response.json();
-
-    console.log(json);
 
     if (json.error) throw new Error(json.error);
 
@@ -94,6 +88,8 @@ function writeTagsToExif({
 
   const { name, ext } = path.parse(filePath);
 
+  console.log('EXT', ext, '/(jpg|jpeg)/.test', /(jpg|jpeg)/.test(ext));
+
   try {
     if (/(jpg|jpeg)/.test(ext)) {
       throw new Error('Exif tags not written for', `${name}.${ext}`, 'image not jpeg!');
@@ -111,7 +107,6 @@ function writeTagsToExif({
     }
   } catch (error) {
     fs.copyFileSync(filePath, `${dirPath}/${name}-tagged.${ext}`);
-    console.error(error);
   }
 }
 
@@ -132,6 +127,7 @@ window.PLUGIN = {
       alert,
       token,
       showPluginWindow,
+      focus,
       openOutputFolder,
       openPaymentWindow,
     } = context;
@@ -178,17 +174,17 @@ window.PLUGIN = {
                 setProcessing(true);
                 setFilesToProcess(filePaths.length);
           
-                const { copyTaggedToExtraFolder } = updatedSettings;
+                const { copyTaggedToExtraFolder, saveToJson } = updatedSettings;
           
                 let saveDir = null;
                 const promises = [];
           
-                if (copyTaggedToExtraFolder || updatedSettings.saveToJson) {
+                if (copyTaggedToExtraFolder || saveToJson) {
                   saveDir = await openDialog({ options: { title: 'Select saving directory' }, properties: ['openDirectory'] });
+                  focus();
                 }
           
                 const processFile = async (filePath) => {
-                  console.log('process file');
                   // eslint-disable-next-line no-await-in-loop
                   const { tags, response } = await getGVisionTags({
                     filePath,
@@ -198,7 +194,7 @@ window.PLUGIN = {
                     path,
                   });
           
-                  if (updatedSettings.saveToJson) {
+                  if (saveToJson) {
                     const parsedPath = path.parse(filePath);
                     fs.writeFileSync(path.join(saveDir, `${parsedPath.base}-gvision-data.json`), JSON.stringify(response.data, null, 2));
                   }
@@ -229,14 +225,15 @@ window.PLUGIN = {
                   .then(
                     async () => {
                       setProcessing(false);
-                      if (copyTaggedToExtraFolder) {
+                      if (copyTaggedToExtraFolder || saveToJson) {
                         await openOutputFolder(saveDir);
                       }
                       exit();
                     },
                   );
               } catch (err) {
-                console.error(err);
+                setFilesToProcess(0);
+                console.log(err);
                 alert([`Error during processing \n ${err}`]);
               }
             }}
