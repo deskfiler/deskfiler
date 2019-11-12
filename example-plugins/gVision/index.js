@@ -88,11 +88,9 @@ function writeTagsToExif({
 
   const { name, ext, dir } = path.parse(filePath);
 
-  console.log('EXT', ext, '/(jpg|jpeg)/.test', /(jpg|jpeg)/.test(ext))
-
   try {   
     if (!/(jpg|jpeg)/.test(ext)) {
-      throw new Error('Exif tags not written for', `${name}.${ext}`, 'image not jpeg!');
+      throw new Error('Exif tags not written for', `${name}${ext}`, 'image not jpeg!');
     }
 
     const exifObj = { '0th': zeroth, Exif: exif, GPS: gps };
@@ -109,7 +107,7 @@ function writeTagsToExif({
   } catch (error) {
 console.log(error);
     if (saveCopy) {
-      fs.copyFileSync(filePath, `${dirPath}/${name}-tagged.${ext}`);
+      fs.copyFileSync(filePath, `${dirPath}/${name}-tagged`);
     }
   }
 }
