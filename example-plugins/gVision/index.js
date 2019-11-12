@@ -106,9 +106,9 @@ function writeTagsToExif({
     }
   } catch (error) {
 console.log(error);
-    if (saveCopy) {
-      fs.copyFileSync(filePath, `${dirPath}/${name}-tagged`);
-    }
+    // if (saveCopy) {
+      // fs.copyFileSync(filePath, `${dirPath}/${name}-tagged`);
+    // }
   }
 }
 
