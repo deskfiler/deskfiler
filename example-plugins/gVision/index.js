@@ -79,6 +79,7 @@ function writeTagsToExif({
   filePath,
   path,
   tags,
+  fs,
   dirPath,
   saveCopy,
 }) {
@@ -106,7 +107,11 @@ function writeTagsToExif({
     b64converter.imgSync(inserted, filePath, name);
 
     if (saveCopy) {
-      b64converter.imgSync(inserted, dirPath, `${name}-tagged`);
+      try {
+        b64converter.imgSync(inserted, dirPath, `${name}-tagged`);
+      } catch (err) {
+        fs.copyFileSync(filePath, `${dirPath}/${name}-tagged.${ext}`);
+      }
     }
   } catch (error) {
     console.error(error);
@@ -206,6 +211,7 @@ window.PLUGIN = {
                     tags,
                     dirPath: saveDir,
                     saveCopy: copyTaggedToExtraFolder,
+                    fs,
                     path,
                   });
           
