@@ -181,7 +181,7 @@ window.PLUGIN = {
                 let saveDir = null;
                 const promises = [];
           
-                if (copyTaggedToExtraFolder) {
+                if (copyTaggedToExtraFolder || updatedSettings.saveToJson) {
                   saveDir = await openDialog({ options: { title: 'Select saving directory' }, properties: ['openDirectory'] });
                 }
           
