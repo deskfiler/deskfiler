@@ -5,6 +5,8 @@ const {
   BrowserWindow,
 } = require('electron');
 
+const aspect = require('electron-aspectratio');
+
 const { dissoc } = require('ramda');
 const fs = require('fs');
 const path = require('path');
@@ -29,6 +31,8 @@ const {
   LOGS_DIR,
   PORT,
 } = require('./constants');
+
+let mainWindowHandler;
 
 let mainWindow;
 let pluginControllerWindow;
@@ -218,6 +222,9 @@ async function createWindow() {
 
   if (process.platform === 'darwin') {
     mainWindow.setAspectRatio(defaultRatio);
+  } else {
+    mainWindowHandler = new aspect(mainWindow);
+    mainWindowHandler.setRatio(4, 3, 10);
   }
 
   if (process.env.NODE_ENV === 'development') {
