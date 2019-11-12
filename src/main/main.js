@@ -214,6 +214,12 @@ async function createWindow() {
 
   mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
 
+  const defaultRatio = 4 / 3;
+
+  if (process.platform === 'darwin') {
+    mainWindow.setAspectRatio(defaultRatio);
+  }
+
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
   }
