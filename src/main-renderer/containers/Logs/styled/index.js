@@ -37,7 +37,7 @@ export const LogsMenuItem = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px 0;
+  padding: 8px;
   min-height: 41px;
   white-space: nowrap;
   color: black;
@@ -54,7 +54,6 @@ export const LogsMenuTitle = styled(LogsMenuItem)`
 export const LogsMenuPlugin = styled(LogsMenuItem)`
   background: #1D4779;
   border-bottom: 1px solid #0f294b;
-  color: ${({ isSelected }) => (isSelected ? '#f4c036' : '#fff')};
   &:hover {
     background: #004a87;
   };

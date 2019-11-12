@@ -186,12 +186,17 @@ const Logs = () => {
             {Object.keys(plugins).map(pluginKey => (
               <S.LogsMenuPlugin
                 key={pluginKey}
-                isSelected={selectedPluginKey === pluginKey}
+                style={{ minWidth: 0 }}
                 onClick={() => {
                   setSelectedPluginKey(pluginKey);
                 }}
               >
-                {pluginKey}
+                <Text
+                  hideOverflow
+                  size="15px"
+                  style={{ color: selectedPluginKey === pluginKey ? '#f4c036' : '#fff'}} >
+                  {plugins[pluginKey].name}
+                </Text>
               </S.LogsMenuPlugin>
             ))}
           </Flex>
