@@ -29,7 +29,10 @@ window.PLUGIN = {
               minHeight: 0,
             }}
             >
-              <div style={{ flex: '0 0 50%' }}>
+              <div style={{ flex: '0 0 200px' }}>
+                <span style={{ margin: '5px' }}>
+                  {`${dimensions.width} x ${dimensions.height}`}
+                </span>
                 <img
                   alt={tags['0th']['270'] ? tags['0th']['270'].split(', ')[0] : 'image'}
                   src={`file://${filePath}`}
@@ -50,9 +53,6 @@ window.PLUGIN = {
                 }}
               >
                 <span style={{ margin: '5px 10px', flex: '0 0 auto' }}>{name}{ext}</span>
-                <span style={{ margin: '5px 10px', flex: '0 0 auto' }} >
-                  {`${dimensions.width} x ${dimensions.height}`}
-                </span>
                 <div
                   style={{
                     display: 'flex',
