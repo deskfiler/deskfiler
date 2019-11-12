@@ -3901,6 +3901,11 @@ ejs@^2.6.2:
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.7.1.tgz#5b5ab57f718b79d4aca9254457afecd36fa80228"
   integrity sha512-kS/gEPzZs3Y1rRsbGX4UOSjtP/CeJP0CxSNZHYxGfVM/VgLcv0ZqM7C45YyTj2DI2g7+P9Dd24C+IMIg6D0nYQ==
 
+electron-aspectratio@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/electron-aspectratio/-/electron-aspectratio-1.0.1.tgz#f4347522cae5799b19bc98afd530f09cf9c4ffaa"
+  integrity sha512-5TxaPCZ6TzTsE5liZ6TYlWGEe54+si68nR02dehB+RZphDI56/3lD8HcRw7PT1tSrfnXPLMmqibVHOtvauzwhQ==
+
 electron-builder@^21.2.0:
   version "21.2.0"
   resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-21.2.0.tgz#b68ec4def713fc0b8602654ce842f972432f50c5"
