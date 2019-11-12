@@ -107,13 +107,10 @@ function writeTagsToExif({
     b64converter.imgSync(inserted, filePath, name);
 
     if (saveCopy) {
-      try {
-        b64converter.imgSync(inserted, dirPath, `${name}-tagged`);
-      } catch (err) {
-        fs.copyFileSync(filePath, `${dirPath}/${name}-tagged.${ext}`);
-      }
+      b64converter.imgSync(inserted, dirPath, `${name}-tagged`);
     }
   } catch (error) {
+    fs.copyFileSync(filePath, `${dirPath}/${name}-tagged.${ext}`);
     console.error(error);
   }
 }
