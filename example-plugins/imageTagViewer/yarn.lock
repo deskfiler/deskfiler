@@ -1023,10 +1023,9 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-base64-img@^1.0.4:
+"base64-img@https://github.com/teorge/base64-img.git":
   version "1.0.4"
-  resolved "https://registry.yarnpkg.com/base64-img/-/base64-img-1.0.4.tgz#3e22d55d6c74a24553d840d2b1bc12a7db078d35"
-  integrity sha1-PiLVXWx0okVT2EDSsbwSp9sHjTU=
+  resolved "https://github.com/teorge/base64-img.git#7979b1b43885235db320cec903bac511d4c30c35"
   dependencies:
     ajax-request "^1.2.0"
     file-system "^2.1.0"
