@@ -90,7 +90,10 @@ async function createPluginControllerWindow({
   });
 
   pluginControllerWindow.on('focus', () => {
-    pluginControllerWindow.focus();
+    if (pluginControllerWindow) {
+      pluginControllerWindow.focus();
+      pluginControllerWindow.moveTop();
+    }
   });
 }
 

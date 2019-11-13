@@ -83,11 +83,10 @@ const checkFundsPerFile = ({ ticket, filesCount }) => {
 
 const PluginSettings = ({
   ticket,
-  settings,
-  setSettings,
-  openPaymentWindow,
-  startProcessing,
   filesCount,
+  openPaymentWindow,
+  onSubmit,
+  settings,
   cancel,
 }) => {
   const { plugindetails } = ticket || {};
@@ -100,9 +99,8 @@ const PluginSettings = ({
       <Formik
         enableReinitialize
         initialValues={settings}
-        onSubmit={async (values) => {
-          setSettings(values);
-          await startProcessing(values);
+        onSubmit={(values) => {
+          onSubmit(values);
         }}
         render={({ handleSubmit }) => (
           <>
