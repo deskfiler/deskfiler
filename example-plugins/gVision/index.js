@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
 import PluginSettings from './containers/PluginSettings';
@@ -34,7 +34,7 @@ window.PLUGIN = {
       const [processing, setProcessing] = useState(false);
       const [saveDir, setSaveDir] = useState(null);
       const [settings, setSettings] = useState(initialSettings);
-      const [filesToProcess, setFilesToProcess] = useState(filePaths.length);
+      const [processedFiles, setProcessedFiles] = useState(0);
 
       const onSubmit = async (newSettings) => {
         setSettings(newSettings);
@@ -58,17 +58,9 @@ window.PLUGIN = {
         syncSettings();
       }, [settings]);
 
-      /* const decrement = useCallback(() => {
-        console.log('decrement');
-
-        const newFilesToProcess = filesToProcess - 1;
-
-        console.log('newFilesToProcess', newFilesToProcess, filesToProcess , ' - 1')
-
-        setFilesToProcess(newFilesToProcess);
-      }, [filesToProcess]); */
-
-      /* console.log('render', filesToProcess); */
+      const increment = () => {
+        setProcessedFiles(processedFiles + 1)
+      };
 
       if (processing) {
         return (
@@ -81,16 +73,22 @@ window.PLUGIN = {
               overflow: 'auto',
             }}
           >
-            {filesToProcess > 0
+            {processedFiles < filePaths.length
               ? (
                 <h2>
                   Processing. <br />
-                  {filesToProcess} files to process; <br />
+                  {processedFiles} processed; <br />
+                  {filePaths.length - processedFiles} yet to process;
                 </h2>
               ) : (
                 <h2>
                   Done! <br />
                   <button
+                    style={{
+                      background: 'blue',
+                      color: 'white',
+                      cursor: 'pointer',
+                    }}
                     type="button"
                     onClick={() => {
                       exit();
@@ -104,15 +102,16 @@ window.PLUGIN = {
                 </h2>
               )
             }
-            {filePaths.map(filePath => (
+            {filePaths.map((filePath, index) => (
               <ImageProcessor
+                index={index}
                 key={filePath}
                 filePath={filePath}
                 settings={settings}
                 system={system}
                 token={token}
                 saveDir={saveDir}
-                onSuccess={() => {}}
+                onSuccess={increment}
               />
             ))}
           </div>
@@ -122,7 +121,7 @@ window.PLUGIN = {
       return (
         <PluginSettings
           ticket={ticket}
-          filesCount={filesToProcess}
+          filesCount={filePaths.length}
           openPaymentWindow={openPaymentWindow}
           settings={pluginSettings}
           onSubmit={onSubmit}
