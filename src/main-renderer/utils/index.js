@@ -1,5 +1,6 @@
 import {
   remote,
+  clipboard,
 } from 'electron';
 
 import csv from 'fast-csv';
@@ -50,6 +51,8 @@ export const createModalWindow = async ({
         devTools: process.env.NODE_ENV === 'development' || false,
       },
     });
+
+    modalWindows[key].removeMenu();
 
     await modalWindows[key].loadURL(`${baseUrl}/public/${key}.html`);
 
@@ -126,4 +129,21 @@ export const updateStore = async ({ key, subKey, values }) => {
       ...values,
     },
   });
+};
+
+export const checkUrl = (url) => {
+  const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i' // fragment locator
+  );
+
+  return pattern.test(url);
+};
+
+
+export const copyToClipboard = (text) => {
+  clipboard.writeText(text);
 };

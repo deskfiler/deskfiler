@@ -31,17 +31,16 @@ export const AppFigure = styled.figure`
 `;
 
 export const AppIcon = styled.img`
-  height: 190px;
-  width: 50%;
   object-fit: scale-down;
   padding: 2px;
+  flex: 0 0 75%;
 `;
 export const AppInfo = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   align-items: center;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   position: relative;
   margin-top: 8px;
 `;

@@ -81,49 +81,49 @@ const InputModal = () => {
       justify="center"
     >
       <S.Title>{formTitle}</S.Title>
-      <Formik
-        enableReinitialize
-        initialValues={getInitialValues(formUi)}
-        onSubmit={(values) => {
-          ipcRenderer.sendTo(fromId, 'input-response', values);
-          inputModal.hide();
-          setFormUi([]);
-          setFormTitle('');
-          setFromId(null);
-        }}
-        render={({ handleSubmit }) => (
-          <form
-            style={{ width: '100%' }}
-            onSubmit={handleSubmit}
-          >
-            {getSectionsFromConfig(formUi)}
-            <Flex
-              row
-              justify="space-between"
+      {formUi.length > 0 && (
+        <Formik
+          enableReinitialize
+          initialValues={getInitialValues(formUi)}
+          onSubmit={(values) => {
+            ipcRenderer.sendTo(fromId, 'input-response', values);
+            inputModal.hide();
+            setFormUi([]);
+            setFormTitle('');
+            setFromId(null);
+          }}
+          render={({ handleSubmit }) => (
+            <form
+              style={{ width: '100%' }}
             >
-              <Button
-                type="submit"
-                style={{ margin: '8px 0 0' }}
-                onClick={() => {
-                  handleSubmit();
-                }}
+              {getSectionsFromConfig(formUi)}
+              <Flex
+                row
+                justify="space-between"
               >
-                Save
-              </Button>
-              <Button
-                color="secondary"
-                style={{ margin: '8px 0 0' }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  inputModal.hide();
-                }}
-              >
-                Cancel
-              </Button>
-            </Flex>
-          </form>
-        )}
-      />
+                <Button
+                  style={{ margin: '8px 0 0' }}
+                  onClick={() => {
+                    handleSubmit();
+                  }}
+                >
+                  Save
+                </Button>
+                <Button
+                  color="secondary"
+                  style={{ margin: '8px 0 0' }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    inputModal.hide();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Flex>
+            </form>
+          )}
+        />
+      )}
     </Flex>
   );
 };

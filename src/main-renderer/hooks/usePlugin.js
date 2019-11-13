@@ -6,21 +6,24 @@ import usePlugins from './usePlugins';
 import useAuth from './useAuth';
 import useModals from './useModals';
 import useApi from './useApi';
+import useIpc from './useIpc';
 
-const pluginsWithAuth = ['g-vision'];
+const pluginsWithAuth = ['gvision'];
 
 export default function usePlugin(pluginKey) {
   const [plugins] = usePlugins();
   const [auth] = useAuth();
   const [_, { openModal }] = useModals();
   const { getPluginInfo, removePluginFromAccount, addPluginToAccount } = useApi();
+  const { openSettingsWindow } = useIpc();
 
   const plugin = plugins[pluginKey];
 
   const isRequireAuth = pluginsWithAuth.includes(pluginKey);
 
-  const run = useCallback(async ({ files, showOnStart } = {}) => {
-    console.log('run', isRequireAuth);
+  const run = async ({ filePaths } = {}) => {
+    const showOnStart = !!filePaths;
+    let ticket = null;
     if (isRequireAuth) {
       if (!auth.token) {
         openModal('auth', {
@@ -40,28 +43,24 @@ export default function usePlugin(pluginKey) {
         });
         return;
       }
-      const { isRegistered, ticket } = await getPluginInfo({ token: auth.token, pluginKey });
-      console.log(isRegistered);
+      const { isRegistered, ...pluginInfo } = await getPluginInfo({ token: auth.token, pluginKey });
       if (!isRegistered) {
         await addPluginToAccount({ pluginKey });
       }
-
-      ipcRenderer.send('open-plugin-controller-window', {
-        pluginKey,
-        files: null,
-        showOnStart: true,
-        ticket,
-      });
-      return;
+      ({ ticket } = pluginInfo);
     }
+
+    const { inDevelopment, devPluginUrl } = plugin;
 
     ipcRenderer.send('open-plugin-controller-window', {
       pluginKey,
-      files,
+      filePaths,
       showOnStart,
-      ticket: null,
+      ticket,
+      inDevelopment,
+      devPluginUrl,
     });
-  }, [pluginKey, auth.token]);
+  };
 
   const remove = useCallback(async () => {
     if (isRequireAuth && auth) {
@@ -70,9 +69,5 @@ export default function usePlugin(pluginKey) {
     ipcRenderer.send('remove-plugin', pluginKey);
   }, [auth]);
 
-  const openSettings = () => {
-    ipcRenderer.send('open-plugin-config-window', pluginKey);
-  };
-
-  return [plugin, { run, remove, openSettings }];
+  return [plugin, { run, remove, openSettings: () => openSettingsWindow(pluginKey) }];
 }

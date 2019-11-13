@@ -80,6 +80,16 @@ const InstallModal = () => {
           marginTop="15px"
         >
           <Button
+            style={{ margin: 0 }}
+            onClick={(e) => {
+              e.preventDefault();
+              ipcRenderer.send('install-plugin');
+              close();
+            }}
+          >
+            Install
+          </Button>
+          <Button
             color="secondary"
             style={{ margin: 0 }}
             onClick={(e) => {
@@ -89,16 +99,6 @@ const InstallModal = () => {
             }}
           >
             Cancel
-          </Button>
-          <Button
-            style={{ margin: 0 }}
-            onClick={(e) => {
-              e.preventDefault();
-              ipcRenderer.send('install-plugin');
-              close();
-            }}
-          >
-            Install
           </Button>
         </Flex>
       </Modal.Medium>

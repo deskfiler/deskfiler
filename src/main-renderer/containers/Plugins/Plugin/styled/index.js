@@ -45,10 +45,10 @@ export const AppFigure = styled.figure`
 `;
 
 export const AppIcon = styled.img`
-  height: 190px;
   width: 50%;
   object-fit: scale-down;
   padding: 2px;
+  flex: 0 0 75%;
 `;
 
 export const AppOptions = styled.div`
@@ -104,6 +104,7 @@ export const AppInfo = styled.div`
   align-items: center;
   position: relative;
   margin-top: 8px;
+  flex: 1 1 auto;
   &:hover {
     & > ${AppOptions} {
       background: #fff;
@@ -145,7 +146,6 @@ export const DropFilesTitle = styled.span`
 
 export const CardOverlay = styled.div`
   height: 100%;
-  max-height: 300px;
   width: 100%;
   position: relative;
   overflow: hidden;
@@ -153,7 +153,7 @@ export const CardOverlay = styled.div`
   box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, .08);
   cursor: pointer;
 
-  ${({ isDragActive, isRestricted }) => ((isDragActive || isRestricted) && css`
+  ${({ isDragActive, isFileRejected }) => ((isDragActive || isFileRejected) && css`
     ${AppCard} {
       opacity: 0.3;
     };
@@ -169,7 +169,7 @@ export const CardOverlay = styled.div`
     };
   `)}
 
-  ${({ isRestricted }) => (isRestricted && css`
+  ${({ isFileRejected }) => (isFileRejected && css`
     ${DropFilesTitle} {
       background: red;
       opacity: 1;

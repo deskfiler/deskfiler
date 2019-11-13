@@ -66,9 +66,13 @@ export const SortIcon = styled.img`
 `;
 
 export const CloseIcon = styled.img`
-  width: 24px
+  width: 24px;
 `;
 
 export const Button = styled(FoundationButton)`
   width: 50%;
+`;
+
+export const Link = styled.a`
+  display: block;
 `;

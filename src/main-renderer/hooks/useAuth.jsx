@@ -2,6 +2,7 @@ import { ipcRenderer } from 'electron';
 import { node } from 'prop-types';
 import store from 'store';
 import request from 'request-promise-native';
+import { Flex, Text } from 'styled';
 import React, {
   createContext,
   useReducer,
@@ -68,50 +69,27 @@ export const ProvideAuth = ({ children }) => {
   });
 
   const logout = async () => {
-    await store.set('authToken', null);
+    await store.set('user', null);
     dispatch({ type: 'logout' });
   };
 
-  const getUser = async () => {
-    const jar = request.jar();
-    const cookie = request.cookie(`PHPSESSID=${auth.token}`);
-    const url = 'https://plugins.deskfiler.org/api?appaction=showuser&appname=deskfiler';
-    jar.setCookie(cookie, url);
-    try {
-      const response = await request({ url, jar }).auth('a', 'b', false);
-
-      const { data, success } = JSON.parse(response);
-      if (success) {
-        setIsLoading(false);
-        fillProfile(data);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
-    const getAuthToken = async () => {
-      const token = await store.get('authToken');
-      if (token) {
-        setAuthToken(token);
+    const getUser = async () => {
+      const user = await store.get('user');
+      if (user) {
+        fillProfile(user);
+        setAuthToken(user.token);
         closeModal('auth');
-      } else {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
 
-    getAuthToken();
+    getUser();
 
-    ipcRenderer.on('new-auth-token', async () => {
-      getAuthToken();
+    ipcRenderer.on('logged-in', async () => {
+      getUser();
     });
   }, []);
-
-
-  useEffect(() => {
-    if (auth.token) getUser();
-  }, [auth.token]);
 
   return (
     <authContext.Provider

@@ -149,9 +149,6 @@ const PluginConfig = () => {
                   <Button
                     type="submit"
                     style={{ flex: '0 0 50%' }}
-                    onClick={() => {
-                      handleSubmit();
-                    }}
                   >
                     Save
                   </Button>

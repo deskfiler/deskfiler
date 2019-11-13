@@ -102,6 +102,7 @@
     "colors": "^1.4.0",
     "css-loader": "^3.2.0",
     "dotenv": "^8.1.0",
+    "electron-aspectratio": "^1.0.1",
     "electron-store": "^5.0.0",
     "fast-csv": "^3.4.0",
     "fetch-cookie": "^0.7.3",

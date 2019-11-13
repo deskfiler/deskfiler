@@ -20,16 +20,21 @@ const currentWindow = remote.getCurrentWindow();
 
 function injectPlugin({
   pluginKey,
+  inDevelopment,
+  devPluginUrl,
   allowedExtensions,
-  files,
+  filePaths,
   pluginAPIs,
   mainId,
   selfId,
   ticket,
 }) {
-  const newScriptSrc = `http://localhost:${PORT}/${pluginKey}/index.js?version=${Date.now().toString()}`;
+  const newScriptSrc = inDevelopment
+    ? `${devPluginUrl}/index.js?version=${Date.now().toString()}`
+    : `http://localhost:${PORT}/${pluginKey}/index.js?version=${Date.now().toString()}`;
 
   const oldScriptNode = document.querySelector('#plugin');
+
   if (oldScriptNode) {
     oldScriptNode.parentNode.removeChild(oldScriptNode);
   }
@@ -41,10 +46,10 @@ function injectPlugin({
   scriptNode.setAttribute('id', 'plugin');
 
   scriptNode.onload = async () => {
-    if (files) {
+    if (filePaths) {
       window.PLUGIN.handleFiles({
         inputs: {
-          filePaths: Array.from(files).map(file => file.path),
+          filePaths,
         },
         ticket,
         ...pluginAPIs,
@@ -90,12 +95,16 @@ function injectPlugin({
 
 ipcRenderer.once('new-plugin-loaded', async (event, {
   pluginKey,
+  inDevelopment,
+  devPluginUrl,
   allowedExtensions,
-  files,
+  filePaths,
   ticket,
   mainId,
   selfId,
 }) => {
+  const user = await store.get('user');
+  const { token } = user || {};
   // Context var which provides simple methods to communicate with main app
   const context = {
     pdf: () => console.log('sorry, working with pdf is under development'),
@@ -114,7 +123,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
         }
       },
     },
-    token: store.get('authToken'),
+    token,
     // Fires desktop notification with given message
     notify: (message) => {
       new Notification('Deskfiler', { // eslint-disable-line no-new
@@ -229,6 +238,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
     alert: (data) => {
       ipcRenderer.sendTo(mainId, 'open-alert-modal', { fromId: selfId, pluginKey, data });
     },
+    focus: () => ipcRenderer.sendTo(mainId, 'focus'),
     startProgress: (steps = -1) => {
       ipcRenderer.sendTo(mainId, 'plugin-start-progress', { fromId: selfId, pluginKey, steps });
     },
@@ -259,7 +269,9 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
   injectPlugin({
     allowedExtensions,
     pluginKey,
-    files,
+    inDevelopment,
+    devPluginUrl,
+    filePaths,
     ticket,
     pluginAPIs,
     mainId,

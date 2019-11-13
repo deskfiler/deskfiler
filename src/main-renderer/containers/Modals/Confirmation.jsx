@@ -36,6 +36,7 @@ const Confirmation = () => {
         >
           <Flex>
             <Button
+              style={{ margin: 0 }}
               onClick={() => {
                 onConfirm();
                 close();
@@ -46,7 +47,8 @@ const Confirmation = () => {
           </Flex>
           <Flex>
             <Button
-              appearance="default"
+              style={{ margin: 0 }}
+              color="secondary"
               onClick={close}
             >
               {cancelLabel || 'Cancel'}

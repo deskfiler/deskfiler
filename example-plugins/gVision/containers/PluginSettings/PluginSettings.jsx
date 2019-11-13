@@ -41,13 +41,31 @@ const inputs = {
     label: 'Language for labels',
     name: 'labelsLanguage',
     type: 'text',
-    options: [{ label: 'en', value: 'en' }, { label: 'de', value: 'de' }, { label: 'ru', value: 'ru' }],
+    options: [
+      { label: 'en', value: 'en' },
+      { label: 'de', value: 'de' },
+      { label: 'ru', value: 'ru' },
+      { label: 'es', value: 'es' },
+      { label: 'it', value: 'it' },
+      { label: 'fr', value: 'fr' },
+      { label: 'pt', value: 'pt' }
+    ],
   },
   certaintyLevel: {
     key: 'certaintyLevel',
     label: 'Certainty level before a label is accepted',
     name: 'certaintyLevel',
-    options: [{ label: '20%', value: 0.2 }, { label: '40%', value: 0.4 }, { label: '60%', value: 0.6 }, { label: '80%', value: 0.8 }],
+    options: [
+      { label: '10%', value: 0.1 },
+      { label: '20%', value: 0.2 },
+      { label: '30%', value: 0.3 },
+      { label: '40%', value: 0.4 },
+      { label: '50%', value: 0.5 },
+      { label: '60%', value: 0.6 },
+      { label: '70%', value: 0.7 },
+      { label: '80%', value: 0.8 },
+      { label: '90%', value: 0.9 },
+    ],
   },
 };
 
@@ -65,11 +83,10 @@ const checkFundsPerFile = ({ ticket, filesCount }) => {
 
 const PluginSettings = ({
   ticket,
-  settings,
-  setSettings,
-  openPaymentWindow,
-  startProcessing,
   filesCount,
+  openPaymentWindow,
+  onSubmit,
+  settings,
   cancel,
 }) => {
   const { plugindetails } = ticket || {};
@@ -77,14 +94,13 @@ const PluginSettings = ({
   const showPaymentInfo = checkFundsPerFile({ ticket, filesCount });
   return (
     <S.PluginSettings>
-      <S.Title>G Vision</S.Title>
+      <S.Title>gVision</S.Title>
       <S.Title>You have dropped {filesCount} file{filesCount > 1 ? 's' : ''}, what shall I do?</S.Title>
       <Formik
         enableReinitialize
         initialValues={settings}
-        onSubmit={async (values) => {
-          setSettings(values);
-          await startProcessing(values);
+        onSubmit={(values) => {
+          onSubmit(values);
         }}
         render={({ handleSubmit }) => (
           <>
@@ -106,7 +122,6 @@ const PluginSettings = ({
                 </S.PaymentInfo>
               )}
               <Button
-                type="submit"
                 style={{ flex: '0 0 auto' }}
                 onClick={() => {
                   if (showPaymentInfo) {

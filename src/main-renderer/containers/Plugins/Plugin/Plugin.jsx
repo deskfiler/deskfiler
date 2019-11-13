@@ -17,6 +17,8 @@ const Plugin = ({ pluginKey }) => {
 
   const {
     acceptRestrictions,
+    devPluginUrl,
+    inDevelopment,
     icon,
     name,
     isInstalling,
@@ -24,19 +26,22 @@ const Plugin = ({ pluginKey }) => {
 
   const [isFileRejected, setIsFileRejected] = useState(false);
 
-  const onDrop = useCallback((files) => {
+  const onDrop = (files) => {
+    let acceptedFiles = files;
+
     if (acceptRestrictions) {
-      const isAllowedFileFormats = files
-        .every(file => acceptRestrictions.mime.find(type => type === file.type));
-      if (!isAllowedFileFormats) {
+      acceptedFiles = files
+        .filter(file => acceptRestrictions.mime.includes(file.type));
+
+      if (!acceptedFiles.length) {
         setIsFileRejected(true);
         setTimeout(() => setIsFileRejected(false), 1000);
         return;
       }
     }
 
-    run({ files });
-  }, []);
+    run({ filePaths: Array.from(acceptedFiles).map(file => file.path) });
+  };
 
   const {
     getRootProps,
@@ -47,8 +52,12 @@ const Plugin = ({ pluginKey }) => {
     noKeyboard: true,
   });
 
+  const iconUrl = inDevelopment
+    ? `${devPluginUrl}/${icon}`
+    : `${process.env.LOCAL_URL}/${pluginKey}/${icon}`;
+
   return (
-    <Flex width="33%" padding="0px 12px 12px 0px">
+    <Flex width="33%" height="50%" padding="0px 12px 12px 0px">
       <S.CardOverlay
         {...getRootProps()}
         isDragActive={isDragActive}
@@ -61,7 +70,7 @@ const Plugin = ({ pluginKey }) => {
         <S.DropFilesTitle>{isFileRejected ? 'Wrong file format' : 'Drop files'}</S.DropFilesTitle>
         <S.AppCard>
           <input {...getInputProps()} />
-          <S.AppIcon src={`${process.env.LOCAL_URL}/${pluginKey}/${icon}`} />
+          <S.AppIcon src={`${iconUrl}`} />
           <S.AppInfo>
             <Flex width="50%" height="1px" background="black" marginBottom="8px" />
             <Text size="18px">{name}</Text>

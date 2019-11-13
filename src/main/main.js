@@ -5,6 +5,8 @@ const {
   BrowserWindow,
 } = require('electron');
 
+const aspect = require('electron-aspectratio');
+
 const { dissoc } = require('ramda');
 const fs = require('fs');
 const path = require('path');
@@ -30,6 +32,8 @@ const {
   PORT,
 } = require('./constants');
 
+let mainWindowHandler;
+
 let mainWindow;
 let pluginControllerWindow;
 let pluginConfigWindow;
@@ -47,7 +51,9 @@ mkdirp.sync(LOGS_DIR);
 async function createPluginControllerWindow({
   pluginKey,
   allowedExtensions,
-  files,
+  inDevelopment,
+  devPluginUrl,
+  filePaths,
   showOnStart,
   ticket,
 }) {
@@ -61,6 +67,8 @@ async function createPluginControllerWindow({
     },
   });
 
+  pluginControllerWindow.removeMenu();
+
   await pluginControllerWindow.loadURL(path.join(baseUrl, 'public', 'plugin.html'));
   if (process.env.NODE_ENV === 'development') {
     pluginControllerWindow.webContents.openDevTools();
@@ -69,7 +77,9 @@ async function createPluginControllerWindow({
   pluginControllerWindow.webContents.send('new-plugin-loaded', {
     pluginKey,
     allowedExtensions,
-    files,
+    inDevelopment,
+    devPluginUrl,
+    filePaths,
     ticket,
     mainId: mainWindow.webContents.id,
     selfId: pluginControllerWindow.webContents.id,
@@ -77,6 +87,13 @@ async function createPluginControllerWindow({
 
   pluginControllerWindow.on('closed', () => {
     pluginControllerWindow = null;
+  });
+
+  pluginControllerWindow.on('focus', () => {
+    if (pluginControllerWindow) {
+      pluginControllerWindow.focus();
+      pluginControllerWindow.moveTop();
+    }
   });
 }
 
@@ -124,6 +141,8 @@ async function createRegisterWindow() {
     },
   });
 
+  registerWindow.removeMenu();
+
   await registerWindow.loadURL('http://plugins.deskfiler.org/register.php?hidehead=yes', {
     extraHeaders: 'Authorization: Basic YTpi',
   });
@@ -156,7 +175,9 @@ async function createLoginWindow() {
     },
   });
 
-  await loginWindow.loadURL('https://plugins.deskfiler.org/?hidehead=yes&hideinfo=yes');
+  loginWindow.removeMenu();
+
+  await loginWindow.loadURL('https://plugins.deskfiler.org/?hidehead=yes&hideinfo=yes&json=yes');
 
   if (process.env.NODE_ENV === 'development') {
     loginWindow.webContents.openDevTools();
@@ -176,6 +197,8 @@ async function createPluginConfigWindow({ pluginKey }) {
       nodeIntegration: true,
     },
   });
+
+  pluginConfigWindow.removeMenu();
 
   await pluginConfigWindow.loadURL(path.join(baseUrl, 'public', 'config.html'));
 
@@ -204,7 +227,18 @@ async function createWindow() {
     },
   });
 
+  mainWindow.removeMenu();
+
   mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
+
+  const defaultRatio = 4 / 3;
+
+  if (process.platform === 'darwin') {
+    mainWindow.setAspectRatio(defaultRatio);
+  } else {
+    mainWindowHandler = new aspect(mainWindow);
+    mainWindowHandler.setRatio(4, 3, 10);
+  }
 
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
@@ -391,14 +425,19 @@ async function createWindow() {
 
   ipcMain.on('open-plugin-controller-window', async (event, {
     pluginKey,
-    files,
+    inDevelopment,
+    devPluginUrl,
+    filePaths,
     ticket,
   }) => {
+    console.log(store.store);
     const restrictions = await store.get(`pluginData.${pluginKey}.acceptRestrictions`);
     createPluginControllerWindow({
       pluginKey,
+      inDevelopment,
+      devPluginUrl,
       allowedExtensions: (restrictions && restrictions.ext) || null,
-      files,
+      filePaths,
       showOnStart: false,
       ticket,
     });
@@ -430,10 +469,14 @@ async function createWindow() {
     }
   });
 
+  ipcMain.on('logged-in', (event, user) => {
+    log('logged in as', user.email);
+    store.set('user', user);
+    mainWindow.webContents.send('logged-in');
+  })
+
   ipcMain.on('send-auth-token', (event, token) => {
     log('got auth token', token);
-    store.set('authToken', token);
-    mainWindow.webContents.send('new-auth-token');
   });
 
   ipcMain.on('manifest-delete-all', async () => {

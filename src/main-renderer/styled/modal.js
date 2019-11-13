@@ -35,7 +35,7 @@ const Modal = styled(Flex)`
 `;
 
 Modal.Small = styled(Modal)`
-  width: 300px;
+  width: 400px;
 `;
 
 Modal.Medium = styled(Modal)`

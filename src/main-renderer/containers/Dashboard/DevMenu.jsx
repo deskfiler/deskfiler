@@ -1,20 +1,48 @@
 /* eslint-disable react/button-has-type */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import request from 'request-promise-native';
 import { ipcRenderer } from 'electron';
 import { Flex } from 'styled';
 import hotkeys from 'hotkeys-js';
 import store from 'store';
+import { usePlugins } from 'hooks';
 
 const DevMenu = () => {
   const [open, setOpen] = useState(false);
   const [addingDevPlugin, setAddingDevPlugin] = useState(false);
   const [devPluginUrl, setDevPluginUrl] = useState('');
+  const [plugins, setPlugins] = usePlugins();
 
   useEffect(() => {
-    hotkeys('command+d', () => {
+    hotkeys('command+shift+d', () => {
       setOpen(true);
     });
   }, []);
+
+  const onAddDevPlugin = useCallback(() => {
+    console.log('onAddDevPlugin');
+
+    async function getManifest() {
+      const response = await request(`${devPluginUrl}/manifest.json`);
+      console.log(response);
+
+      const manifest = JSON.parse(response);
+
+      setPlugins({
+        ...plugins,
+        [manifest.pluginKey]: {
+          ...manifest,
+          devPluginUrl,
+          inDevelopment: true,
+        },
+      });
+
+      console.log('got manifest', manifest);
+    }
+
+
+    getManifest();
+  }, [devPluginUrl]);
 
   return (
     <Flex
@@ -41,7 +69,7 @@ const DevMenu = () => {
               Plugin url
             </span>
             <input value={devPluginUrl} onChange={e => setDevPluginUrl(e.target.value)} id="pluginUrl" />
-            <button onClick={() => onAddDevPlugin(devPluginUrl)}>add</button>
+            <button onClick={() => onAddDevPlugin()}>add</button>
             <button onClick={() => setAddingDevPlugin(false)}>cancel</button>
           </Flex>
         )}

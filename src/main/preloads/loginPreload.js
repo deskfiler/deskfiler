@@ -111,10 +111,9 @@ function init() {
   }
 
   if (global.location.pathname === '/my.php') {
-    const authToken = getAuthToken();
-    if (authToken) {
-      ipcRenderer.send('send-auth-token', authToken);
-    }
+    const preview = document.querySelector('pre');
+    const user = JSON.parse(preview.innerText);
+    ipcRenderer.send('logged-in', user);
     global.close();
   }
 

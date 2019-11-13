@@ -11,7 +11,7 @@ const Checkbox = ({ form, field, lib }) => {
       inline
       paddingRight="8px"
     >
-      <label htmlFor={name}>
+      <label>
         <input name={name} checked={value} {...restField} label={label} type="checkbox" />
         <span>{label}</span>
       </label>

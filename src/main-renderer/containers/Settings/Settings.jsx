@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { shell } from 'electron';
 import { Formik } from 'formik';
 import { Grid, Cell } from 'react-foundation';
 import { useUiState } from 'hooks';
 import { Icon } from 'components';
+import { createOpenDialog } from 'utils';
 
 import closeIcon from 'assets/images/close.svg';
 import folderIcon from 'assets/images/folder.svg';
@@ -15,7 +17,7 @@ import InputGroup from 'components/InputGroup';
 
 import { Flex } from 'styled';
 
-import { useSettings, usePlugins } from 'hooks';
+import { useSettings, usePlugins, useIpc } from 'hooks';
 
 import {
   getPluginPath,
@@ -34,10 +36,10 @@ const tabs = {
     title: 'Plugins',
     value: 'plugins',
   },
-  profile: {
-    title: 'Profile',
-    value: 'profile',
-  },
+  // profile: {
+  //   title: 'Profile',
+  //   value: 'profile',
+  // },
   // cascade: {
   //   title: 'Cascade',
   //   value: 'cascade',
@@ -57,35 +59,74 @@ const languageOptions = [{
   value: 'german',
 }];
 
-const SettingsView = ({
-  openModal,
-  openPluginConfig,
-}) => {
+const SettingsView = () => {
   const [{ sideView }, { setUiState }] = useUiState();
   const [plugins] = usePlugins();
   const [settings, { updateSettings }] = useSettings();
+  const { openSettingsWindow } = useIpc();
   const [currentTab, setCurrentTab] = useState('general');
   const [order, setOrder] = useState('desc');
   const tabsContent = {
     general: (
       <>
-        <fieldset
+        {/* <fieldset
           className="fieldset"
         >
           <legend>Run on Startup</legend>
           <Radio {...inputs.runOnStartUp} />
           <Radio {...inputs.startWhenOpened} />
-        </fieldset>
-        <Select {...inputs.language} options={languageOptions} />
+        </fieldset> */}
+        {/* <Select {...inputs.language} options={languageOptions} /> */}
         <span>Default storage path</span>
-        <InputGroup {...inputs.defaultStoragePath} onButtonClick={openModal} />
+        <InputGroup
+          {...inputs.defaultStoragePath}
+          onButtonClick={async (callback) => {
+            try {
+              const {
+                canceled,
+                filePaths,
+              } = await createOpenDialog({
+                options: {
+                  defaultPath: settings.general.defaultStoragePath,
+                },
+                properties: ['openDirectory'],
+              });
+              if (!canceled) {
+                callback(filePaths[0]);
+              }
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+        />
       </>
     ),
     plugins: <div>plugins</div>,
-    profile: <div>Profile</div>,
+    // profile: <div>Profile</div>,
     // cascade: <div>Cascade</div>,
-    help: <div>Help</div>,
+    help: (
+      <div>
+        <S.Link
+          onClick={(e) => {
+            e.preventDefault();
+            shell.openExternal('http://deskfiler.org/');
+          }}
+        >
+          Homepage
+        </S.Link>
+        <S.Link
+          onClick={(e) => {
+            e.preventDefault();
+            shell.openExternal('http://deskfiler.org/docs.php');
+          }}
+        >
+          Help
+        </S.Link>
+      </div>
+    ),
   };
+
+  console.log('plugins', plugins);
 
   return (
     <S.SettingsView
@@ -121,14 +162,14 @@ const SettingsView = ({
                       .sort((a, b) => (order === 'desc' ? b.localeCompare(a) : a.localeCompare(b)))
                       .map(key => (
                         <tr key={key}>
-                          <td key={`${key}-name`}>{key}</td>
+                          <td key={`${key}-name`}>{plugins[key].name}</td>
                           <td key={`${key}-path`}>{getPluginPath(key)}</td>
                           <td key={`${key}-config`} style={{ justifyContent: 'center', display: 'flex', alignItems: 'center' }}>
                             <Flex
                               cursor="pointer"
                               width="fit-content"
                               onClick={() => {
-                                openPluginConfig(key);
+                                openSettingsWindow(key);
                               }}
                             >
                               <Icon type="cog" width="18px" />
@@ -160,26 +201,25 @@ const SettingsView = ({
                       <legend>{currentTab.toUpperCase()}</legend>
                       {tabsContent[currentTab]}
                     </fieldset>
-                    <Flex
-                      row
-                    >
-                      <S.Button
-                        type="submit"
-                        onClick={() => {
-                          handleSubmit();
-                        }}
+                    {currentTab !== 'help' && (
+                      <Flex
+                        row
                       >
-                        Save
-                      </S.Button>
-                      <S.Button
-                        color="secondary"
-                        onClick={() => {
-                          resetForm();
-                        }}
-                      >
-                        Cancel
-                      </S.Button>
-                    </Flex>
+                        <S.Button
+                          type="submit"
+                        >
+                          Save
+                        </S.Button>
+                        <S.Button
+                          color="secondary"
+                          onClick={() => {
+                            resetForm();
+                          }}
+                        >
+                          Cancel
+                        </S.Button>
+                      </Flex>
+                    )}
                   </form>
                 )}
               />
