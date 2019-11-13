@@ -16,7 +16,7 @@ const Plugins = () => {
       padding="8px 0px 0px 8px"
       width="100%"
       row
-      wrap
+      flexWrap
       height="100%"
       paddingRight="48px"
       overflow="auto"
