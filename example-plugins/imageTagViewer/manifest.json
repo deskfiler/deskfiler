@@ -2,5 +2,9 @@
   "name": "Image Tag Viewer",
   "author": "Ilya Lopukhin",
   "version": "1.0.0",
-  "icon": "icon.png"
+  "icon": "icon.png",
+  "acceptRestrictions": {
+    "mime": ["image/jpeg"],
+    "ext": ["jpeg", "jpg"]
+  }
 }

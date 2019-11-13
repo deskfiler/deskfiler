@@ -41,13 +41,31 @@ const inputs = {
     label: 'Language for labels',
     name: 'labelsLanguage',
     type: 'text',
-    options: [{ label: 'en', value: 'en' }, { label: 'de', value: 'de' }, { label: 'ru', value: 'ru' }],
+    options: [
+      { label: 'en', value: 'en' },
+      { label: 'de', value: 'de' },
+      { label: 'ru', value: 'ru' },
+      { label: 'es', value: 'es' },
+      { label: 'it', value: 'it' },
+      { label: 'fr', value: 'fr' },
+      { label: 'pt', value: 'pt' }
+    ],
   },
   certaintyLevel: {
     key: 'certaintyLevel',
     label: 'Certainty level before a label is accepted',
     name: 'certaintyLevel',
-    options: [{ label: '20%', value: 0.2 }, { label: '40%', value: 0.4 }, { label: '60%', value: 0.6 }, { label: '80%', value: 0.8 }],
+    options: [
+      { label: '10%', value: 0.1 },
+      { label: '20%', value: 0.2 },
+      { label: '30%', value: 0.3 },
+      { label: '40%', value: 0.4 },
+      { label: '50%', value: 0.5 },
+      { label: '60%', value: 0.6 },
+      { label: '70%', value: 0.7 },
+      { label: '80%', value: 0.8 },
+      { label: '90%', value: 0.9 },
+    ],
   },
 };
 
