@@ -4,6 +4,7 @@ import b64converter from 'base64-img';
 import piexif from 'piexifjs';
 
 const ImageProcessor = ({
+  index,
   filePath,
   settings: {
     saveToJson,
@@ -108,11 +109,16 @@ const ImageProcessor = ({
       }
 
       setIsLoading(false);
-      onSuccess();
     }
 
     process();
   }, []);
+
+  useEffect(() => {
+    if (isLoading === false) {
+      onSuccess();
+    }
+  }, [isLoading]);
 
   return (
     <img
