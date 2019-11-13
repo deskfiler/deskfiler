@@ -27,7 +27,6 @@ const Plugin = ({ pluginKey }) => {
   const [isFileRejected, setIsFileRejected] = useState(false);
 
   const onDrop = (files) => {
-    console.log('plugin file dropped', files, acceptRestrictions);
     let acceptedFiles = files;
 
     if (acceptRestrictions) {
@@ -35,7 +34,6 @@ const Plugin = ({ pluginKey }) => {
         .filter(file => acceptRestrictions.mime.includes(file.type));
 
       if (!acceptedFiles.length) {
-        console.log('not allowed file');
         setIsFileRejected(true);
         setTimeout(() => setIsFileRejected(false), 1000);
         return;
