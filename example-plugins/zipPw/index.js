@@ -80,6 +80,7 @@ const protect = ({
   notify,
 }) => new Promise((resolve, reject) => {
   if (password) {
+    const bufferedFileBackup = fs.readFileSync(inputPath);
     try {
       const zip = new AdmZip(inputPath);
       const zipEntries = zip.getEntries();
@@ -108,6 +109,8 @@ const protect = ({
       resolve();
     } catch (err) {
       notify('Cannot unzip file. It is corrupted or password protected.');
+      fs.unlinkSync(inputPath);
+      fs.writeFileSync(inputPath, bufferedFileBackup);
       reject(err);
     }
   }
