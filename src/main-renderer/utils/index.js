@@ -52,6 +52,8 @@ export const createModalWindow = async ({
       },
     });
 
+    modalWindows[key].removeMenu();
+
     await modalWindows[key].loadURL(`${baseUrl}/public/${key}.html`);
 
     if (process.env.NODE_ENV === 'development') {

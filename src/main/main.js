@@ -67,6 +67,8 @@ async function createPluginControllerWindow({
     },
   });
 
+  pluginControllerWindow.removeMenu();
+
   await pluginControllerWindow.loadURL(path.join(baseUrl, 'public', 'plugin.html'));
   if (process.env.NODE_ENV === 'development') {
     pluginControllerWindow.webContents.openDevTools();
@@ -136,6 +138,8 @@ async function createRegisterWindow() {
     },
   });
 
+  registerWindow.removeMenu();
+
   await registerWindow.loadURL('http://plugins.deskfiler.org/register.php?hidehead=yes', {
     extraHeaders: 'Authorization: Basic YTpi',
   });
@@ -168,6 +172,8 @@ async function createLoginWindow() {
     },
   });
 
+  loginWindow.removeMenu();
+
   await loginWindow.loadURL('https://plugins.deskfiler.org/?hidehead=yes&hideinfo=yes&json=yes');
 
   if (process.env.NODE_ENV === 'development') {
@@ -188,6 +194,8 @@ async function createPluginConfigWindow({ pluginKey }) {
       nodeIntegration: true,
     },
   });
+
+  pluginConfigWindow.removeMenu();
 
   await pluginConfigWindow.loadURL(path.join(baseUrl, 'public', 'config.html'));
 
@@ -215,6 +223,8 @@ async function createWindow() {
       webSecurity: false,
     },
   });
+
+  mainWindow.removeMenu();
 
   mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
 
