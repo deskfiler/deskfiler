@@ -207,9 +207,6 @@ const SettingsView = () => {
                       >
                         <S.Button
                           type="submit"
-                          onClick={() => {
-                            handleSubmit();
-                          }}
                         >
                           Save
                         </S.Button>

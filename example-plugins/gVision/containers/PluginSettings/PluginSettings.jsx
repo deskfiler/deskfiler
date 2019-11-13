@@ -124,7 +124,6 @@ const PluginSettings = ({
                 </S.PaymentInfo>
               )}
               <Button
-                type="submit"
                 style={{ flex: '0 0 auto' }}
                 onClick={() => {
                   if (showPaymentInfo) {
