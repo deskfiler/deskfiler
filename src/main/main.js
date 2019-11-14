@@ -225,9 +225,8 @@ async function createWindow() {
   mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
 
   if (process.platform === 'win32') {
-    mainWindow.on('will-resize', (e) => {
-      e.preventDefault();
-    });
+    mainWindowHandler = new aspect(mainWindow);
+    mainWindowHandler.setRatio(4, 3, 10);
   } else {
     const defaultRatio = 4 / 3;
     mainWindow.setAspectRatio(defaultRatio);
