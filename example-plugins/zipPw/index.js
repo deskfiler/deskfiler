@@ -67,7 +67,6 @@ const archive = ({ filePaths, password, fs, path, filePath }) => new Promise((re
   });
 
   compressed.finalize();
-
   resolve();
 });
 
@@ -81,6 +80,7 @@ const protect = ({
 }) => new Promise((resolve, reject) => {
   if (password) {
     const bufferedFileBackup = fs.readFileSync(inputPath);
+    let output = null;
     try {
       const zip = new AdmZip(inputPath);
       const zipEntries = zip.getEntries();
@@ -89,7 +89,7 @@ const protect = ({
         fs.unlinkSync(inputPath);
       }
 
-      const output = fs.createWriteStream(outputPath);
+      output = fs.createWriteStream(outputPath);
 
       const compressed = archiver(password ? 'zip-encryptable' : 'zip', {
         zlib: { level: 9 },
@@ -109,6 +109,9 @@ const protect = ({
       resolve();
     } catch (err) {
       notify('Cannot unzip file. It is corrupted or password protected.');
+      if (output) {
+        output.end();
+      }
       fs.unlinkSync(inputPath);
       fs.writeFileSync(inputPath, bufferedFileBackup);
       reject(err);
