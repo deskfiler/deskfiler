@@ -137,7 +137,6 @@ window.PLUGIN = {
       readUserInput,
       startProgress,
       finishProgress,
-      resetProgress,
       openOutputFolder,
     } = context;
 
@@ -180,12 +179,11 @@ window.PLUGIN = {
         notify(isSingleArchive ? 'Archive password protected.' : `Files compressed${password ? ' and password protected' : ''}.`);
       }
     } catch (err) {
-      resetProgress();
+      finishProgress();
       if (err) {
         console.error(err);
       }
     } finally {
-      resetProgress();
       exit();
     }
   },
@@ -201,7 +199,6 @@ window.PLUGIN = {
       hidePluginWindow,
       startProgress,
       finishProgress,
-      resetProgress,
       openOutputFolder,
     } = context;
     try {
@@ -247,7 +244,7 @@ window.PLUGIN = {
               await openOutputFolder(dirPath);
               notify(isSingleArchive ? 'Archive password protected.' : `Files compressed${password ? ' and password protected' : ''}.`);
             } catch (err) {
-              resetProgress();
+              finishProgress();
               if (err) {
                 console.error(err);
               }
@@ -263,7 +260,7 @@ window.PLUGIN = {
       ReactDOM.render(<App />, root);
       await showPluginWindow();
     } catch (err) {
-      resetProgress();
+      finishProgress();
       if (err) {
         console.error(err);
         exit();

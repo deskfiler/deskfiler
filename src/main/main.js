@@ -392,9 +392,8 @@ async function createWindow() {
         icon,
         pluginSettings,
         acceptRestrictions,
-        isLoading: false,
         isInstalling: false,
-        isWorking: 'idle',
+        isWorking: false,
       });
       return manifestData;
     } catch (err) {

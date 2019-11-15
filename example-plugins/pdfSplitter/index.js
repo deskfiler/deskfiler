@@ -31,7 +31,6 @@ window.PLUGIN = {
       openOutputFolder,
       startProgress,
       finishProgress,
-      resetProgress,
       pdf,
     } = context;
 
@@ -52,7 +51,7 @@ window.PLUGIN = {
         await openOutputFolder(dirPath);
       }
     } catch (err) {
-      resetProgress();
+      finishProgress();
       console.error(err);
     } finally {
       exit();

@@ -11,7 +11,7 @@ import useIpc from './useIpc';
 const pluginsWithAuth = ['gvision'];
 
 export default function usePlugin(pluginKey) {
-  const [plugins] = usePlugins();
+  const [plugins, setPlugins] = usePlugins();
   const [auth] = useAuth();
   const [_, { openModal }] = useModals();
   const { getPluginInfo, removePluginFromAccount, addPluginToAccount } = useApi();
@@ -51,6 +51,17 @@ export default function usePlugin(pluginKey) {
     }
 
     const { inDevelopment, devPluginUrl } = plugin;
+
+    console.log('plugins usePlugin', plugins);
+    setPlugins({
+      ...plugins,
+      [pluginKey]: {
+        ...plugins[pluginKey],
+        isWorking: true,
+      }
+    });
+
+    // console.log('plugins', plugins);
 
     ipcRenderer.send('open-plugin-controller-window', {
       pluginKey,
