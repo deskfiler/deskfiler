@@ -52,17 +52,6 @@ export default function usePlugin(pluginKey) {
 
     const { inDevelopment, devPluginUrl } = plugin;
 
-    console.log('plugins usePlugin', plugins);
-    setPlugins({
-      ...plugins,
-      [pluginKey]: {
-        ...plugins[pluginKey],
-        isWorking: true,
-      }
-    });
-
-    // console.log('plugins', plugins);
-
     ipcRenderer.send('open-plugin-controller-window', {
       pluginKey,
       filePaths,

@@ -51,23 +51,30 @@ const getPluginUi = isSingleArchive => (
 );
 
 const archive = ({ filePaths, password, fs, path, filePath }) => new Promise((resolve, reject) => {
-  const output = fs.createWriteStream(filePath);
+  try {
+    const output = fs.createWriteStream(filePath);
 
-  const compressed = archiver(password ? 'zip-encryptable' : 'zip', {
-    zlib: { level: 9 },
-    forceLocalTime: true,
-    password,
-  });
+    output.on('close', () => {
+      resolve();
+    });
 
-  compressed.pipe(output);
-  filePaths.forEach((fp) => {
-    const fileBuffer = fs.readFileSync(fp);
-    const { name, ext } = path.parse(fp);
-    compressed.append(fileBuffer, { name: `${name}${ext}` });
-  });
+    const compressed = archiver(password ? 'zip-encryptable' : 'zip', {
+      zlib: { level: 9 },
+      forceLocalTime: true,
+      password,
+    });
 
-  compressed.finalize();
-  resolve();
+    compressed.pipe(output);
+    filePaths.forEach((fp) => {
+      const fileBuffer = fs.readFileSync(fp);
+      const { name, ext } = path.parse(fp);
+      compressed.append(fileBuffer, { name: `${name}${ext}` });
+    });
+
+    compressed.finalize();
+  } catch (err) {
+    reject(err);
+  }
 });
 
 const protect = ({
@@ -91,6 +98,10 @@ const protect = ({
 
       output = fs.createWriteStream(outputPath);
 
+      output.on('close', () => {
+        resolve();
+      });
+
       const compressed = archiver(password ? 'zip-encryptable' : 'zip', {
         zlib: { level: 9 },
         forceLocalTime: true,
@@ -105,8 +116,6 @@ const protect = ({
       });
 
       compressed.finalize();
-
-      resolve();
     } catch (err) {
       notify('Cannot unzip file. It is corrupted or password protected.');
       if (output) {
@@ -147,7 +156,7 @@ window.PLUGIN = {
         const ui = getPluginUi(isSingleArchive).map(el => (pluginSettings[el.name] ? { ...el, value: pluginSettings[el.name] } : el));
 
         const { password, createNewFile } = await readUserInput({ title: 'Options', ui });
-        const { filePath, dirPath } = await getFilePaths({ path, readFilePath, isSingleArchive, createNewFile, filePaths });
+        const { filePath } = await getFilePaths({ path, readFilePath, isSingleArchive, createNewFile, filePaths });
         startProgress();
         if (isSingleArchive) {
           await protect({
@@ -175,7 +184,7 @@ window.PLUGIN = {
           });
         }
         finishProgress();
-        await openOutputFolder(dirPath);
+        await openOutputFolder(filePath);
         notify(isSingleArchive ? 'Archive password protected.' : `Files compressed${password ? ' and password protected' : ''}.`);
       }
     } catch (err) {
@@ -213,7 +222,7 @@ window.PLUGIN = {
           startProcessing={async ({ filePaths, password, createNewFile, isSingleArchive }) => {
             hidePluginWindow();
             try {
-              const { filePath, dirPath } = await getFilePaths({ path, readFilePath, isSingleArchive, createNewFile, filePaths });
+              const { filePath } = await getFilePaths({ path, readFilePath, isSingleArchive, createNewFile, filePaths });
               startProgress();
               if (isSingleArchive) {
                 await protect({
@@ -241,7 +250,7 @@ window.PLUGIN = {
                 });
               }
               finishProgress();
-              await openOutputFolder(dirPath);
+              await openOutputFolder(filePath);
               notify(isSingleArchive ? 'Archive password protected.' : `Files compressed${password ? ' and password protected' : ''}.`);
             } catch (err) {
               finishProgress();

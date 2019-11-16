@@ -220,8 +220,8 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
         }
       });
     }),
-    openOutputFolder: dirPath => new Promise((resolve, reject) => {
-      shell.showItemInFolder(dirPath);
+    openOutputFolder: filePath => new Promise((resolve, reject) => {
+      shell.showItemInFolder(filePath);
       resolve();
     }),
     showPluginWindow: () => new Promise((resolve) => {

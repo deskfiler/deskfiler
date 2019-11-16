@@ -46,6 +46,15 @@ export const ProvidePlugins = ({ children }) => {
     payload,
   });
 
+  const onStartWorking = (e, { pluginKey }) => {
+    updatePlugins({
+      key: pluginKey,
+      payload: {
+        isWorking: true,
+      },
+    });
+  };
+
   const onStopWorking = (e, { pluginKey }) => {
     updatePlugins({
       key: pluginKey,
@@ -68,9 +77,11 @@ export const ProvidePlugins = ({ children }) => {
       setPlugins(newData);
     });
 
+    ipcRenderer.on('plugin-start-progress', onStartWorking);
     ipcRenderer.on('plugin-finish-progress', onStopWorking);
 
     return () => {
+      ipcRenderer.removeListener('plugin-start-progress', onStartWorking);
       ipcRenderer.removeListener('plugin-finish-progress', onStopWorking);
     };
   }, []);
