@@ -100,6 +100,12 @@ export const getLogs = (pluginKey) => {
 
 export const exportLogs = async (data) => {
   const now = DateTime.local().toFormat('yyyy-MM-dd');
+
+  const formattedData = data.map(({ timestamp, action, meta }) => ({
+    timestamp: DateTime.fromMillis(timestamp).toFormat('yyyy-MM-dd TT'),
+    action,
+    meta: meta.type === 'text' ? meta.value : 'image',
+  }));
   const {
     canceled,
     filePath,

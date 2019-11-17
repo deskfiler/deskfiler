@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import * as T from 'prop-types';
+import { Spinner } from 'components';
 import { Flex, Text } from 'styled';
 
 import { usePlugin, useModals } from 'hooks';
@@ -22,6 +23,7 @@ const Plugin = ({ pluginKey }) => {
     icon,
     name,
     isInstalling,
+    isWorking,
   } = plugin;
 
   const [isFileRejected, setIsFileRejected] = useState(false);
@@ -70,10 +72,28 @@ const Plugin = ({ pluginKey }) => {
         <S.DropFilesTitle>{isFileRejected ? 'Wrong file format' : 'Drop files'}</S.DropFilesTitle>
         <S.AppCard>
           <input {...getInputProps()} />
-          <S.AppIcon src={`${iconUrl}`} />
+          {isWorking ? (
+            <Flex
+              style={{
+                width: '60%',
+                padding: '2px',
+                flex: '0 0 75%',
+              }}
+            >
+              <Spinner
+                size="60%"
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '80%',
+                  marginLeft: '10%',
+                }}
+              />
+            </Flex>
+          ) : <S.AppIcon src={`${iconUrl}`} />}
           <S.AppInfo>
             <Flex width="50%" height="1px" background="black" marginBottom="8px" />
-            <Text size="18px">{name}</Text>
+            <Text size="18px">{isWorking ? 'Working...' : name}</Text>
             <S.AppOptions>
               <S.Remove
                 onClick={(e) => {

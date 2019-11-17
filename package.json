@@ -8,7 +8,6 @@
     "productName": "Deskfiler",
     "compression": "normal",
     "files": [
-      "!node_modules",
       "**/preloads/*",
       "dist/app/**/*",
       "dist/public/*",
@@ -111,7 +110,6 @@
     "foundation-sites": "^6.5.3",
     "fs": "^0.0.1-security",
     "hotkeys-js": "^3.7.2",
-    "hummus": "^1.0.107",
     "luxon": "^1.19.3",
     "mkdirp": "^0.5.1",
     "ramda": "^0.26.1",
