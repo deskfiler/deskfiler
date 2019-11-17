@@ -404,9 +404,9 @@ async function createWindow() {
     }
   };
 
-  ipcMain.on('recieved-plugin-tarball', async (event, filesArr) => {
+  ipcMain.on('recieved-plugin-tarball', async (event, filePath) => {
     try {
-      const result = await unpackPlugin(filesArr[0].path);
+      const result = await unpackPlugin(filePath);
       if (result) {
         mainWindow.webContents.send('manifest-changed', 'add');
       }
