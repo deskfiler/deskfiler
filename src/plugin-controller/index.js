@@ -16,6 +16,8 @@ const { app } = remote.require('electron');
 const fs = remote.require('fs');
 const path = remote.require('path');
 
+const hummus = remote.require('../node_modules/hummus/hummus.js');
+
 const currentWindow = remote.getCurrentWindow();
 
 function injectPlugin({
@@ -107,7 +109,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
   const { token } = user || {};
   // Context var which provides simple methods to communicate with main app
   const context = {
-    pdf: () => console.log('sorry, working with pdf is under development'),
+    pdf: hummus,
     settings: {
       get: async () => {
         const settings = await store.get(`settings.${pluginKey}`);
