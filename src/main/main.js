@@ -335,13 +335,14 @@ async function createWindow() {
       });
 
       await new Promise((resolve, reject) => {
-        ipcMain.once('cancel-plugin-installation', async () => {
-          log('installation cancelled by user');
-          store.delete(`pluginData.${pluginKey}`);
-          reject(new Error('Installation Cancelled'));
-        });
-        ipcMain.once('install-plugin', async () => {
-          resolve();
+        ipcMain.once('continue-plugin-installation', (e, { shouldContinue }) => {
+          if (shouldContinue) {
+            resolve();
+          } else {
+            log('installation cancelled by user');
+            store.delete(`pluginData.${pluginKey}`);
+            reject(new Error('Installation Cancelled'));
+          }
         });
       });
 
