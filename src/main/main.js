@@ -532,43 +532,58 @@ ipcMain.on('restart-app', () => {
   app.relaunch();
 });
 
-app.on('activate', () => {
-  if (mainWindow === null) createWindow();
-});
+const isSingleAppInstance = app.requestSingleInstanceLock();
 
-app.on('ready', () => {
-  log('App ready, creating window...');
-
-  createWindow();
-
-  log('Created main-renderer window, registering protocol...');
-
-  protocol.registerStringProtocol('deskfiler', (request, callback) => {
-    log('Registered deskfiler:// protocol');
-
-    callback();
+if (!isSingleAppInstance) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
   });
 
-  log('Initializing serve for plugins');
-
-  server = http.createServer((request, response) => (
-    handler(request, response, {
-      public: PLUGINS_DIR,
-    })
-  ));
-
-  server.listen(PORT, () => {
-    log(`Hosting plugins @ http://localhost:${PORT}.`);
+  app.on('activate', () => {
+    if (mainWindow === null) createWindow();
   });
-});
+  
+  app.on('ready', () => {
+    log('App ready, creating window...');
+  
+    createWindow();
+  
+    log('Created main-renderer window, registering protocol...');
+  
+    protocol.registerStringProtocol('deskfiler', (request, callback) => {
+      log('Registered deskfiler:// protocol');
+  
+      callback();
+    });
+  
+    log('Initializing serve for plugins');
+  
+    server = http.createServer((request, response) => (
+      handler(request, response, {
+        public: PLUGINS_DIR,
+      })
+    ));
+  
+    server.listen(PORT, () => {
+      log(`Hosting plugins @ http://localhost:${PORT}.`);
+    });
+  });
+  
+  app.on('login', (event, webContents, request, authInfo, callback) => {
+    event.preventDefault();
+    callback('a', 'b');
+  });
+  
+  app.on('window-all-closed', () => {
+    server.close(() => { log('Plugins server closed.'); });
+    log('Terminating app...');
+    if (process.platform !== 'darwin') app.quit();
+  });
+};
 
-app.on('login', (event, webContents, request, authInfo, callback) => {
-  event.preventDefault();
-  callback('a', 'b');
-});
 
-app.on('window-all-closed', () => {
-  server.close(() => { log('Plugins server closed.'); });
-  log('Terminating app...');
-  if (process.platform !== 'darwin') app.quit();
-});
