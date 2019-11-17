@@ -52,10 +52,11 @@ const getPluginUi = isSingleArchive => (
 
 const archive = ({ filePaths, password, fs, path, filePath }) => new Promise((resolve, reject) => {
   try {
+    let error = null;
     const output = fs.createWriteStream(filePath);
 
     output.on('close', () => {
-      resolve();
+      if (!error) resolve();
     });
 
     const compressed = archiver(password ? 'zip-encryptable' : 'zip', {
@@ -73,6 +74,7 @@ const archive = ({ filePaths, password, fs, path, filePath }) => new Promise((re
 
     compressed.finalize();
   } catch (err) {
+    error = err;
     reject(err);
   }
 });
@@ -86,12 +88,12 @@ const protect = ({
   notify,
 }) => new Promise((resolve, reject) => {
   if (password) {
-    const bufferedFileBackup = fs.readFileSync(inputPath);
+    let error = null;
     let output = null;
+    const bufferedFileBackup = fs.readFileSync(inputPath);
     try {
       const zip = new AdmZip(inputPath);
       const zipEntries = zip.getEntries();
-
       if (!createNewFile) {
         fs.unlinkSync(inputPath);
       }
@@ -99,7 +101,7 @@ const protect = ({
       output = fs.createWriteStream(outputPath);
 
       output.on('close', () => {
-        resolve();
+        if (!error) resolve();
       });
 
       const compressed = archiver(password ? 'zip-encryptable' : 'zip', {
@@ -117,11 +119,15 @@ const protect = ({
 
       compressed.finalize();
     } catch (err) {
+      error = err;
       notify('Cannot unzip file. It is corrupted or password protected.');
       if (output) {
         output.end();
       }
       fs.unlinkSync(inputPath);
+      if (createNewFile) {
+        fs.unlinkSync(outputPath);
+      }
       fs.writeFileSync(inputPath, bufferedFileBackup);
       reject(err);
     }
