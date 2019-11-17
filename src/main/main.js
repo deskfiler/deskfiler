@@ -230,7 +230,7 @@ async function createWindow() {
     mainWindow.setAspectRatio(defaultRatio);
   } else {
     mainWindowHandler = new aspect(mainWindow);
-    mainWindowHandler.setRatio(4, 3, 10);
+    mainWindowHandler.setRatio(4, 3, 100);
   }
 
   if (process.env.NODE_ENV === 'development') {
