@@ -125,12 +125,11 @@ const PluginConfig = () => {
         enableReinitialize
         initialValues={settings}
         onSubmit={(values) => {
-          ipcRenderer.sendTo(mainWindowId.current, 'plugin-settings-changed', { pluginKey: currentPluginKey, values });
+          ipcRenderer.sendTo(mainWindowId.current, 'update-plugin-settings', { pluginKey: currentPluginKey, values });
           pluginConfigWindow.close();
         }}
         render={({
           handleSubmit,
-          resetForm,
           values,
         }) => (
           <Grid style={{ width: '100%' }}>
@@ -156,7 +155,7 @@ const PluginConfig = () => {
                     color="secondary"
                     style={{ flex: '0 0 50%' }}
                     onClick={() => {
-                      resetForm();
+                      pluginConfigWindow.close();
                     }}
                   >
                     Cancel

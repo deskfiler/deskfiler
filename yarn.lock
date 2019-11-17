@@ -5647,13 +5647,6 @@ humanize-url@^1.0.0:
     normalize-url "^1.0.0"
     strip-url-auth "^1.0.0"
 
-hummus@^1.0.107:
-  version "1.0.107"
-  resolved "https://registry.yarnpkg.com/hummus/-/hummus-1.0.107.tgz#9231d2679842694f32dab85cf7aa385e0ca261f1"
-  integrity sha512-L6l5QooIDoad8564TerzEru/Y1pstLknrju1RPNulsiqLHLo2YKxs2MVpvAX1y9DdM0U542sw49tEHRMEIHP/w==
-  dependencies:
-    node-pre-gyp "^0.10.0"
-
 iconfonts@0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/iconfonts/-/iconfonts-0.10.0.tgz#64b35ef0e258b86c46bffb28773aa02b4145f1be"
@@ -7443,22 +7436,6 @@ node-modules-regexp@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/node-modules-regexp/-/node-modules-regexp-1.0.0.tgz#8d9dbe28964a4ac5712e9131642107c71e90ec40"
   integrity sha1-jZ2+KJZKSsVxLpExZCEHxx6Q7EA=
-
-node-pre-gyp@^0.10.0:
-  version "0.10.3"
-  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.10.3.tgz#3070040716afdc778747b61b6887bf78880b80fc"
-  integrity sha512-d1xFs+C/IPS8Id0qPTZ4bUT8wWryfR/OzzAFxweG+uLN85oPzyo2Iw6bVlLQ/JOdgNonXLCoRyqDzDWq4iw72A==
-  dependencies:
-    detect-libc "^1.0.2"
-    mkdirp "^0.5.1"
-    needle "^2.2.1"
-    nopt "^4.0.1"
-    npm-packlist "^1.1.6"
-    npmlog "^4.0.2"
-    rc "^1.2.7"
-    rimraf "^2.6.1"
-    semver "^5.3.0"
-    tar "^4"
 
 node-pre-gyp@^0.12.0:
   version "0.12.0"

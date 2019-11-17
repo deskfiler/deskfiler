@@ -19,16 +19,6 @@ function addButton({ baseNode, text, id, action }) {
   baseNode.appendChild(button);
 }
 
-function getAuthToken() {
-  const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-    const [name, value] = cookie.split('=').map(c => c.trim());
-    acc[name] = value;
-    return acc;
-  }, {});
-
-  return cookies.PHPSESSID;
-}
-
 function init() {
   // login pathnames
   if (global.location.pathname === '/') {
@@ -113,8 +103,47 @@ function init() {
   if (global.location.pathname === '/my.php') {
     const preview = document.querySelector('pre');
     const user = JSON.parse(preview.innerText);
-    ipcRenderer.send('logged-in', user);
-    global.close();
+    if (!user || (user === 'fail')) {
+      const body = document.querySelector('body');
+      const errorMessage = document.querySelector('pre');
+      errorMessage.textContent = 'Provided login or password is incorrect. Please try again.'; 
+
+      const styles = `
+        pre {
+          margin-bottom: 0;
+          font-weight: 400;
+          font-family: sans-serif;
+        }
+        #backButton {
+          background-color: #3adb76;
+          color: #0a0a0a;
+          padding: 10px;
+          margin-top: 8px;
+          cursor: pointer;
+          font-size: 16px;
+          font-weight: 400;
+          font-family: sans-serif;
+          border: 0;
+        }
+        #backButton:hover {
+          background-color: #22bb5b;
+        }
+      `;
+
+      addButton({
+        baseNode: body,
+        id: 'backButton',
+        text: 'Back to Login',
+        action: () => {
+          window.location.href = 'https://plugins.deskfiler.org/?hidehead=yes&hideinfo=yes';
+        },
+      });
+
+      addStyles(styles);
+    } else {
+      ipcRenderer.send('logged-in', user);
+      global.close();
+    }
   }
 
   // register pathnames

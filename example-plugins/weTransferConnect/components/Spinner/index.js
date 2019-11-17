@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import anime from 'animejs';
 import { string } from 'prop-types';
-import { Flex, colors } from 'styled';
+import { Flex } from '../../styled';
 
 const Cog1 = props => (
   <svg viewBox="0 0 7.59 7.59" {...props}>
@@ -111,7 +111,7 @@ const Cog2 = props => (
     </defs>
     <g id="Cog2" data-name="Layer 2" style={{ transformOrigin: 'center' }}>
       <g id="Layer_1-2" data-name="Layer 1">
-        <circle cx={5.33} cy={5.32} r={4.02} fill={colors.success} />
+        <circle cx={5.33} cy={5.32} r={4.02} fill="#3adb76" />
         <path
           className="cls-2"
           d="M9.35 5.33a4.69 4.69 0 01-.06.73l1.18.28a5.52 5.52 0 01-.55 1.52l-1.1-.53a4.35 4.35 0 01-.41.59"

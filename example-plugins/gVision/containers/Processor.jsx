@@ -69,7 +69,7 @@ const ImageProcessor = ({
   const writeTagsToExif = ({ tags }) => {
     const { name, ext, dir } = path.parse(filePath);
 
-    if (!/(\.jpg|\.jpeg)/.test(ext)) {
+    if (!/(\.jpg|\.jpeg)/i.test(ext)) {
       throw new Error('Exif tags not written for', `${name}${ext}`, 'image not jpeg!');
     }
 
@@ -83,7 +83,7 @@ const ImageProcessor = ({
     const exifStr = piexif.dump(exifObj);
     const inserted = piexif.insert(exifStr, base64File);
 
-    b64converter.imgSync(inserted, dir, name);
+    b64converter.imgSync(inserted, filePath);
 
     if (saveDir) {
       fs.copyFileSync(filePath, `${saveDir}/${name}-tagged-copy${ext}`);

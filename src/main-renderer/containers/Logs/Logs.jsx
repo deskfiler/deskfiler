@@ -6,6 +6,7 @@ import { Flex, Text } from 'styled';
 import path from 'path';
 import fs from 'fs';
 import { usePlugins, useUiState } from 'hooks';
+import { exportLogs } from 'utils';
 import {
   Table,
   AutoSizer,
@@ -165,6 +166,7 @@ const Logs = () => {
                 <Button
                   isHollow
                   onClick={() => {
+                    exportLogs(data);
                   }}
                 >
                   Export Log

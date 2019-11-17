@@ -14,6 +14,15 @@ const usePlugins = () => useContext(pluginsContext);
 
 function pluginsReducer(state, action) {
   switch (action.type) {
+    case 'update': {
+      return {
+        ...state,
+        [action.key]: {
+          ...state[action.key],
+          ...action.payload,
+        }
+      }
+    }
     case 'set':
       return {
         ...action.payload,
@@ -31,6 +40,30 @@ export const ProvidePlugins = ({ children }) => {
     payload,
   });
 
+  const updatePlugins = ({ key, payload }) => dispatch({
+    type: 'update',
+    key,
+    payload,
+  });
+
+  const onStartWorking = (e, { pluginKey }) => {
+    updatePlugins({
+      key: pluginKey,
+      payload: {
+        isWorking: true,
+      },
+    });
+  };
+
+  const onStopWorking = (e, { pluginKey }) => {
+    updatePlugins({
+      key: pluginKey,
+      payload: {
+        isWorking: false,
+      },
+    });
+  };
+
   useEffect(() => {
     async function init() {
       const initialPlugins = await store.get('pluginData');
@@ -43,6 +76,14 @@ export const ProvidePlugins = ({ children }) => {
     ipcRenderer.on('plugins-store-updated', (e, newData) => {
       setPlugins(newData);
     });
+
+    ipcRenderer.on('plugin-start-progress', onStartWorking);
+    ipcRenderer.on('plugin-finish-progress', onStopWorking);
+
+    return () => {
+      ipcRenderer.removeListener('plugin-start-progress', onStartWorking);
+      ipcRenderer.removeListener('plugin-finish-progress', onStopWorking);
+    };
   }, []);
 
   return (

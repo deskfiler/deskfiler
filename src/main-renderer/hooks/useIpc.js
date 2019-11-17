@@ -2,10 +2,11 @@ import { ipcRenderer } from 'electron';
 
 import { createSaveDialog, createOpenDialog, createModalWindow, modalWindows } from 'utils';
 
-import { useSettings } from 'hooks';
+import { useSettings, useModals } from 'hooks';
 
 export default () => {
   const [settings] = useSettings();
+  const [_, { openModal }] = useModals();
 
   const { defaultStoragePath } = settings.general;
 
