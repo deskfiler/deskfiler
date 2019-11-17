@@ -70,9 +70,9 @@ async function createPluginControllerWindow({
   pluginControllerWindow.removeMenu();
 
   await pluginControllerWindow.loadURL(path.join(baseUrl, 'public', 'plugin.html'));
-  // if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     pluginControllerWindow.webContents.openDevTools();
-  // }
+  }
 
   pluginControllerWindow.webContents.send('new-plugin-loaded', {
     pluginKey,
