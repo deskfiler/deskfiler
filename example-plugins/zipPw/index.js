@@ -87,52 +87,53 @@ const protect = ({
   createNewFile,
   notify,
 }) => new Promise((resolve, reject) => {
-  if (password) {
-    let error = null;
-    let output = null;
-    const bufferedFileBackup = fs.readFileSync(inputPath);
-    try {
-      const zip = new AdmZip(inputPath);
-      const zipEntries = zip.getEntries();
-      if (!createNewFile) {
-        fs.unlinkSync(inputPath);
-      }
-
-      output = fs.createWriteStream(outputPath);
-
-      output.on('close', () => {
-        if (!error) resolve();
-      });
-
-      const compressed = archiver(password ? 'zip-encryptable' : 'zip', {
-        zlib: { level: 9 },
-        forceLocalTime: true,
-        password,
-      });
-
-      compressed.pipe(output);
-
-      zipEntries.forEach((zipEntry) => {
-        const fileBuffer = zip.readFile(zipEntry);
-        compressed.append(fileBuffer, { name: zipEntry.name });
-      });
-
-      compressed.finalize();
-    } catch (err) {
-      error = err;
-      notify('Cannot unzip file. It is corrupted or password protected.');
-      if (output) {
-        output.end();
-      }
+  let error = null;
+  let output = null;
+  const bufferedFileBackup = fs.readFileSync(inputPath);
+  try {
+    const zip = new AdmZip(inputPath);
+    const zipEntries = zip.getEntries();
+    if (!createNewFile && fs.existsSync(inputPath)) {
       fs.unlinkSync(inputPath);
-      if (createNewFile) {
-        fs.unlinkSync(outputPath);
-      }
-      fs.writeFileSync(inputPath, bufferedFileBackup);
-      reject(err);
     }
+
+    output = fs.createWriteStream(outputPath);
+
+    output.on('close', () => {
+      if (!error) {
+        resolve();
+      }
+    });
+
+    const compressed = archiver(password ? 'zip-encryptable' : 'zip', {
+      zlib: { level: 9 },
+      forceLocalTime: true,
+      password,
+    });
+
+    compressed.pipe(output);
+
+    zipEntries.forEach((zipEntry) => {
+      const fileBuffer = zip.readFile(zipEntry);
+      compressed.append(fileBuffer, { name: zipEntry.name });
+    });
+
+    compressed.finalize();
+  } catch (err) {
+    error = err;
+    notify('Cannot unzip file. It is corrupted or password protected.');
+    if (output) {
+      output.end();
+    }
+    if (fs.existsSync(inputPath)) {
+      fs.unlinkSync(inputPath);
+    }
+    if (createNewFile && fs.existsSync(outputPath)) {
+      fs.unlinkSync(outputPath);
+    }
+    fs.writeFileSync(inputPath, bufferedFileBackup);
+    reject(err);
   }
-  resolve();
 });
 
 window.PLUGIN = {
@@ -199,7 +200,7 @@ window.PLUGIN = {
         console.error(err);
       }
     } finally {
-      exit();
+      // exit();
     }
   },
   handleOpen: async ({ system, context }) => {
@@ -264,7 +265,7 @@ window.PLUGIN = {
                 console.error(err);
               }
             } finally {
-              exit();
+              // exit();
             }
           }}
           cancel={() => {
@@ -278,7 +279,7 @@ window.PLUGIN = {
       finishProgress();
       if (err) {
         console.error(err);
-        exit();
+        // exit();
       }
     }
   },
