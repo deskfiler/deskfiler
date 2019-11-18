@@ -70,9 +70,9 @@ async function createPluginControllerWindow({
   pluginControllerWindow.removeMenu();
 
   await pluginControllerWindow.loadURL(path.join(baseUrl, 'public', 'plugin.html'));
-  // if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     pluginControllerWindow.webContents.openDevTools();
-  // }
+  }
 
   pluginControllerWindow.webContents.send('new-plugin-loaded', {
     pluginKey,
@@ -225,8 +225,14 @@ async function createWindow() {
   mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
 
   if (process.platform === 'win32') {
-    mainWindowHandler = new aspect(mainWindow);
-    mainWindowHandler.setRatio(4, 3, 10);
+    var resizeTimeout;
+    mainWindow.on('resize', (e)=>{
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(function(){
+        var size = mainWindow.getSize();
+        mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4));
+    }, 100);
+});
   } else {
     const defaultRatio = 4 / 3;
     mainWindow.setAspectRatio(defaultRatio);
