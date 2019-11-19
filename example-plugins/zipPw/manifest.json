@@ -1,8 +1,10 @@
 {
-  "name": "Zip Pw",
+  "name": "zipPw",
   "author": "Ilya Lopukhin",
   "version": "1.0.0",
   "icon": "webicon.svg",
+  "legalhint": "Just want to add a password to an archive? Drag and drop and type it in. Good for lawyers, doctors and everyone handling private data. Just mail the protected ZIP and send the password via WhatsApp or text.",
+  "legallink": "https://plugins.deskfiler.org/",
   "settings": [{
     "type": "section",
     "name": "general",

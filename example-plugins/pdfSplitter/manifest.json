@@ -1,8 +1,10 @@
 {
-  "name": "PDF Splitter",
+  "name": "PDFsplitter",
   "author": "Ilya Lopukhin",
   "version": "1.0.0",
   "icon": "icon.svg",
+  "legalhint": "Simply split large PDF files into single pages. Very handy for Word generated mailings to be saved as single documents. Free and no account needed!",
+  "legallink": "https://plugins.deskfiler.org/",
   "acceptRestrictions": {
     "mime": ["application/pdf", "application/x-pdf"],
     "ext": ["pdf"]
