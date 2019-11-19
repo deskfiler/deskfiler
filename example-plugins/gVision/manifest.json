@@ -3,6 +3,8 @@
   "author": "Ilya Lopukhin",
   "version": "1.0.0",
   "icon": "icon.svg",
+  "legalhint": "This plugin enables you to bulk process images with the Google Vision services. You need a free account on plugins.deskfiler.org for it AND we will give you a few cents for free to test it!",
+  "legallink": "https://plugins.deskfiler.org/",
   "settings": [{
     "type": "section",
     "name": "general",

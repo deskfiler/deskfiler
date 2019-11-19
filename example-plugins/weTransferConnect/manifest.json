@@ -1,6 +1,8 @@
 {
-  "name": "We Transfer Connect",
+  "name": "WeTransferConnect",
   "author": "Ilya Lopukhin",
   "version": "1.0.0",
-  "icon": "icon.svg"
+  "icon": "icon.svg",
+  "legalhint": "If you are regularly sending big files with WeTransfer - here is your little helper: drag and drop and get the download URL directly from your desktop! Free to use, works with WeTransfer.com...",
+  "legallink": "https://plugins.deskfiler.org/"
 }
