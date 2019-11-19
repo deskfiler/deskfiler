@@ -57,8 +57,11 @@ const AddPluginCard = () => {
           const { cancelled, filePaths } = await createOpenDialog({
             title: 'Add plugin',
             options: {
-              filters: [{ name: '*.tar', extensions: ['tar', 'gz'] }],
+              filters: [
+                { name: '*.tar', extensions: ['tar', 'gz',] }
+              ],
             },
+            properties: ['openFile'],
           });
           if (!cancelled) {
             addPlugin(filePaths[0]);
