@@ -12,6 +12,7 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 const http = require('http');
+const child_process = require('child_process');
 
 const mkdirp = require('mkdirp');
 const rmrf = require('rimraf');
@@ -31,8 +32,6 @@ const {
   LOGS_DIR,
   PORT,
 } = require('./constants');
-
-let mainWindowHandler;
 
 let mainWindow;
 let pluginControllerWindow;
@@ -295,6 +294,7 @@ async function createWindow() {
         icon,
         legallink,
         legalhint,
+        executablesDir = 'executables',
         settings: pluginSettings,
         acceptRestrictions,
       } = manifestData;
@@ -320,6 +320,17 @@ async function createWindow() {
       });
 
       log('plugin unpacked');
+
+      const escapeSpaces = p => p.replace(/(\s+)/g, '\\$1');
+      const pathToExecutables = path.join(PLUGINS_DIR, pluginKey, executablesDir);
+      if (process.platform !== 'win32' && fs.existsSync(pathToExecutables)) {
+        child_process.exec(`chmod -R 777 ${escapeSpaces(pathToExecutables)}`, (err) => {
+          if (err) {
+            throw new Error(err);
+          }
+          log('set permissions for plugin directory');
+        });        
+      }
 
       store.set(`pluginData.${pluginKey}`, {
         key: pluginKey,
@@ -428,7 +439,6 @@ async function createWindow() {
     filePaths,
     ticket,
   }) => {
-    console.log(store.store);
     const restrictions = await store.get(`pluginData.${pluginKey}.acceptRestrictions`);
     createPluginControllerWindow({
       pluginKey,
