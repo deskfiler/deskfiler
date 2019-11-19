@@ -1,6 +1,6 @@
 {
   "name": "Deskfiler",
-  "version": "0.0.1-beta.3",
+  "version": "0.0.1",
   "description": "Open-source Electron.js plugin platform",
   "main": "./src/main/main.js",
   "build": {
