@@ -1,16 +1,12 @@
-const ArchivePlugin = require('webpack-archive-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const PermissionsOutputPlugin = require('webpack-permissions-plugin');
-const path = require('path');
 
 module.exports = {
-  mode: 'production',
-  devtool: 'source-map',
+  mode: 'development',
+  devtool: 'cheap-eval-source-map',
   entry: './index.js',
   target: 'node',
   output: {
     filename: 'index.js',
-    path: path.join(__dirname, '..', '..', 'plugins-dist', 'zipPw'),
   },
   resolve: {
     extensions: ['.js', '.jsx'],
@@ -55,8 +51,9 @@ module.exports = {
       },
     ],
   },
-  node: {
-    console: true,
+  devServer: {
+    compress: true,
+    port: 9000,
   },
   plugins: [
     new CopyPlugin([
@@ -64,27 +61,8 @@ module.exports = {
         from: 'manifest.json',
       },
       {
-        from: 'node_modules/7zip-bin/linux',
-        to: '7zip-bin/linux',
-        flatten: true,
-      },
-      {
-        from: 'node_modules/7zip-bin/mac',
-        to: '7zip-bin/mac',
-        flatten: true,
-      },
-      {
-        from: 'node_modules/7zip-bin/win',
-        to: '7zip-bin/win',
-        flatten: true,
-      },
-      {
-        from: 'webicon.svg',
+        from: 'icon.svg',
       },
     ]),
-    new ArchivePlugin({
-      format: 'tar',
-      output: path.join(__dirname, '..', '..', 'plugins-dist', 'zipPw'),
-    }),
   ],
 };

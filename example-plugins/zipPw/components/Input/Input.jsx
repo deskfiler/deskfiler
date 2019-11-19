@@ -4,7 +4,7 @@ import {
 } from 'formik';
 
 const Input = ({ field, form, lib }) => {
-  const { label, type, value, isRequired, ...restLib } = lib;
+  const { label, type, value, isRequired, validation, ...restLib } = lib;
   const { name } = field;
   const { touched, setFieldValue, errors } = form;
   return (
@@ -19,10 +19,10 @@ const Input = ({ field, form, lib }) => {
           },
         } : {
           ...field,
-          ...(isRequired && errors[name] && touched[name] ? { style: { ...restLib.style, marginBottom: 0 } } : {}),
+          ...((isRequired || validation) && errors[name] && touched[name] ? { style: { ...restLib.style, marginBottom: 0 } } : {}),
         })}
       />
-      {type !== 'file' && isRequired && errors[name] && touched[name] && <div style={{ color: 'red', fontSize: '14px' }}>Required</div>}
+      {type !== 'file' && (isRequired || validation) && errors[name] && touched[name] && <div style={{ color: 'red', fontSize: '14px' }}>{errors[name]}</div>}
     </>
   );
 };
@@ -31,9 +31,10 @@ const FastInput = ({
   name,
   validate,
   isRequired,
+  validation,
   ...rest
 }) => (
-  <Field name={name} {...(isRequired ? { validate } : {})} render={p => <Input {...p} lib={{ isRequired, ...rest }} />} />
+  <Field name={name} {...((isRequired || validation) ? { validate: value => validate(value, validation) } : {})} render={p => <Input {...p} lib={{ isRequired, validation, ...rest }} />} />
 );
 
 export default FastInput;

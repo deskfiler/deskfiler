@@ -3,6 +3,7 @@
   "author": "Ilya Lopukhin",
   "version": "1.0.0",
   "icon": "webicon.svg",
+  "executablesDir": "7zip-bin",
   "settings": [{
     "type": "section",
     "name": "general",
