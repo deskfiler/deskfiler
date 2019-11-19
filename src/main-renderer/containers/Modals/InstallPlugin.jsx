@@ -94,7 +94,7 @@ const InstallModal = () => {
             style={{ margin: 0 }}
             onClick={(e) => {
               e.preventDefault();
-              ipcRenderer.send('continue-plugin-installation', { shouldContinue: true });
+              ipcRenderer.send('continue-plugin-installation', { shouldContinue: false });
               close();
             }}
           >

@@ -10,7 +10,7 @@ import { remote, shell, ipcRenderer } from 'electron';
 import store from 'store';
 import { updateStore } from 'utils';
 
-import { LOGS_DIR, PORT } from '../main-renderer/constants';
+import { LOGS_DIR, PORT, PLUGINS_DIR } from '../main-renderer/constants';
 
 const { app } = remote.require('electron');
 const fs = remote.require('fs');
@@ -126,6 +126,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
       },
     },
     token,
+    selfDir: path.join(PLUGINS_DIR, pluginKey),
     // Fires desktop notification with given message
     notify: (message) => {
       new Notification('Deskfiler', { // eslint-disable-line no-new
@@ -236,7 +237,6 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
     exit: () => {
       currentWindow.close();
     },
-    pluginInstallDir: path.join(app.getPath('userData'), 'plugins', pluginKey),
     alert: (data) => {
       ipcRenderer.sendTo(mainId, 'open-alert-modal', { fromId: selfId, pluginKey, data });
     },

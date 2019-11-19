@@ -1,5 +1,4 @@
 const splitPDF = ({ filePaths, dirPath, pdf, path }) => {
-  console.log('splitPdf', filePaths, dirPath, pdf)
   const pageFilePaths = [];
   filePaths.forEach((fp) => {
     const pdfReader = pdf.createReader(fp);
@@ -31,8 +30,6 @@ window.PLUGIN = {
       openOutputFolder,
       pdf,
     } = context;
-
-    console.log('handleFiles', filePaths);
 
     if (filePaths) {
       const dirPath = await openDialog({
