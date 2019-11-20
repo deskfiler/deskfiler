@@ -66,7 +66,7 @@ export const createModalWindow = async ({
   }
 };
 
-export const createSaveDialog = (options = {}) => console.log('options', options) || (
+export const createSaveDialog = (options = {}) => (
   dialog.showSaveDialog(
     remote.getCurrentWindow(),
     options,
