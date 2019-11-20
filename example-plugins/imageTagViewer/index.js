@@ -12,11 +12,12 @@ window.PLUGIN = {
 
     showPluginWindow();
     const fileCount = filePaths.length;
+    const { dir } = path.parse(filePaths[0]);
     log({
       action: 'Viewed files',
       meta: {
         type: 'text',
-        value: [`${fileCount} file${fileCount > 1 ? 's' : ''} viewed`, ...filePaths].join('; '),
+        value: [`${fileCount} file${fileCount > 1 ? 's' : ''} viewed`, ...(fileCount > 10 ? [`Input directory: ${dir}`] : filePaths) ].join('; '),
       },
     });
 
@@ -86,7 +87,7 @@ window.PLUGIN = {
                       >
                         {t}
                       </span>
-                    )) : <span>This image has no tags.</span>}
+                    )) : <span style={{ margin: '5px 10px' }}>This image has no tags.</span>}
                   </div>
                 </div>
               </div>

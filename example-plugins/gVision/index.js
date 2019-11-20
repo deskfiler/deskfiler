@@ -72,6 +72,7 @@ window.PLUGIN = {
       useEffect(() => {
         if (processedFiles === filePaths.length) {
           const { userticket, plugindetails } = ticket || {};
+          const { dir } = system.path.parse(outputPaths[0]);
 
           log({
             action: 'Processed files and added tags for them',
@@ -79,7 +80,8 @@ window.PLUGIN = {
               type: 'text',
               value: [
                 `Ticket start: ${Math.floor(userticket.OZVALUE * 1000) / 1000} ${userticket.OZCURR} - Ticket end: ${Math.floor((userticket.OZVALUE - (plugindetails.OZPRICE * processedFiles)) * 1000) / 1000} ${userticket.OZCURR}`,
-                ...outputPaths,
+                `${outputPaths.length} file${outputPaths.length > 1 ? 's' : ''} tagged`,
+                ...(outputPaths.length > 10 ? [`Output directory: ${dir}`] : outputPaths),
               ].join('; '),
             },
           });
