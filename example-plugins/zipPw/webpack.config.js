@@ -74,8 +74,13 @@ module.exports = {
         flatten: true,
       },
       {
-        from: 'node_modules/7zip-bin/win',
-        to: '7zip-bin/win',
+        from: 'node_modules/7zip-bin/win/ia32',
+        to: '7zip-bin/win/ia32',
+        flatten: true,
+      },
+      {
+        from: 'node_modules/7zip-bin/win/x64',
+        to: '7zip-bin/win/x64',
         flatten: true,
       },
       {
