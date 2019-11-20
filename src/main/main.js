@@ -224,17 +224,17 @@ async function createWindow() {
   mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
 
   if (process.platform === 'win32') {
-    var resizeTimeout;
-    mainWindow.on('resize', (e)=>{
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(function(){
-        var size = mainWindow.getSize();
-        mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4));
-    }, 100);
-});
+    let resizeTimeout;
+      mainWindow.on('resize', (e) => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          let size = mainWindow.getSize();
+          mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4));
+      }, 100);
+    });
   } else {
     const defaultRatio = 4 / 3;
-    mainWindow.setAspectRatio(defaultRatio);
+    // mainWindow.setAspectRatio(defaultRatio);
   }
 
   if (process.env.NODE_ENV === 'development') {
