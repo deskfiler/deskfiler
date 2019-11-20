@@ -66,7 +66,7 @@ export const createModalWindow = async ({
   }
 };
 
-export const createSaveDialog = (options = {}) => (
+export const createSaveDialog = (options = {}) => console.log('options', options) || (
   dialog.showSaveDialog(
     remote.getCurrentWindow(),
     options,
@@ -110,9 +110,7 @@ export const exportLogs = async (data) => {
     canceled,
     filePath,
   } = await createSaveDialog({
-    options: {
-      defaultPath: `${now}-deskfiler-logs.csv`,
-    },
+    defaultPath: `${now}-deskfiler-logs.csv`,
     filters: [{
       name: 'Spreadsheet',
       extensions: ['csv'],
@@ -120,7 +118,7 @@ export const exportLogs = async (data) => {
   });
 
   if (!canceled) {
-    csv.writeToPath(filePath, data)
+    csv.writeToPath(filePath, formattedData)
       .on('error', err => console.error(err))
       .on('finish', () => console.log('Done writing.'));
   }
