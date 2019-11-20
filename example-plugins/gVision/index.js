@@ -12,6 +12,7 @@ window.PLUGIN = {
     ticket,
   }) => {
     const {
+      log,
       exit,
       settings: contextSettings,
       openDialog,
@@ -61,6 +62,23 @@ window.PLUGIN = {
       const increment = () => {
         setProcessedFiles(processedFiles + 1)
       };
+
+      useEffect(() => {
+        if (processedFiles === filePaths.length) {
+          const { userticket, plugindetails } = ticket || {};
+
+          log({
+            action: 'Processed files and added tags for them',
+            meta: {
+              type: 'text',
+              value: [
+                `Ticket start: ${Math.floor(userticket.OZVALUE * 1000) / 1000} ${userticket.OZCURR} - Ticket end: ${Math.floor((userticket.OZVALUE - (plugindetails.OZPRICE * processedFiles)) * 1000) / 1000} ${userticket.OZCURR}`,
+                ...filePaths,
+              ].join('; '),
+            },
+          });
+        }
+      }, [processedFiles, filePaths.length]);
 
       if (processing) {
         return (
