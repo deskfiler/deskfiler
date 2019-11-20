@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { Flex, colors, Text } from 'styled';
 import { ipcRenderer } from 'electron';
 import { useModals } from 'hooks';
+import { createOpenDialog } from 'utils';
 
 import addNewIcon from 'assets/images/app_newone.svg';
 
@@ -34,7 +35,7 @@ const AddPluginCard = () => {
     );
 
     if (files.length < 2 && ALLOWED_FILETYPES.includes(files[0].type)) {
-      addPlugin(files);
+      addPlugin(files[0].path);
     }
   }, [addPlugin]);
 
@@ -52,6 +53,20 @@ const AddPluginCard = () => {
       <S.CardOverlay
         {...getRootProps()}
         isDragActive={isDragActive}
+        onClick={async () => {
+          const { cancelled, filePaths } = await createOpenDialog({
+            title: 'Add plugin',
+            options: {
+              filters: [
+                { name: '*.tar', extensions: ['tar', 'gz',] }
+              ],
+            },
+            properties: ['openFile'],
+          });
+          if (!cancelled) {
+            addPlugin(filePaths[0]);
+          }
+        }}
       >
         <S.DropFilesTitle>Drop files</S.DropFilesTitle>
         <S.AddPluginCard>

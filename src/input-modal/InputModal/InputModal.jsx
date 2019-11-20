@@ -21,10 +21,17 @@ import * as S from './styled';
 
 const inputModal = remote.getCurrentWindow();
 
-const validate = (value) => {
-  let error;
+const validate = (value, validation) => {
+  let error = null;
   if (!value) {
     error = 'Required';
+  } else if (validation) {
+    error = validation.reduce((acc, { regExp, errorMessage }) => {
+      if (new RegExp(regExp) && !(new RegExp(regExp).test(value))) {
+        return errorMessage;
+      };
+      return acc;
+    }, null);
   }
   return error;
 };
@@ -63,6 +70,13 @@ const InputModal = () => {
   const [formUi, setFormUi] = useState([]);
   const [formTitle, setFormTitle] = useState('');
 
+  const closeModal = () => {
+    inputModal.hide();
+    setFormUi([]);
+    setFormTitle('');
+    setFromId(null);
+  };
+
   useEffect(() => {
     ipcRenderer.on('input-modal-fields', (event, { fromId: id, options: { ui, title } }) => {
       if (ui && title) {
@@ -87,10 +101,7 @@ const InputModal = () => {
           initialValues={getInitialValues(formUi)}
           onSubmit={(values) => {
             ipcRenderer.sendTo(fromId, 'input-response', values);
-            inputModal.hide();
-            setFormUi([]);
-            setFormTitle('');
-            setFromId(null);
+            closeModal();
           }}
           render={({ handleSubmit }) => (
             <form
@@ -103,7 +114,8 @@ const InputModal = () => {
               >
                 <Button
                   style={{ margin: '8px 0 0' }}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
                     handleSubmit();
                   }}
                 >
@@ -114,7 +126,7 @@ const InputModal = () => {
                   style={{ margin: '8px 0 0' }}
                   onClick={(e) => {
                     e.preventDefault();
-                    inputModal.hide();
+                    closeModal();
                   }}
                 >
                   Cancel

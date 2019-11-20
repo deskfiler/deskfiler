@@ -11,6 +11,52 @@ module.exports = {
     filename: 'index.js',
     path: path.join(__dirname, '..', '..', 'plugins-dist', 'weTransferConnect'),
   },
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            babelrc: false,
+            cacheDirectory: false,
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: {
+                    electron: '4.1.4',
+                  },
+                  modules: false,
+                  useBuiltIns: 'entry',
+                },
+              ],
+              [
+                '@babel/preset-react',
+                {
+                  development: true,
+                },
+              ],
+            ],
+          },
+        },
+      },
+      {
+        test: /\.(css)$/,
+        use: [
+          'style-loader',
+          'css-loader',
+        ],
+      },
+    ],
+  },
+  node: {
+    console: true,
+  },
   plugins: [
     new CopyPlugin([
       {

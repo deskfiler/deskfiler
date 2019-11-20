@@ -16,7 +16,6 @@ const initialState = {
 function uiStateReducer(state, action) {
   switch (action.type) {
     case 'set':
-      console.log('setUiState', action);
       return {
         ...action.payload,
         [action.meta.key]: action.payload,

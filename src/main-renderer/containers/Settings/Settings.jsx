@@ -126,8 +126,6 @@ const SettingsView = () => {
     ),
   };
 
-  console.log('plugins', plugins);
-
   return (
     <S.SettingsView
       className="plugin-view"

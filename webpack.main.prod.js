@@ -83,6 +83,10 @@ module.exports = {
           },
         },
       },
+      {
+        test: /\.node$/,
+        loader: 'native-ext-loader',
+      },
       // SVG
       {
         test: /\.svg(.*)?$/,

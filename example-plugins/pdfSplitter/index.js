@@ -25,37 +25,34 @@ window.PLUGIN = {
     const { filePaths } = inputs;
     const {
       log,
-      exit,
       notify,
       openDialog,
       openOutputFolder,
-      startProgress,
-      finishProgress,
-      resetProgress,
       pdf,
     } = context;
 
-    try {
-      if (filePaths) {
-        const dirPath = await openDialog({ options: { title: 'Select save directory for splitted PDFs' }, properties: ['openDirectory'] });
-        startProgress();
-        const pageFilePaths = splitPDF({ filePaths, dirPath, pdf, path });
-        finishProgress();
-        notify(`PDF file${filePaths > 1 ? 's' : ''} splitted.`);
-        log({
-          action: `Splitted PDF file${filePaths > 1 ? 's' : ''} to pages`,
-          meta: {
-            type: 'text',
-            value: pageFilePaths.join(';'),
-          },
-        });
-        await openOutputFolder(dirPath);
-      }
-    } catch (err) {
-      resetProgress();
-      console.error(err);
-    } finally {
-      exit();
+    if (filePaths) {
+      const dirPath = await openDialog({
+        options: {
+          title: 'Select save directory for splitted PDFs',
+        },
+        properties: ['openDirectory'],
+      });
+      const pageFilePaths = splitPDF({
+        filePaths,
+        dirPath,
+        pdf,
+        path,
+      });
+      notify(`PDF file${filePaths > 1 ? 's' : ''} splitted.`);
+      log({
+        action: `Splitted PDF file${filePaths > 1 ? 's' : ''} to pages`,
+        meta: {
+          type: 'text',
+          value: pageFilePaths.join(';'),
+        },
+      });
+      await openOutputFolder(dirPath);
     }
   },
 };

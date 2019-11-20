@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useContext,
 } from 'react';
+import { ipcRenderer } from 'electron';
 
 import store from 'store';
 
@@ -45,16 +46,24 @@ export const ProvideSettings = ({ children }) => {
     });
   };
 
+  const onSettingsUpdate = (e, { pluginKey, values }) => {
+    updateSettings({ key: pluginKey, values });
+  };
+
   useEffect(() => {
     const getGeneralSettings = async () => {
       const settingsData = await store.get('settings');
-      console.log('settings in store');
       if (settingsData) {
         setSettings(settingsData);
       }
     };
 
     getGeneralSettings();
+
+    ipcRenderer.on('update-plugin-settings', onSettingsUpdate);
+    return () => {
+      ipcRenderer.removeListener('update-plugin-settings', onSettingsUpdate); 
+    };
   }, []);
 
   useEffect(() => {

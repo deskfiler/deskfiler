@@ -12,6 +12,7 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 const http = require('http');
+const child_process = require('child_process');
 
 const mkdirp = require('mkdirp');
 const rmrf = require('rimraf');
@@ -31,8 +32,6 @@ const {
   LOGS_DIR,
   PORT,
 } = require('./constants');
-
-let mainWindowHandler;
 
 let mainWindow;
 let pluginControllerWindow;
@@ -87,13 +86,6 @@ async function createPluginControllerWindow({
 
   pluginControllerWindow.on('closed', () => {
     pluginControllerWindow = null;
-  });
-
-  pluginControllerWindow.on('focus', () => {
-    if (pluginControllerWindow) {
-      pluginControllerWindow.focus();
-      pluginControllerWindow.moveTop();
-    }
   });
 }
 
@@ -231,13 +223,18 @@ async function createWindow() {
 
   mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
 
-  const defaultRatio = 4 / 3;
-
-  if (process.platform === 'darwin') {
-    mainWindow.setAspectRatio(defaultRatio);
+  if (process.platform === 'win32') {
+    var resizeTimeout;
+    mainWindow.on('resize', (e)=>{
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(function(){
+        var size = mainWindow.getSize();
+        mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4));
+    }, 100);
+});
   } else {
-    mainWindowHandler = new aspect(mainWindow);
-    mainWindowHandler.setRatio(4, 3, 10);
+    const defaultRatio = 4 / 3;
+    mainWindow.setAspectRatio(defaultRatio);
   }
 
   if (process.env.NODE_ENV === 'development') {
@@ -297,6 +294,7 @@ async function createWindow() {
         icon,
         legallink,
         legalhint,
+        executablesDir = 'executables',
         settings: pluginSettings,
         acceptRestrictions,
       } = manifestData;
@@ -323,6 +321,17 @@ async function createWindow() {
 
       log('plugin unpacked');
 
+      const escapeSpaces = p => p.replace(/(\s+)/g, '\\$1');
+      const pathToExecutables = path.join(PLUGINS_DIR, pluginKey, executablesDir);
+      if (process.platform !== 'win32' && fs.existsSync(pathToExecutables)) {
+        child_process.exec(`chmod -R 777 ${escapeSpaces(pathToExecutables)}`, (err) => {
+          if (err) {
+            throw new Error(err);
+          }
+          log('set permissions for plugin directory');
+        });        
+      }
+
       store.set(`pluginData.${pluginKey}`, {
         key: pluginKey,
         name,
@@ -343,13 +352,14 @@ async function createWindow() {
       });
 
       await new Promise((resolve, reject) => {
-        ipcMain.once('cancel-plugin-installation', async () => {
-          log('installation cancelled by user');
-          store.delete(`pluginData.${pluginKey}`);
-          reject(new Error('Installation Cancelled'));
-        });
-        ipcMain.once('install-plugin', async () => {
-          resolve();
+        ipcMain.once('continue-plugin-installation', (e, { shouldContinue }) => {
+          if (shouldContinue) {
+            resolve();
+          } else {
+            log('installation cancelled by user');
+            store.delete(`pluginData.${pluginKey}`);
+            reject(new Error('Installation Cancelled'));
+          }
         });
       });
 
@@ -400,9 +410,8 @@ async function createWindow() {
         icon,
         pluginSettings,
         acceptRestrictions,
-        isLoading: false,
         isInstalling: false,
-        isWorking: 'idle',
+        isWorking: false,
       });
       return manifestData;
     } catch (err) {
@@ -412,9 +421,9 @@ async function createWindow() {
     }
   };
 
-  ipcMain.on('recieved-plugin-tarball', async (event, filesArr) => {
+  ipcMain.on('recieved-plugin-tarball', async (event, filePath) => {
     try {
-      const result = await unpackPlugin(filesArr[0].path);
+      const result = await unpackPlugin(filePath);
       if (result) {
         mainWindow.webContents.send('manifest-changed', 'add');
       }
@@ -430,7 +439,6 @@ async function createWindow() {
     filePaths,
     ticket,
   }) => {
-    console.log(store.store);
     const restrictions = await store.get(`pluginData.${pluginKey}.acceptRestrictions`);
     createPluginControllerWindow({
       pluginKey,
@@ -540,43 +548,58 @@ ipcMain.on('restart-app', () => {
   app.relaunch();
 });
 
-app.on('activate', () => {
-  if (mainWindow === null) createWindow();
-});
+const isSingleAppInstance = app.requestSingleInstanceLock();
 
-app.on('ready', () => {
-  log('App ready, creating window...');
-
-  createWindow();
-
-  log('Created main-renderer window, registering protocol...');
-
-  protocol.registerStringProtocol('deskfiler', (request, callback) => {
-    log('Registered deskfiler:// protocol');
-
-    callback();
+if (!isSingleAppInstance) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
   });
 
-  log('Initializing serve for plugins');
-
-  server = http.createServer((request, response) => (
-    handler(request, response, {
-      public: PLUGINS_DIR,
-    })
-  ));
-
-  server.listen(PORT, () => {
-    log(`Hosting plugins @ http://localhost:${PORT}.`);
+  app.on('activate', () => {
+    if (mainWindow === null) createWindow();
   });
-});
+  
+  app.on('ready', () => {
+    log('App ready, creating window...');
+  
+    createWindow();
+  
+    log('Created main-renderer window, registering protocol...');
+  
+    protocol.registerStringProtocol('deskfiler', (request, callback) => {
+      log('Registered deskfiler:// protocol');
+  
+      callback();
+    });
+  
+    log('Initializing serve for plugins');
+  
+    server = http.createServer((request, response) => (
+      handler(request, response, {
+        public: PLUGINS_DIR,
+      })
+    ));
+  
+    server.listen(PORT, () => {
+      log(`Hosting plugins @ http://localhost:${PORT}.`);
+    });
+  });
+  
+  app.on('login', (event, webContents, request, authInfo, callback) => {
+    event.preventDefault();
+    callback('a', 'b');
+  });
+  
+  app.on('window-all-closed', () => {
+    server.close(() => { log('Plugins server closed.'); });
+    log('Terminating app...');
+    if (process.platform !== 'darwin') app.quit();
+  });
+};
 
-app.on('login', (event, webContents, request, authInfo, callback) => {
-  event.preventDefault();
-  callback('a', 'b');
-});
 
-app.on('window-all-closed', () => {
-  server.close(() => { log('Plugins server closed.'); });
-  log('Terminating app...');
-  if (process.platform !== 'darwin') app.quit();
-});

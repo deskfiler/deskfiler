@@ -1,6 +1,8 @@
 {
-  "name": "Bare bone",
+  "name": "BareBone",
   "author": "Ilya Lopukhin",
   "version": "1.0.0",
-  "icon": "icon.svg"
+  "icon": "icon.svg",
+  "legalhint": "This is the most basic plugin for Deskfiler. It shall help developers to a quickstart, writing plugins. It comes as Open Source and free of charge. For more details, please see the detail page on our site:",
+  "legallink": "https://plugins.deskfiler.org/"
 }

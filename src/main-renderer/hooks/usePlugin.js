@@ -11,7 +11,7 @@ import useIpc from './useIpc';
 const pluginsWithAuth = ['gvision'];
 
 export default function usePlugin(pluginKey) {
-  const [plugins] = usePlugins();
+  const [plugins, setPlugins] = usePlugins();
   const [auth] = useAuth();
   const [_, { openModal }] = useModals();
   const { getPluginInfo, removePluginFromAccount, addPluginToAccount } = useApi();

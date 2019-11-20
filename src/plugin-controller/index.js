@@ -10,11 +10,13 @@ import { remote, shell, ipcRenderer } from 'electron';
 import store from 'store';
 import { updateStore } from 'utils';
 
-import { LOGS_DIR, PORT } from '../main-renderer/constants';
+import { LOGS_DIR, PORT, PLUGINS_DIR } from '../main-renderer/constants';
 
 const { app } = remote.require('electron');
 const fs = remote.require('fs');
 const path = remote.require('path');
+
+const hummus = remote.require('../node_modules/hummus/hummus.js');
 
 const currentWindow = remote.getCurrentWindow();
 
@@ -107,7 +109,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
   const { token } = user || {};
   // Context var which provides simple methods to communicate with main app
   const context = {
-    pdf: () => console.log('sorry, working with pdf is under development'),
+    pdf: hummus,
     settings: {
       get: async () => {
         const settings = await store.get(`settings.${pluginKey}`);
@@ -124,6 +126,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
       },
     },
     token,
+    selfDir: path.join(PLUGINS_DIR, pluginKey),
     // Fires desktop notification with given message
     notify: (message) => {
       new Notification('Deskfiler', { // eslint-disable-line no-new
@@ -220,8 +223,8 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
         }
       });
     }),
-    openOutputFolder: dirPath => new Promise((resolve, reject) => {
-      shell.showItemInFolder(dirPath);
+    openOutputFolder: filePath => new Promise((resolve, reject) => {
+      shell.showItemInFolder(filePath);
       resolve();
     }),
     showPluginWindow: () => new Promise((resolve) => {
@@ -234,11 +237,12 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
     exit: () => {
       currentWindow.close();
     },
-    pluginInstallDir: path.join(app.getPath('userData'), 'plugins', pluginKey),
     alert: (data) => {
       ipcRenderer.sendTo(mainId, 'open-alert-modal', { fromId: selfId, pluginKey, data });
     },
-    focus: () => ipcRenderer.sendTo(mainId, 'focus'),
+    focus: () => {
+      currentWindow.focus();
+    },
     startProgress: (steps = -1) => {
       ipcRenderer.sendTo(mainId, 'plugin-start-progress', { fromId: selfId, pluginKey, steps });
     },

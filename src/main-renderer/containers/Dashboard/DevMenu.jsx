@@ -20,8 +20,6 @@ const DevMenu = () => {
   }, []);
 
   const onAddDevPlugin = useCallback(() => {
-    console.log('onAddDevPlugin');
-
     async function getManifest() {
       const response = await request(`${devPluginUrl}/manifest.json`);
       console.log(response);

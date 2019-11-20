@@ -67,13 +67,13 @@ window.PLUGIN = {
   },
   handleOpen: async ({ context, system }) => {
     const { shell } = system;
-    const { exit, log, pluginInstallDir, showPluginWindow } = context;
+    const { exit, log, selfDir, showPluginWindow } = context;
 
     const rootEl = document.getElementById('root');
     const span = document.createElement('span');
     span.textContent = `I have been clicked and opened the \
       template plugin.html hosted by deskfiler and loaded plugin javascript from directory \
-      ${pluginInstallDir}.
+      ${selfDir}.
     `;
     span.style.display = 'inline-block';
     span.style.marginBottom = '8px';

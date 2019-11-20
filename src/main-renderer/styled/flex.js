@@ -11,7 +11,7 @@ const spacing = css`
 const Flex = styled.div`
   display: ${props => (props.inline ? 'inline-flex' : 'flex')};
   flex-direction: ${props => (props.row ? 'row' : 'column')};
-  flex-wrap: ${props => (props.wrap ? 'wrap' : 'no-wrap')};
+  flex-wrap: ${props => (props.flexWrap ? 'wrap' : 'no-wrap')};
   background: ${getProp('background', 'transparent')};
   align-items: ${getProp('align', 'flex-start')};
   justify-content: ${getProp('justify', 'flex-start')};
