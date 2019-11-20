@@ -142,7 +142,7 @@ const Logs = () => {
               </Flex>
             )}
           </Flex>
-          {(selectedPluginKey && data.length) && (
+          {(selectedPluginKey && !!data.length) && (
             <Flex>
               <Flex
                 row
