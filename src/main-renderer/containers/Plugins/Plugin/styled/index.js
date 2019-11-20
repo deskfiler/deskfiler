@@ -179,10 +179,10 @@ export const CardOverlay = styled.div`
 
 const waving = keyframes`
   0% {
-     background-position-x: 0%;
+    background-position-x: 0%;
   }
   100% {
-     background-position-x: 490%;
+    background-position-x: 870%;
   }
 `;
 
@@ -196,9 +196,9 @@ export const InstallingOverlay = styled.div`
   z-index: 1;
   background-size: auto;
   background-repeat-x: repeat;
-    background-repeat-y: no-repeat;
+  background-repeat-y: no-repeat;
   background-image: url(${wave});
-  animation: ${waving} .5s infinite linear;
+  animation: ${waving} 1s infinite linear;
   &:after {
     font-family: Roboto;
     font-weight: 500;
@@ -209,6 +209,7 @@ export const InstallingOverlay = styled.div`
     content: 'Installing...';
     position: absolute;
     top: 44px;
+    bottom: 0;
     width: 100%;
     background: #0069FF;
   }
