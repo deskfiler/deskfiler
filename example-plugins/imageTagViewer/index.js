@@ -7,10 +7,18 @@ import sizeOf from 'image-size';
 window.PLUGIN = {
   handleFiles: async ({ inputs, context, system }) => {
     const { filePaths } = inputs;
-    const { showPluginWindow } = context;
+    const { showPluginWindow, log } = context;
     const { path } = system;
 
     showPluginWindow();
+    const fileCount = filePaths.length;
+    log({
+      action: 'Viewed files',
+      meta: {
+        type: 'text',
+        value: [`${fileCount} file${fileCount > 1 ? 's' : ''} viewed`, ...filePaths].join('; '),
+      },
+    });
 
     const root = document.querySelector('#root');
 
