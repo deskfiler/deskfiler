@@ -36,6 +36,7 @@ window.PLUGIN = {
       const [saveDir, setSaveDir] = useState(null);
       const [settings, setSettings] = useState(initialSettings);
       const [processedFiles, setProcessedFiles] = useState(0);
+      const [outputPaths, setOutputPaths] = useState(filePaths);
 
       const onSubmit = async (newSettings) => {
         setSettings(newSettings);
@@ -44,6 +45,11 @@ window.PLUGIN = {
 
         if (copyTaggedToExtraFolder || saveToJson) {
           const dialogResponse = await openDialog({ options: { title: 'Select saving directory' }, properties: ['openDirectory'] });
+          const taggedPaths = filePaths.map(fp => {
+            const { name, ext } = system.path.parse(fp);
+            return `${dialogResponse}/${name}-tagged-copy${ext}`
+          });
+          setOutputPaths(taggedPaths);
           setSaveDir(dialogResponse);
           focus();
         }
@@ -73,12 +79,12 @@ window.PLUGIN = {
               type: 'text',
               value: [
                 `Ticket start: ${Math.floor(userticket.OZVALUE * 1000) / 1000} ${userticket.OZCURR} - Ticket end: ${Math.floor((userticket.OZVALUE - (plugindetails.OZPRICE * processedFiles)) * 1000) / 1000} ${userticket.OZCURR}`,
-                ...filePaths,
+                ...outputPaths,
               ].join('; '),
             },
           });
         }
-      }, [processedFiles, filePaths.length]);
+      }, [processedFiles, filePaths.length, outputPaths]);
 
       if (processing) {
         return (
