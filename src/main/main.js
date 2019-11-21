@@ -3,6 +3,7 @@ const {
   ipcMain,
   protocol,
   BrowserWindow,
+  webContents,
 } = require('electron');
 
 const aspect = require('electron-aspectratio');
@@ -38,6 +39,7 @@ let pluginControllerWindow;
 let pluginConfigWindow;
 let registerWindow;
 let loginWindow;
+let paymentWindow;
 
 const rimraf = util.promisify(rmrf);
 
@@ -89,30 +91,34 @@ async function createPluginControllerWindow({
   });
 }
 
-// TODO: create payment window in BrowserWindow
-// async function createPaymentWindow({ fromId, userId }) {
-//   paymentWindow = new BrowserWindow({
-//     minWidth: 800,
-//     minHeight: 600,
-//     show: true,
-//     webPreferences: {
-//       nodeIntegration: true,
-//       preload: path.join(__dirname, '/preloads/paymentPreload.js'),
-//     },
-//   });
+async function createPaymentWindow({ fromId, userId }) {
+  paymentWindow = new BrowserWindow({
+    minWidth: 800,
+    minHeight: 600,
+    show: true,
+    webPreferences: {
+      nodeIntegration: true,
+      preload: path.join(__dirname, '/preloads/paymentPreload.js'),
+    },
+  });
 
-//   await paymentWindow.loadURL(`https://plugins.deskfiler.org/tickets.php/gvision/${userId}`, {
-//     extraHeaders: 'Authorization: Basic YTpi',
-//   });
+  await paymentWindow.loadURL(`https://plugins.deskfiler.org/tickets.php/gvision/${userId}`, {
+    extraHeaders: 'Authorization: Basic YTpi',
+  });
 
-//   if (process.env.NODE_ENV === 'development') {
-//     paymentWindow.webContents.openDevTools();
-//   }
+  ipcMain.once('payment-recieved', () => {
+    log(`payment recieved from user ${userId}`);
+    webContents.fromId(fromId).send('payment-recieved');
+  });
 
-//   paymentWindow.on('closed', () => {
-//     paymentWindow = null;
-//   });
-// }
+  if (process.env.NODE_ENV === 'development') {
+    paymentWindow.webContents.openDevTools();
+  }
+
+  paymentWindow.on('closed', () => {
+    paymentWindow = null;
+  });
+}
 
 async function createRegisterWindow() {
   log('creating login window');
@@ -455,10 +461,13 @@ async function createWindow() {
     createPluginConfigWindow({ pluginKey });
   });
 
-  // TODO: create payment window in BrowserWindow
-  // ipcMain.on('open-payment-window', (event, { fromId, userId }) => {
-  //   createPaymentWindow({ fromId, userId });
-  // });
+  ipcMain.on('open-payment-window', (event, { fromId, userId }) => {
+    if (!paymentWindow) {
+      createPaymentWindow({ fromId, userId });
+    } else {
+      paymentWindow.show();
+    }
+  });
 
   ipcMain.on('open-register-window', () => {
     if (!registerWindow) {
@@ -481,7 +490,7 @@ async function createWindow() {
     log('logged in as', user.email);
     store.set('user', user);
     mainWindow.webContents.send('logged-in');
-  })
+  });
 
   ipcMain.on('send-auth-token', (event, token) => {
     log('got auth token', token);
