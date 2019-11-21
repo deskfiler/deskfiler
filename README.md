@@ -28,7 +28,7 @@ Please read [Code of conduct](./docs/CODE_OF_CONDUCT.md) and [Contributing instr
 
 ## Documentation
 
-All documentation resides [here](https://deskfiler.github.io/deskfiler/index.html)
+All documentation resides [here](https://github.com/deskfiler/deskfiler/tree/master/docs)
 
 ## License
 
