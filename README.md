@@ -32,5 +32,4 @@ All documentation resides [here](https://github.com/deskfiler/deskfiler/tree/mas
 
 ## License
 
-TODO: add license info
-
+Deskfiler is published under the GPLv3. You will find the license within the code tree.
