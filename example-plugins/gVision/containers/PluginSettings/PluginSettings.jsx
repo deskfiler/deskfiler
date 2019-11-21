@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Button,
@@ -15,7 +15,7 @@ import { Flex } from '../../styled';
 
 import 'foundation-sites/dist/css/foundation.min.css';
 
-import * as S from './styled';
+import * as S from './styled'; 
 
 const inputs = {
   saveLabelInfo: {
@@ -76,22 +76,29 @@ const checkFundsPerFile = ({ ticket, filesCount }) => {
       plugindetails,
     } = ticket || {};
     const availableFilesToProcessCount = Math.floor(userticket.OZVALUE / plugindetails.OZPRICE);
-    return availableFilesToProcessCount < filesCount;
+    return {
+      showPaymentInfo: availableFilesToProcessCount < filesCount,
+      fundsToSpend: filesCount * plugindetails.OZPRICE,
+    };
   }
-  return false;
+  return { showPaymentInfo: true, fundsToSpend: null };
 };
 
 const PluginSettings = ({
-  ticket,
+  ticket: initialTicket,
   filesCount,
   openPaymentWindow,
   onSubmit,
   settings,
   cancel,
 }) => {
-  const { plugindetails } = ticket || {};
+  const [ticket, setTicket] = useState(initialTicket);
 
-  const showPaymentInfo = checkFundsPerFile({ ticket, filesCount });
+  const { userticket, plugindetails } = ticket || {};
+
+  const round = value => Math.floor(value * 1000) / 1000;
+
+  const { showPaymentInfo, fundsToSpend } = checkFundsPerFile({ ticket, filesCount });
   return (
     <S.PluginSettings>
       <S.Title>gVision</S.Title>
@@ -116,16 +123,24 @@ const PluginSettings = ({
             <Flex
               row
             >
-              {showPaymentInfo && (
-                <S.PaymentInfo>
-                  Please add some funds to your account, this plugin requires payment in steps of 1,000 calls
-                </S.PaymentInfo>
-              )}
+              <S.PaymentInfo>
+                {showPaymentInfo ? (
+                  'Please add some funds to your account, this plugin requires payment in steps of 1,000 calls.'
+                ) : (
+                  [
+                    `1 picture x $${plugindetails.OZPRICE}.`,
+                    `Current balance: $${round(userticket.OZVALUE)}.`,
+                    `Balance after processing: $${round(userticket.OZVALUE - fundsToSpend)}.`
+                  ].join('\n')
+                )}
+              </S.PaymentInfo>
               <Button
                 style={{ flex: '0 0 auto' }}
-                onClick={() => {
+                color={showPaymentInfo ? 'alert' : 'primary'}
+                onClick={async () => {
                   if (showPaymentInfo) {
-                    openPaymentWindow(plugindetails.OZUSERID);
+                    const newTicket = await openPaymentWindow(plugindetails.OZUSERID);
+                    if (ticket) setTicket(newTicket);
                     return;
                   }
                   handleSubmit();
