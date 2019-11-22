@@ -9,10 +9,20 @@
     "build": "webpack -c webpack.config.js --progress"
   },
   "dependencies": {
-    "hummus": "^1.0.107"
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "animejs": "^3.1.0",
+    "foundation-sites": "^6.5.3",
+    "hummus": "^1.0.107",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-foundation": "^0.9.6"
   },
   "devDependencies": {
     "aws-sdk": "^2.554.0",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "style-loader": "^1.0.0",
     "copy-webpack-plugin": "^5.0.4",
     "webpack": "^4.41.2",
     "webpack-archive-plugin": "^3.0.0",
