@@ -338,6 +338,10 @@ async function createWindow() {
         });        
       }
 
+      log('getting plugin copy if already installed');
+      
+      const pluginDataCopy = await store.get(`pluginData.${pluginKey}`);
+
       store.set(`pluginData.${pluginKey}`, {
         key: pluginKey,
         name,
@@ -363,7 +367,11 @@ async function createWindow() {
             resolve();
           } else {
             log('installation cancelled by user');
-            store.delete(`pluginData.${pluginKey}`);
+            if (pluginDataCopy) {
+              store.set(`pluginData.${pluginKey}`, pluginDataCopy);
+            } else {
+              store.delete(`pluginData.${pluginKey}`);
+            }
             reject(new Error('Installation Cancelled'));
           }
         });
