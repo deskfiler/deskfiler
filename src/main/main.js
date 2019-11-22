@@ -88,6 +88,11 @@ async function createPluginControllerWindow({
 
   pluginControllerWindow.on('closed', () => {
     pluginControllerWindow = null;
+    const plugin = await store.get(`pluginData.${pluginKey}`);
+    store.set(`pluginData.${pluginKey}`, {
+      ...plugin,
+      isWorking: false,
+    });
   });
 }
 
@@ -240,7 +245,7 @@ async function createWindow() {
     });
   } else {
     const defaultRatio = 4 / 3;
-    // mainWindow.setAspectRatio(defaultRatio);
+    mainWindow.setAspectRatio(defaultRatio);
   }
 
   if (process.env.NODE_ENV === 'development') {
