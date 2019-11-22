@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 import PluginSettings from './containers/PluginSettings';
@@ -19,6 +19,8 @@ window.PLUGIN = {
       token,
       showPluginWindow,
       focus,
+      startProgress,
+      finishProgress,
       openOutputFolder,
       openPaymentWindow,
     } = context;
@@ -55,6 +57,7 @@ window.PLUGIN = {
         }
 
         setProcessing(true);
+        startProgress();
       };
 
       useEffect(() => {
@@ -73,6 +76,7 @@ window.PLUGIN = {
         if (processedFiles === filePaths.length) {
           const { userticket, plugindetails } = ticket || {};
           const { dir } = system.path.parse(outputPaths[0]);
+          finishProgress();
 
           log({
             action: 'Processed files and added tags for them',
