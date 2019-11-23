@@ -2,11 +2,23 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+/* const CopyPlugin = require('copy-webpack-plugin'); */
 const Dotenv = require('dotenv-webpack');
 
 const config = require('./webpack.renderer.base.js');
 
 const plugins = [
+  /* new CopyPlugin([
+    {
+      from: 'plugins-dist/gVision.tar.gz',
+    },
+    {
+      from: 'plugins-dist/imageTagViewer.tar.gz',
+    },
+    {
+      from: 'plugins-dist/zipPw.tar.gz',
+    },
+  ]), */
   new HtmlWebpackPlugin({
     template: path.resolve('src', 'main-renderer', 'index.tpl.html'),
     inject: 'body',
