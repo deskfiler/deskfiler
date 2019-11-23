@@ -10,6 +10,7 @@ Get your binary downloads at [Deskfiler.org](https://www.deskfiler.org/)
 
 * [Features](#features)
 * [Contributing](#contributing)
+* [Install and Quickstart](#features)
 * [Documentation](#features)
 * [License](#license)
 
@@ -26,7 +27,8 @@ Get your binary downloads at [Deskfiler.org](https://www.deskfiler.org/)
 
 Please read [Code of conduct](./docs/CODE_OF_CONDUCT.md) and [Contributing instructions](./docs/CONTRIBUTING.md)
 
-## Install and Quickstart (works on Win, Mac and Linux)
+## Install and Quickstart 
+Works on Win, Mac and Linux
 
 Your system needs the package manager yarn and a few npm packages to create Deskfiler from scratch:
 
