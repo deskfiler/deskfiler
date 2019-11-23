@@ -6,14 +6,12 @@ const {
   webContents,
 } = require('electron');
 
-const aspect = require('electron-aspectratio');
-
 const { dissoc } = require('ramda');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
 const http = require('http');
-const child_process = require('child_process');
+const childProcess = require('child_process');
 
 const mkdirp = require('mkdirp');
 const rmrf = require('rimraf');
@@ -28,6 +26,7 @@ const isIt = require('./utils/whichEnvIsIt');
 const {
   HOME_DIR,
   PLUGINS_DIR,
+  /* PREPACKED_PLUGINS, */
   PRELOADS_DIR,
   TEMP_DIR,
   LOGS_DIR,
@@ -86,7 +85,7 @@ async function createPluginControllerWindow({
     selfId: pluginControllerWindow.webContents.id,
   });
 
-  pluginControllerWindow.on('closed', () => {
+  pluginControllerWindow.on('closed', async () => {
     pluginControllerWindow = null;
     const plugin = await store.get(`pluginData.${pluginKey}`);
     store.set(`pluginData.${pluginKey}`, {
@@ -236,11 +235,11 @@ async function createWindow() {
 
   if (process.platform === 'win32') {
     let resizeTimeout;
-      mainWindow.on('resize', (e) => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          let size = mainWindow.getSize();
-          mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4));
+    mainWindow.on('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const size = mainWindow.getSize();
+        mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4, 10));
       }, 100);
     });
   } else {
@@ -335,16 +334,16 @@ async function createWindow() {
       const escapeSpaces = p => p.replace(/(\s+)/g, '\\$1');
       const pathToExecutables = path.join(PLUGINS_DIR, pluginKey, executablesDir);
       if (process.platform !== 'win32' && fs.existsSync(pathToExecutables)) {
-        child_process.exec(`chmod -R 777 ${escapeSpaces(pathToExecutables)}`, (err) => {
+        childProcess.exec(`chmod -R 777 ${escapeSpaces(pathToExecutables)}`, (err) => {
           if (err) {
             throw new Error(err);
           }
           log('set permissions for plugin directory');
-        });        
+        });
       }
 
       log('getting plugin copy if already installed');
-      
+
       const pluginDataCopy = await store.get(`pluginData.${pluginKey}`);
 
       store.set(`pluginData.${pluginKey}`, {
@@ -442,14 +441,32 @@ async function createWindow() {
 
   ipcMain.on('recieved-plugin-tarball', async (event, filePath) => {
     try {
-      const result = await unpackPlugin(filePath);
-      if (result) {
+      await unpackPlugin(filePath);
+      /* TBD: Do we need this? */
+      /* if (result) {
         mainWindow.webContents.send('manifest-changed', 'add');
-      }
+      } */
     } catch (err) {
       console.log(err);
     }
   });
+
+  /* TODO: implement preinstalled plugins feature. Right now stuck on a way to
+   * copy plugin tarballs into the actual distributable. copy-webpack-plugin don't
+   * work for some reason. Specifying them in package.json > build > files don't
+   * work either. */
+
+  /* const installPromises = [];
+
+  for (const plugin of PREPACKED_PLUGINS) {
+    const filePath = path.join(__dirname, `${plugin}.tar.gz`);
+
+    log('installing prepacked plugin', plugin, 'filePath', filePath);
+
+    installPromises.push(unpackPlugin(filePath))
+  }
+
+  Promise.all(installPromises).then(() => log('installed!')) */
 
   ipcMain.on('open-plugin-controller-window', async (event, {
     pluginKey,
@@ -514,7 +531,8 @@ async function createWindow() {
       store.delete('pluginData');
       await rimraf(path.join(process.cwd(), 'installed-plugins'));
       await mkdirp(path.join(process.cwd(), 'installed-plugins'));
-      mainWindow.webContents.send('manifest-changed');
+      // TBD: Do we need this?
+      // mainWindow.webContents.send('manifest-changed');
       if (pluginControllerWindow) {
         pluginControllerWindow.close();
         pluginControllerWindow = null;
@@ -585,43 +603,41 @@ if (!isSingleAppInstance) {
   app.on('activate', () => {
     if (mainWindow === null) createWindow();
   });
-  
+
   app.on('ready', () => {
     log('App ready, creating window...');
-  
+
     createWindow();
-  
+
     log('Created main-renderer window, registering protocol...');
-  
+
     protocol.registerStringProtocol('deskfiler', (request, callback) => {
       log('Registered deskfiler:// protocol');
-  
+
       callback();
     });
-  
+
     log('Initializing serve for plugins');
-  
+
     server = http.createServer((request, response) => (
       handler(request, response, {
         public: PLUGINS_DIR,
       })
     ));
-  
+
     server.listen(PORT, () => {
       log(`Hosting plugins @ http://localhost:${PORT}.`);
     });
   });
-  
-  app.on('login', (event, webContents, request, authInfo, callback) => {
+
+  app.on('login', (event, _, request, authInfo, callback) => {
     event.preventDefault();
     callback('a', 'b');
   });
-  
+
   app.on('window-all-closed', () => {
     server.close(() => { log('Plugins server closed.'); });
     log('Terminating app...');
     if (process.platform !== 'darwin') app.quit();
   });
-};
-
-
+}
