@@ -12,6 +12,8 @@
     "@babel/preset-react": "^7.6.3",
     "animejs": "^3.1.0",
     "foundation-sites": "^6.5.3",
+    "luxon": "^1.21.2",
+    "network-speed": "^2.0.4",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-foundation": "^0.9.6",

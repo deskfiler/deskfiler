@@ -7,10 +7,19 @@ import sizeOf from 'image-size';
 window.PLUGIN = {
   handleFiles: async ({ inputs, context, system }) => {
     const { filePaths } = inputs;
-    const { showPluginWindow } = context;
+    const { showPluginWindow, log } = context;
     const { path } = system;
 
     showPluginWindow();
+    const fileCount = filePaths.length;
+    const { dir } = path.parse(filePaths[0]);
+    log({
+      action: 'Viewed files',
+      meta: {
+        type: 'text',
+        value: [`${fileCount} file${fileCount > 1 ? 's' : ''} viewed`, ...(fileCount > 10 ? [`Input directory: ${dir}`] : filePaths) ].join('; '),
+      },
+    });
 
     const root = document.querySelector('#root');
 
@@ -78,7 +87,7 @@ window.PLUGIN = {
                       >
                         {t}
                       </span>
-                    )) : <span>This image has no tags.</span>}
+                    )) : <span style={{ margin: '5px 10px' }}>This image has no tags.</span>}
                   </div>
                 </div>
               </div>

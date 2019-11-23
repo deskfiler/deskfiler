@@ -16,12 +16,15 @@ const PRELOADS_DIR = isIt('development').env
   ? path.join(__dirname, 'preloads')
   : path.join(__dirname);
 
+const PREPACKED_PLUGINS = ['gVision', 'imageTagViewer', 'zip'];
+
 module.exports = {
   PLUGINS_DIR,
   LOGS_DIR,
   TEMP_DIR,
   PRELOADS_DIR,
   DESKFILER_DIR,
+  PREPACKED_PLUGINS,
   HOME_DIR,
   PORT,
 };
