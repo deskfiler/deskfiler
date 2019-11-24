@@ -21,7 +21,12 @@ async function transferFiles({ filePaths, fs, path }) {
     const { name, ext } = path.parse(fp);
     const { size } = fs.statSync(fp);
     const content = fs.readFileSync(fp);
-    return { size, name: `${name}${ext}`, path: fp, content };
+    return {
+      size,
+      name: `${name}${ext}`,
+      path: fp,
+      content,
+    };
   });
 
   const wtClient = await createWTClient(apiKey);
@@ -39,8 +44,8 @@ const useTimer = () => {
   const [isRunning, setIsRunning] = useState(false);
   const interval = useRef(null);
 
-  const start = value => {
-    setValue(value);
+  const start = initialValue => {
+    setValue(initialValue);
     setIsRunning(true);
   };
 
@@ -54,16 +59,15 @@ const useTimer = () => {
       setValue(prevValue => {
         if (prevValue > 1) {
           return prevValue - 1;
-        } else {
-          stop();
-          return prevValue;
         }
+        stop();
+        return prevValue;
       });
     };
 
     if (isRunning) {
       interval.current = setInterval(tick, 1000);
-    } 
+    }
 
     return () => {
       clearInterval(interval.current);
@@ -117,7 +121,7 @@ window.PLUGIN = {
             'Content-Type': 'application/json',
           },
         };
-      
+
         let counter = 0;
         const timer = setInterval(async () => {
           if (counter > 5) {
@@ -146,8 +150,8 @@ window.PLUGIN = {
             return dateTime.toFormat("s 'seconds'");
           }
           return dateTime.toFormat("m 'minutes' s 'seconds'");
-        }
-        if (estimate) {          
+        };
+        if (estimate) {
           setEstimateLabel(`Transfering files... ${getTimeString(estimate)}`);
         }
 
@@ -160,21 +164,17 @@ window.PLUGIN = {
         const startPlugin = async () => {
           try {
             await showPluginWindow();
-            const totalSize = filePaths.reduce((acc, fp) => {
-              const { size } = fs.statSync(fp);
-              acc += size;
-              return acc;
-            }, 0);
+            const totalSize = filePaths.reduce((acc, fp) => acc + fs.statSync(fp).size, 0);
 
-            const overflow = totalSize > (2 * Math.pow(1024, 3));
+            const overflow = totalSize > (2 * (1024 ** 3));
 
             if (overflow) {
               setErrorMessage('This plugin can upload no more than 2 GB of content.');
               return;
             }
-      
+
             const speed = await getNetworkUploadSpeed();
-            
+
             if (!speed) {
               setErrorMessage('The connection speed to WeTransfer is too small. Please try again later.');
               return;
@@ -203,7 +203,7 @@ window.PLUGIN = {
             exit();
           }
         };
-        startPlugin(); 
+        startPlugin();
       }, []);
 
       return (
