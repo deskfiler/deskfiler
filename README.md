@@ -37,9 +37,10 @@ Your system needs the package manager yarn and a few npm packages to create Desk
 2. Install yarn: https://yarnpkg.com/en/
 
 3. Install required npm modules
-    ```sh
-    npm install -g cross-env
-    ```
+   ```sh
+   yarn global add cross-env concurrently
+   ```
+   "concurrently" is used in the build process to parallelize the build process. 
 4. Check out and compile
     ```sh
     git clone https://github.com/deskfiler/deskfiler.git
