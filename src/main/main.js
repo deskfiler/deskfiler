@@ -442,10 +442,6 @@ async function createWindow() {
   ipcMain.on('recieved-plugin-tarball', async (event, filePath) => {
     try {
       await unpackPlugin(filePath);
-      /* TBD: Do we need this? */
-      /* if (result) {
-        mainWindow.webContents.send('manifest-changed', 'add');
-      } */
     } catch (err) {
       console.log(err);
     }
@@ -531,8 +527,6 @@ async function createWindow() {
       store.delete('pluginData');
       await rimraf(path.join(process.cwd(), 'installed-plugins'));
       await mkdirp(path.join(process.cwd(), 'installed-plugins'));
-      // TBD: Do we need this?
-      // mainWindow.webContents.send('manifest-changed');
       if (pluginControllerWindow) {
         pluginControllerWindow.close();
         pluginControllerWindow = null;
