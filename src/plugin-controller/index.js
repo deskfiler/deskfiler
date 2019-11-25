@@ -8,7 +8,8 @@
  */
 import { remote, shell, ipcRenderer } from 'electron';
 import store from 'store';
-import { updateStore } from 'utils';
+import { updateSettingsStore, addStyles } from 'utils';
+import { fontsCss } from 'styled';
 
 import { LOGS_DIR, PORT, PLUGINS_DIR } from '../main-renderer/constants';
 
@@ -137,6 +138,16 @@ function injectPlugin({
       });
     }
   };
+  
+  const styles = `
+    ${fontsCss}
+
+    body {
+      font-family: Roboto;
+    }
+  `;
+
+  addStyles({ styles, document });
 
   const body = document.querySelector('body');
 
@@ -165,9 +176,8 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
       },
       set: async (values) => {
         if (values && typeof values === 'object' && values.constructor === Object) {
-          await updateStore({
-            key: 'settings',
-            subKey: pluginKey,
+          await updateSettingsStore({
+            key: pluginKey,
             values,
           });
         }
