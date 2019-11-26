@@ -14,15 +14,14 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Set up node using nvm
-        uses: dcodeIO/setup-node-nvm@v2.0.0
+      - name: Setup Node.js for use with actions
+        uses: actions/setup-node@v1.1.0
         with:
-          # The node.js version to use according to nvm. Uses the version specified in .nvmrc if omitted.
-          node-version: latest
+          version: 12.13.0
       - name: Checkout the code
         uses: actions/checkout@v1
-      - name: Install Dependencies
-        run: yarn
-      - name: Release
-        run: yarn release
-
+      - name: Electron Builder
+        uses: samuelmeuli/action-electron-builder@v1.0.0
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          release: true
