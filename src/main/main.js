@@ -1,5 +1,6 @@
 const {
   app,
+  dialog,
   ipcMain,
   protocol,
   BrowserWindow,
@@ -33,6 +34,8 @@ const {
   LOGS_DIR,
   PORT,
 } = require('./constants');
+
+const pjson = require('../package.json');
 
 let mainWindow;
 let pluginControllerWindow;
@@ -640,17 +643,41 @@ if (!isSingleAppInstance) {
 
     log('Checking for updates...');
 
-    const { versionInfo, updateInfo } = await autoUpdater.checkForUpdates();
+    autoUpdater.on('update-available', async (event) => {
+      const { version } = event;
 
-    if (versionInfo.version !== updateInfo.version) {
-      log('found new version!', updateInfo.version, ' downloading...');
+      log('found new version!', version, ' asking to download...');
 
-      await autoUpdater.downloadUpdate();
+      const { response } = await dialog.showMessageBox({
+        type: 'question',
+        title: `New update available (${version})`,
+        message: 'Do you want to download update?',
+        buttons: ['cancel', 'Download'],
+      });
 
-      log('finished donwloading update, rerun app');
+      if (response === 1) {
+        log('user confirmed he wants to update, downloading...');
+        await autoUpdater.downloadUpdate();
+      }
+    });
 
-      await autoUpdater.quitAndInstall();
-    }
+    autoUpdater.on('update-downloaded', async (event) => {
+      const { version } = event;
+
+      const { response } = await dialog.showMessageBox({
+        type: 'question',
+        title: `Update available (${version})`,
+        message: 'Do you want to install update?',
+        buttons: ['cancel', 'Quit and install'],
+      });
+
+      if (response === 1) {
+        log('user confirmed he wants to install update, rerunning app...');
+        await autoUpdater.quitAndInstall();
+      }
+    });
+
+    await autoUpdater.checkForUpdates();
   });
 
   app.on('login', (event, _, request, authInfo, callback) => {
