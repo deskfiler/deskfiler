@@ -45,6 +45,9 @@ const rimraf = util.promisify(rmrf);
 
 let server = null;
 
+// FIXME: test auto updates
+process.env.GH_TOKEN = "96b722e845c4db8816330a57e15dbce8b87b2ff2";
+
 autoUpdater.logger = require("electron-log")
 autoUpdater.logger.transports.file.level = "info"
 
