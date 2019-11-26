@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    name: Release distributables for ${{ matrix.os }}
+    runs-on: ${{ martix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+      - name: Set up node using nvm
+        uses: dcodeIO/setup-node-nvm@v2.0.0
+        with:
+          # The node.js version to use according to nvm. Uses the version specified in .nvmrc if omitted.
+          node-version: latest
+      - name: Checkout the code
+        uses: actions/checkout@v1
+      - name: Install Dependencies
+        run: yarn
+      - name: Release
+        run: yarn release
