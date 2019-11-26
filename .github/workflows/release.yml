@@ -20,6 +20,10 @@ jobs:
           version: 12.13.0
       - name: Checkout the code
         uses: actions/checkout@v1
+      - name: set-env
+        uses: allenevans/set-env@v1.0.0
+        with:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Dependencies
         run: yarn
       - name: Release
