@@ -23,5 +23,11 @@ jobs:
       - name: Electron Builder
         uses: samuelmeuli/action-electron-builder@v1.0.0
         with:
-          github_token: ${{ secrets.GH_TOKEN }}
           release: true
+          github_token: ${{ secrets.GH_TOKEN }}
+          # macOS code signing certificate
+          mac_certs: ${{ secrets.mac_certs }}
+          mac_certs_password: ${{ secrets.mac_certs_password }}
+          # windows code signing certificate
+          windows_certs: ${{ secrets.windows_certs }}
+          windows_certs_password: ${{ secrets.windows_certs_password }}
