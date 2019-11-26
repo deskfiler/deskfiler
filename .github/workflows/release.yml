@@ -14,11 +14,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Set up node using nvm
-        uses: dcodeIO/setup-node-nvm@v2.0.0
+      - name: Setup Node.js for use with actions
+        uses: actions/setup-node@v1.1.0
         with:
-          # The node.js version to use according to nvm. Uses the version specified in .nvmrc if omitted.
-          node-version: 12.13.0
+          version: 12.13.0
       - name: Checkout the code
         uses: actions/checkout@v1
       - name: Install Dependencies
