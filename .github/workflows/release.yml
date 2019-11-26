@@ -8,10 +8,10 @@ on:
 jobs:
   release:
     name: Release distributables for ${{ matrix.os }}
-    runs-on: ${{ martix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
+    runs-on: ${{ martix.os }}
 
     steps:
       - name: Set up node using nvm
