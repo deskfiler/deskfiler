@@ -35,8 +35,6 @@ const {
   PORT,
 } = require('./constants');
 
-const pjson = require('../package.json');
-
 let mainWindow;
 let pluginControllerWindow;
 let pluginConfigWindow;
@@ -48,17 +46,8 @@ const rimraf = util.promisify(rmrf);
 
 let server = null;
 
-autoUpdater.logger = require("electron-log")
-autoUpdater.logger.transports.file.level = "info"
-
-const data = {
-  provider: 'github',
-  owner: 'deskfiler',
-  repo: 'deskfiler',
-  token: '96b722e845c4db8816330a57e15dbce8b87b2ff2',
-};
-
-autoUpdater.setFeedURL(data);
+autoUpdater.logger = require('electron-log');
+autoUpdater.logger.transports.file.level = 'info';
 
 autoUpdater.autoDownload = false;
 
