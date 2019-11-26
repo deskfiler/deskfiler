@@ -12,6 +12,7 @@ const path = require('path');
 const util = require('util');
 const http = require('http');
 const childProcess = require('child_process');
+const { autoUpdater } = require('electron-updater')
 
 const mkdirp = require('mkdirp');
 const rmrf = require('rimraf');
@@ -43,6 +44,9 @@ let paymentWindow;
 const rimraf = util.promisify(rmrf);
 
 let server = null;
+
+autoUpdater.logger = require("electron-log")
+autoUpdater.logger.transports.file.level = "info"
 
 app.setAsDefaultProtocolClient('deskfiler');
 
@@ -622,6 +626,10 @@ if (!isSingleAppInstance) {
     server.listen(PORT, () => {
       log(`Hosting plugins @ http://localhost:${PORT}.`);
     });
+
+    log('Checking for updates...');
+
+    autoUpdater.checkForUpdatesAndNotify();
   });
 
   app.on('login', (event, _, request, authInfo, callback) => {
