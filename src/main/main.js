@@ -57,6 +57,8 @@ const data = {
 
 autoUpdater.setFeedURL(data);
 
+autoUpdater.autoDownload = false;
+
 app.setAsDefaultProtocolClient('deskfiler');
 
 mkdirp.sync(LOGS_DIR);
@@ -638,7 +640,7 @@ if (!isSingleAppInstance) {
 
     log('Checking for updates...');
 
-    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.checkForUpdates();
   });
 
   app.on('login', (event, _, request, authInfo, callback) => {
