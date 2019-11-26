@@ -110,9 +110,7 @@ export const exportLogs = async (data) => {
     canceled,
     filePath,
   } = await createSaveDialog({
-    options: {
-      defaultPath: `${now}-deskfiler-logs.csv`,
-    },
+    defaultPath: `${now}-deskfiler-logs.csv`,
     filters: [{
       name: 'Spreadsheet',
       extensions: ['csv'],
@@ -120,18 +118,18 @@ export const exportLogs = async (data) => {
   });
 
   if (!canceled) {
-    csv.writeToPath(filePath, data)
+    csv.writeToPath(filePath, formattedData)
       .on('error', err => console.error(err))
       .on('finish', () => console.log('Done writing.'));
   }
 };
 
-export const updateStore = async ({ key, subKey, values }) => {
-  const prevSettings = await store.get(key);
-  store.set(key, {
+export const updateSettingsStore = async ({ key, values }) => {
+  const prevSettings = await store.get('settings');
+  store.set('settings', {
     ...(prevSettings || {}),
-    [subKey]: {
-      ...(prevSettings && prevSettings[subKey] ? prevSettings[subKey] : {}),
+    [key]: {
+      ...(prevSettings && prevSettings[key] ? prevSettings[key] : {}),
       ...values,
     },
   });
@@ -153,3 +151,10 @@ export const checkUrl = (url) => {
 export const copyToClipboard = (text) => {
   clipboard.writeText(text);
 };
+
+export const addStyles = ({ styles, document }) => {
+  const css = document.createElement('style');
+  css.type = 'text/css';
+  css.appendChild(document.createTextNode(styles));
+  document.getElementsByTagName('head')[0].appendChild(css);
+}

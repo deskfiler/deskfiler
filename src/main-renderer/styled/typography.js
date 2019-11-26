@@ -21,7 +21,7 @@ import {
 
 const DEFAULT_TEXT_COLOR = '#222222';
 
-export const Fonts = createGlobalStyle`
+export const fontsCss = `
   @font-face {
     font-family: 'Roboto';
     font-style: normal;
@@ -85,6 +85,10 @@ export const Fonts = createGlobalStyle`
     font-weight: normal;
     src: url(${eurostileNormalFont});
   }
+`;
+
+export const Fonts = createGlobalStyle`
+  ${fontsCss};
 `;
 
 export const Text = styled.span`

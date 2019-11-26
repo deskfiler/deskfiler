@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 import PluginSettings from './containers/PluginSettings';
@@ -12,12 +12,15 @@ window.PLUGIN = {
     ticket,
   }) => {
     const {
+      log,
       exit,
       settings: contextSettings,
       openDialog,
       token,
       showPluginWindow,
       focus,
+      startProgress,
+      finishProgress,
       openOutputFolder,
       openPaymentWindow,
     } = context;
@@ -35,6 +38,7 @@ window.PLUGIN = {
       const [saveDir, setSaveDir] = useState(null);
       const [settings, setSettings] = useState(initialSettings);
       const [processedFiles, setProcessedFiles] = useState(0);
+      const [outputPaths, setOutputPaths] = useState(filePaths);
 
       const onSubmit = async (newSettings) => {
         setSettings(newSettings);
@@ -43,11 +47,17 @@ window.PLUGIN = {
 
         if (copyTaggedToExtraFolder || saveToJson) {
           const dialogResponse = await openDialog({ options: { title: 'Select saving directory' }, properties: ['openDirectory'] });
+          const taggedPaths = filePaths.map(fp => {
+            const { name, ext } = system.path.parse(fp);
+            return `${dialogResponse}/${name}-tagged-copy${ext}`
+          });
+          setOutputPaths(taggedPaths);
           setSaveDir(dialogResponse);
           focus();
         }
 
         setProcessing(true);
+        startProgress();
       };
 
       useEffect(() => {
@@ -61,6 +71,26 @@ window.PLUGIN = {
       const increment = () => {
         setProcessedFiles(processedFiles + 1)
       };
+
+      useEffect(() => {
+        if (processedFiles === filePaths.length) {
+          const { userticket, plugindetails } = ticket || {};
+          const { dir } = system.path.parse(outputPaths[0]);
+          finishProgress();
+
+          log({
+            action: 'Processed files and added tags for them',
+            meta: {
+              type: 'text',
+              value: [
+                `Ticket start: ${Math.floor(userticket.OZVALUE * 1000) / 1000} ${userticket.OZCURR} - Ticket end: ${Math.floor((userticket.OZVALUE - (plugindetails.OZPRICE * processedFiles)) * 1000) / 1000} ${userticket.OZCURR}`,
+                `${outputPaths.length} file${outputPaths.length > 1 ? 's' : ''} tagged`,
+                ...(outputPaths.length > 10 ? [`Output directory: ${dir}`] : outputPaths),
+              ].join('; '),
+            },
+          });
+        }
+      }, [processedFiles, filePaths.length, outputPaths]);
 
       if (processing) {
         return (

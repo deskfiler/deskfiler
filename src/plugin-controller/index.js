@@ -8,17 +8,66 @@
  */
 import { remote, shell, ipcRenderer } from 'electron';
 import store from 'store';
-import { updateStore } from 'utils';
+import { updateSettingsStore, addStyles } from 'utils';
+import { fontsCss } from 'styled';
 
 import { LOGS_DIR, PORT, PLUGINS_DIR } from '../main-renderer/constants';
 
-const { app } = remote.require('electron');
 const fs = remote.require('fs');
 const path = remote.require('path');
 
 const hummus = remote.require('../node_modules/hummus/hummus.js');
 
 const currentWindow = remote.getCurrentWindow();
+
+const apiCall = async (url, params) => {
+  try {
+    const response = await fetch(url, {
+      ...params,
+      headers: {
+        credentials: 'include',
+        Authorization: `Basic ${btoa('a:b')}`,
+        ...params.header,
+      },
+    });
+
+    const json = await response.json();
+    if (json.error) throw new Error(json.error);
+    return json;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const getPluginInfo = async ({ pluginKey, token }) => {
+  const url = 'https://plugins.deskfiler.org/api/index.php';
+
+  const formData = {
+    appaction: 'pluginfo',
+    appid: pluginKey.split('-').join(''),
+    appname: 'deskfiler',
+    token,
+  };
+
+  try {
+    const body = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+      body.append(key, formData[key]);
+    });
+
+    const { data, success } = await apiCall(url, { method: 'POST', body });
+
+    return {
+      isRegistered: success && data.userplugin,
+      ticket: data,
+    };
+  } catch (err) {
+    return {
+      isRegistered: false,
+    };
+  }
+};
 
 function injectPlugin({
   pluginKey,
@@ -89,6 +138,16 @@ function injectPlugin({
       });
     }
   };
+  
+  const styles = `
+    ${fontsCss}
+
+    body {
+      font-family: Roboto;
+    }
+  `;
+
+  addStyles({ styles, document });
 
   const body = document.querySelector('body');
 
@@ -117,9 +176,8 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
       },
       set: async (values) => {
         if (values && typeof values === 'object' && values.constructor === Object) {
-          await updateStore({
-            key: 'settings',
-            subKey: pluginKey,
+          await updateSettingsStore({
+            key: pluginKey,
             values,
           });
         }
@@ -184,14 +242,13 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
         resolve(filePaths[0]);
       });
     }),
-    openPaymentWindow: async (userId) => {
-      shell.openExternal(`https://plugins.deskfiler.org/tickets.php/gvision/${userId}`);
-      // TODO: open payment window in BrowserWindow
-      // ipcRenderer.send('open-payment-window', { fromId: selfId, userId });
-      // ipcRenderer.on('payment-recieved', (e, { paymentInfo }) => {
-      //   console.log('paymentInfo', paymentInfo);
-      // });
-    },
+    openPaymentWindow: userId => new Promise((resolve) => {
+      ipcRenderer.send('open-payment-window', { fromId: selfId, userId });
+      ipcRenderer.once('payment-recieved', async () => {
+        const { ticket } = await getPluginInfo({ pluginKey, token });
+        resolve(ticket);
+      });
+    }),
     readFilePath: options => new Promise((resolve, reject) => {
       ipcRenderer.sendTo(mainId, 'save-dialog', {
         fromId: selfId,

@@ -3,16 +3,15 @@ const {
   ipcMain,
   protocol,
   BrowserWindow,
+  webContents,
 } = require('electron');
-
-const aspect = require('electron-aspectratio');
 
 const { dissoc } = require('ramda');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
 const http = require('http');
-const child_process = require('child_process');
+const childProcess = require('child_process');
 
 const mkdirp = require('mkdirp');
 const rmrf = require('rimraf');
@@ -27,6 +26,7 @@ const isIt = require('./utils/whichEnvIsIt');
 const {
   HOME_DIR,
   PLUGINS_DIR,
+  /* PREPACKED_PLUGINS, */
   PRELOADS_DIR,
   TEMP_DIR,
   LOGS_DIR,
@@ -38,6 +38,7 @@ let pluginControllerWindow;
 let pluginConfigWindow;
 let registerWindow;
 let loginWindow;
+let paymentWindow;
 
 const rimraf = util.promisify(rmrf);
 
@@ -84,35 +85,44 @@ async function createPluginControllerWindow({
     selfId: pluginControllerWindow.webContents.id,
   });
 
-  pluginControllerWindow.on('closed', () => {
+  pluginControllerWindow.on('closed', async () => {
     pluginControllerWindow = null;
+    const plugin = await store.get(`pluginData.${pluginKey}`);
+    store.set(`pluginData.${pluginKey}`, {
+      ...plugin,
+      isWorking: false,
+    });
   });
 }
 
-// TODO: create payment window in BrowserWindow
-// async function createPaymentWindow({ fromId, userId }) {
-//   paymentWindow = new BrowserWindow({
-//     minWidth: 800,
-//     minHeight: 600,
-//     show: true,
-//     webPreferences: {
-//       nodeIntegration: true,
-//       preload: path.join(__dirname, '/preloads/paymentPreload.js'),
-//     },
-//   });
+async function createPaymentWindow({ fromId, userId }) {
+  paymentWindow = new BrowserWindow({
+    minWidth: 800,
+    minHeight: 600,
+    show: true,
+    webPreferences: {
+      nodeIntegration: true,
+      preload: path.join(__dirname, '/preloads/paymentPreload.js'),
+    },
+  });
 
-//   await paymentWindow.loadURL(`https://plugins.deskfiler.org/tickets.php/gvision/${userId}`, {
-//     extraHeaders: 'Authorization: Basic YTpi',
-//   });
+  await paymentWindow.loadURL(`https://plugins.deskfiler.org/tickets.php/gvision/${userId}`, {
+    extraHeaders: 'Authorization: Basic YTpi',
+  });
 
-//   if (process.env.NODE_ENV === 'development') {
-//     paymentWindow.webContents.openDevTools();
-//   }
+  ipcMain.once('payment-recieved', () => {
+    log(`payment recieved from user ${userId}`);
+    webContents.fromId(fromId).send('payment-recieved');
+  });
 
-//   paymentWindow.on('closed', () => {
-//     paymentWindow = null;
-//   });
-// }
+  if (process.env.NODE_ENV === 'development') {
+    paymentWindow.webContents.openDevTools();
+  }
+
+  paymentWindow.on('closed', () => {
+    paymentWindow = null;
+  });
+}
 
 async function createRegisterWindow() {
   log('creating login window');
@@ -224,14 +234,14 @@ async function createWindow() {
   mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
 
   if (process.platform === 'win32') {
-    var resizeTimeout;
-    mainWindow.on('resize', (e)=>{
+    let resizeTimeout;
+    mainWindow.on('resize', () => {
       clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(function(){
-        var size = mainWindow.getSize();
-        mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4));
-    }, 100);
-});
+      resizeTimeout = setTimeout(() => {
+        const size = mainWindow.getSize();
+        mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4, 10));
+      }, 100);
+    });
   } else {
     const defaultRatio = 4 / 3;
     mainWindow.setAspectRatio(defaultRatio);
@@ -324,13 +334,17 @@ async function createWindow() {
       const escapeSpaces = p => p.replace(/(\s+)/g, '\\$1');
       const pathToExecutables = path.join(PLUGINS_DIR, pluginKey, executablesDir);
       if (process.platform !== 'win32' && fs.existsSync(pathToExecutables)) {
-        child_process.exec(`chmod -R 777 ${escapeSpaces(pathToExecutables)}`, (err) => {
+        childProcess.exec(`chmod -R 777 ${escapeSpaces(pathToExecutables)}`, (err) => {
           if (err) {
             throw new Error(err);
           }
           log('set permissions for plugin directory');
-        });        
+        });
       }
+
+      log('getting plugin copy if already installed');
+
+      const pluginDataCopy = await store.get(`pluginData.${pluginKey}`);
 
       store.set(`pluginData.${pluginKey}`, {
         key: pluginKey,
@@ -357,7 +371,11 @@ async function createWindow() {
             resolve();
           } else {
             log('installation cancelled by user');
-            store.delete(`pluginData.${pluginKey}`);
+            if (pluginDataCopy) {
+              store.set(`pluginData.${pluginKey}`, pluginDataCopy);
+            } else {
+              store.delete(`pluginData.${pluginKey}`);
+            }
             reject(new Error('Installation Cancelled'));
           }
         });
@@ -423,14 +441,28 @@ async function createWindow() {
 
   ipcMain.on('recieved-plugin-tarball', async (event, filePath) => {
     try {
-      const result = await unpackPlugin(filePath);
-      if (result) {
-        mainWindow.webContents.send('manifest-changed', 'add');
-      }
+      await unpackPlugin(filePath);
     } catch (err) {
       console.log(err);
     }
   });
+
+  /* TODO: implement preinstalled plugins feature. Right now stuck on a way to
+   * copy plugin tarballs into the actual distributable. copy-webpack-plugin don't
+   * work for some reason. Specifying them in package.json > build > files don't
+   * work either. */
+
+  /* const installPromises = [];
+
+  for (const plugin of PREPACKED_PLUGINS) {
+    const filePath = path.join(__dirname, `${plugin}.tar.gz`);
+
+    log('installing prepacked plugin', plugin, 'filePath', filePath);
+
+    installPromises.push(unpackPlugin(filePath))
+  }
+
+  Promise.all(installPromises).then(() => log('installed!')) */
 
   ipcMain.on('open-plugin-controller-window', async (event, {
     pluginKey,
@@ -455,10 +487,13 @@ async function createWindow() {
     createPluginConfigWindow({ pluginKey });
   });
 
-  // TODO: create payment window in BrowserWindow
-  // ipcMain.on('open-payment-window', (event, { fromId, userId }) => {
-  //   createPaymentWindow({ fromId, userId });
-  // });
+  ipcMain.on('open-payment-window', (event, { fromId, userId }) => {
+    if (!paymentWindow) {
+      createPaymentWindow({ fromId, userId });
+    } else {
+      paymentWindow.show();
+    }
+  });
 
   ipcMain.on('open-register-window', () => {
     if (!registerWindow) {
@@ -481,7 +516,7 @@ async function createWindow() {
     log('logged in as', user.email);
     store.set('user', user);
     mainWindow.webContents.send('logged-in');
-  })
+  });
 
   ipcMain.on('send-auth-token', (event, token) => {
     log('got auth token', token);
@@ -492,7 +527,6 @@ async function createWindow() {
       store.delete('pluginData');
       await rimraf(path.join(process.cwd(), 'installed-plugins'));
       await mkdirp(path.join(process.cwd(), 'installed-plugins'));
-      mainWindow.webContents.send('manifest-changed');
       if (pluginControllerWindow) {
         pluginControllerWindow.close();
         pluginControllerWindow = null;
@@ -563,43 +597,41 @@ if (!isSingleAppInstance) {
   app.on('activate', () => {
     if (mainWindow === null) createWindow();
   });
-  
+
   app.on('ready', () => {
     log('App ready, creating window...');
-  
+
     createWindow();
-  
+
     log('Created main-renderer window, registering protocol...');
-  
+
     protocol.registerStringProtocol('deskfiler', (request, callback) => {
       log('Registered deskfiler:// protocol');
-  
+
       callback();
     });
-  
+
     log('Initializing serve for plugins');
-  
+
     server = http.createServer((request, response) => (
       handler(request, response, {
         public: PLUGINS_DIR,
       })
     ));
-  
+
     server.listen(PORT, () => {
       log(`Hosting plugins @ http://localhost:${PORT}.`);
     });
   });
-  
-  app.on('login', (event, webContents, request, authInfo, callback) => {
+
+  app.on('login', (event, _, request, authInfo, callback) => {
     event.preventDefault();
     callback('a', 'b');
   });
-  
+
   app.on('window-all-closed', () => {
     server.close(() => { log('Plugins server closed.'); });
     log('Terminating app...');
     if (process.platform !== 'darwin') app.quit();
   });
-};
-
-
+}
