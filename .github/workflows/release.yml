@@ -25,3 +25,4 @@ jobs:
         run: yarn
       - name: Release
         run: yarn release
+
