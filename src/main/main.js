@@ -613,7 +613,7 @@ if (!isSingleAppInstance) {
     if (mainWindow === null) createWindow();
   });
 
-  app.on('ready', () => {
+  app.on('ready', async () => {
     log('App ready, creating window...');
 
     createWindow();
@@ -640,7 +640,17 @@ if (!isSingleAppInstance) {
 
     log('Checking for updates...');
 
-    autoUpdater.checkForUpdates();
+    const { versionInfo, updateInfo } = await autoUpdater.checkForUpdates();
+
+    if (versionInfo.version !== updateInfo.version) {
+      log('found new version!', updateInfo.version, ' downloading...');
+
+      await autoUpdater.downloadUpdate();
+
+      log('finished donwloading update, rerun app');
+
+      await autoUpdater.quitAndInstall();
+    }
   });
 
   app.on('login', (event, _, request, authInfo, callback) => {
