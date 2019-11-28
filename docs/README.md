@@ -9,5 +9,5 @@ Documentation
   * [Builing distributables](./getting-started/building-production-distributables.md)
 * [Plugins](./PLUGINS.md)
 * [Api](./API.md)
-* [Code of conduct](./CONTRIBUTING.md)
+* [Contributing](./CONTRIBUTING.md)
 * [Code of conduct](./CODE_OF_CONDUCT.md)
