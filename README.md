@@ -12,8 +12,8 @@ Get your binary downloads at [Deskfiler.org](https://www.deskfiler.org/)
 
 * [Features](#features)
 * [Contributing](#contributing)
-* [Install and Quickstart](#features)
-* [Documentation](#features)
+* [Install and Quickstart](#install-and-quickstart)
+* [Documentation](#documentation)
 * [License](#license)
 
 ## Features
