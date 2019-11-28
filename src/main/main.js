@@ -642,7 +642,19 @@ if (!isSingleAppInstance) {
 
     createWindow();
 
-    log('Created main-renderer window, Initializing serve for plugins...');
+    log('Created main-renderer window, registering protocol...');
+
+    protocol.registerStringProtocol('deskfiler', (request, callback) => {
+      callback();
+    }, (err) => {
+      if (err) {
+        log('Error when registering deskfiler:// protocol', err);
+        return;
+      }
+      log('Registered deskfiler:// protocol');
+    });
+
+    log('Initializing serve for plugins');
 
     server = http.createServer((request, response) => (
       handler(request, response, {
