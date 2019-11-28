@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Flex, colors, Text } from 'styled';
 import { ipcRenderer } from 'electron';
@@ -14,12 +14,21 @@ const ALLOWED_FILETYPES = ['application/x-tar', 'application/x-gzip'];
 const AddPluginCard = () => {
   const [modals, { openModal }] = useModals();
 
+  const openInstallModal = async (e, plugin) => {
+    openModal('installPlugin', { plugin });
+  };
+
   const addPlugin = (files) => {
     ipcRenderer.send('recieved-plugin-tarball', files);
-    ipcRenderer.once('unpacked-plugin', async (e, plugin) => {
-      openModal('installPlugin', { plugin });
-    });
   };
+
+  useEffect(() => {
+    ipcRenderer.on('unpacked-plugin', openInstallModal);
+
+    return () => {
+      ipcRenderer.removeListener('unpacked-plugin', openInstallModal);     
+    };
+  }, []);
 
   const onDrop = useCallback((acceptedFiles) => {
     const files = [...acceptedFiles].map(

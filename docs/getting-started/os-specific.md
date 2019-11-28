@@ -3,7 +3,7 @@ You will need OS-level build tools to be able to build native dependencies such 
 ## Windows related
 
 Make sure, you have the development tools to recompile node modules installed (eg. Visual Studio Community Edition)
-- needed to run node-gyp.
+- needed to run [node-gyp](https://github.com/nodejs/node-gyp).
 
 ## Mac related
 
