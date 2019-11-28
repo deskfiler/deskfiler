@@ -210,8 +210,10 @@ const unpackPlugin = async (filePath) => {
 
       log('writing settings to store...');
 
+      const settings = await store.get('settings');
+
       store.set('settings', {
-        ...settings,
+        ...(settings || {}),
         [pluginKey]: getSettingsFromSections(pluginSettings),
       });
 
