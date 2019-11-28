@@ -1,4 +1,22 @@
 <a name=""></a>
+# [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v0.0.2...v) (2019-11-28)
+
+
+### Bug Fixes
+
+* fix custom protocol and plugin download for windows, change win logo icon size ([8d63754](https://github.com/ilya-lopukhin/deskfiler-private/commit/8d63754))
+* fix default settings error when unpacking plugin ([28d697a](https://github.com/ilya-lopukhin/deskfiler-private/commit/28d697a))
+* fix protocol registering ([14e3d2a](https://github.com/ilya-lopukhin/deskfiler-private/commit/14e3d2a))
+* ico ([73b1934](https://github.com/ilya-lopukhin/deskfiler-private/commit/73b1934))
+
+
+### Features
+
+* add plugins download and install via deskfiler protocol ([8df84eb](https://github.com/ilya-lopukhin/deskfiler-private/commit/8df84eb))
+
+
+
+<a name=""></a>
 #  (2019-11-26)
 
 
