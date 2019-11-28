@@ -2,30 +2,30 @@ import React, { useState } from 'react';
 import { shell } from 'electron';
 import { Formik } from 'formik';
 import { Grid, Cell } from 'react-foundation';
-import { useUiState } from 'hooks';
 import { Icon } from 'components';
-import { createOpenDialog } from 'utils';
 
 import closeIcon from 'assets/images/close.svg';
-import folderIcon from 'assets/images/folder.svg';
 import chevronDownIcon from 'assets/images/chevron-down.svg';
 import chevronUpIcon from 'assets/images/chevron-up.svg';
 
-import Radio from 'components/Radio';
-import Select from 'components/Select';
 import InputGroup from 'components/InputGroup';
 
-import { Flex } from 'styled';
-
-import { useSettings, usePlugins, useIpc } from 'hooks';
+import { Flex, Text } from 'styled';
 
 import {
-  getPluginPath,
-} from 'utils';
+  useSettings,
+  usePlugins,
+  useUiState,
+  useIpc,
+} from 'hooks';
+
+import { getPluginPath, createOpenDialog } from 'utils';
 
 import inputs from './utils/inputsLib';
 
 import * as S from './styled';
+
+import pJson from '../../../package.json';
 
 const tabs = {
   general: {
@@ -224,11 +224,16 @@ const SettingsView = () => {
             </S.Settings>
           )}
         </Cell>
-        <Cell auto="all" style={{ height: '100%' }}>
+        <Flex
+          height="100%"
+          justify="space-between"
+          grow={1}
+          background="#0f294b"
+        >
           <Flex
             height="100%"
+            width="100%"
             align="normal"
-            background="#0f294b"
           >
             <S.SettingsMenuItem
               onClick={() => setUiState({ sideView: null })}
@@ -246,7 +251,12 @@ const SettingsView = () => {
               </S.SettingsMenuTab>
             ))}
           </Flex>
-        </Cell>
+          <Flex width="100%" align="flex-end" justify="flex-end" padding="8px">
+            <Text.Bold color="rgba(255, 255, 255, .4)">
+              version {pJson.version}
+            </Text.Bold>
+          </Flex>
+        </Flex>
       </Grid>
     </S.SettingsView>
   );

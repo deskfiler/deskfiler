@@ -1,4 +1,74 @@
 <a name=""></a>
+# [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v0.0.2...v) (2019-11-28)
+
+
+### Bug Fixes
+
+* fix custom protocol and plugin download for windows, change win logo icon size ([8d63754](https://github.com/ilya-lopukhin/deskfiler-private/commit/8d63754))
+* fix default settings error when unpacking plugin ([28d697a](https://github.com/ilya-lopukhin/deskfiler-private/commit/28d697a))
+* fix protocol registering ([14e3d2a](https://github.com/ilya-lopukhin/deskfiler-private/commit/14e3d2a))
+* ico ([73b1934](https://github.com/ilya-lopukhin/deskfiler-private/commit/73b1934))
+
+
+### Features
+
+* add plugins download and install via deskfiler protocol ([8df84eb](https://github.com/ilya-lopukhin/deskfiler-private/commit/8df84eb))
+
+
+
+<a name=""></a>
+#  (2019-11-26)
+
+
+### Bug Fixes
+
+* 7zip per-platfrom windows packages ([4ae737b](https://github.com/ilya-lopukhin/deskfiler-private/commit/4ae737b))
+* app inputModal cancel and validation, fix selfDir path for plugin-controller, remove console.logs ([f629dcf](https://github.com/ilya-lopukhin/deskfiler-private/commit/f629dcf))
+* aspect ratio preservtation on win ([ec54deb](https://github.com/ilya-lopukhin/deskfiler-private/commit/ec54deb))
+* create backup on existing file password protection for zipPw ([8461685](https://github.com/ilya-lopukhin/deskfiler-private/commit/8461685))
+* devtools open in prod ([230ca3b](https://github.com/ilya-lopukhin/deskfiler-private/commit/230ca3b))
+* fix addPlugin modal to recieve files ([ffa4a0f](https://github.com/ilya-lopukhin/deskfiler-private/commit/ffa4a0f))
+* fix fonts for plugin-controller, minor main and preload fixes ([a19946d](https://github.com/ilya-lopukhin/deskfiler-private/commit/a19946d))
+* fix gVision and tagViewer log messages, fix log export ([d4fd503](https://github.com/ilya-lopukhin/deskfiler-private/commit/d4fd503))
+* fix gvision manifest typo ([133e439](https://github.com/ilya-lopukhin/deskfiler-private/commit/133e439))
+* fix installation confirm double listeners call ([19743e5](https://github.com/ilya-lopukhin/deskfiler-private/commit/19743e5))
+* fix loaders for case when plugins working, fix cog spinner animation ([46daf45](https://github.com/ilya-lopukhin/deskfiler-private/commit/46daf45))
+* fix login preload error on login fail ([b20af97](https://github.com/ilya-lopukhin/deskfiler-private/commit/b20af97))
+* fix logs export ([89350f0](https://github.com/ilya-lopukhin/deskfiler-private/commit/89350f0))
+* fix plugin config exit and update settings ([3413671](https://github.com/ilya-lopukhin/deskfiler-private/commit/3413671))
+* fix plugin install animation ([f416325](https://github.com/ilya-lopukhin/deskfiler-private/commit/f416325))
+* fix plugin installation and plugin executables permissions ([2954f7c](https://github.com/ilya-lopukhin/deskfiler-private/commit/2954f7c))
+* fix plugin-controller focus ([7a18cd7](https://github.com/ilya-lopukhin/deskfiler-private/commit/7a18cd7))
+* fix removing plugin on installation cancel if already installed ([69e46ae](https://github.com/ilya-lopukhin/deskfiler-private/commit/69e46ae))
+* fix stream end on error for zipPw ([908e970](https://github.com/ilya-lopukhin/deskfiler-private/commit/908e970))
+* fix uppercase image extensions for imageTagViewer and gVision ([a6e7a11](https://github.com/ilya-lopukhin/deskfiler-private/commit/a6e7a11))
+* fix window resize for linux ([739731a](https://github.com/ilya-lopukhin/deskfiler-private/commit/739731a))
+* fix zip pw error handling ([f6b1200](https://github.com/ilya-lopukhin/deskfiler-private/commit/f6b1200))
+* fix zipPw plugin files not opening ([dc68487](https://github.com/ilya-lopukhin/deskfiler-private/commit/dc68487))
+* fix zipPw promise resolving before file stream close ([9305660](https://github.com/ilya-lopukhin/deskfiler-private/commit/9305660))
+* gVision processing state ([fd3e51d](https://github.com/ilya-lopukhin/deskfiler-private/commit/fd3e51d))
+* gVision processing state ([b4a324d](https://github.com/ilya-lopukhin/deskfiler-private/commit/b4a324d))
+* minor ui fixes ([e4e2934](https://github.com/ilya-lopukhin/deskfiler-private/commit/e4e2934))
+* pdfSplitter native dependency (finally) ([aa57ea1](https://github.com/ilya-lopukhin/deskfiler-private/commit/aa57ea1))
+* refactor zipPw plugin for 7-zip ([640c100](https://github.com/ilya-lopukhin/deskfiler-private/commit/640c100))
+* remove console.logs ([36b9ba0](https://github.com/ilya-lopukhin/deskfiler-private/commit/36b9ba0))
+* remove unused ipc event calls ([384999c](https://github.com/ilya-lopukhin/deskfiler-private/commit/384999c))
+* rename <Flex/> wrap prop ([5278296](https://github.com/ilya-lopukhin/deskfiler-private/commit/5278296))
+* replace payment window to preload ([2ece8a3](https://github.com/ilya-lopukhin/deskfiler-private/commit/2ece8a3))
+* restrict add plugin modal extenstion to .tar ([378dab8](https://github.com/ilya-lopukhin/deskfiler-private/commit/378dab8))
+* show output paths for gVision logs ([de9d2c5](https://github.com/ilya-lopukhin/deskfiler-private/commit/de9d2c5))
+* stop plugin loader on plugin-controller window close ([28eed08](https://github.com/ilya-lopukhin/deskfiler-private/commit/28eed08))
+
+
+### Features
+
+* add logging for imageTagViewer and gVision ([e1b6cc0](https://github.com/ilya-lopukhin/deskfiler-private/commit/e1b6cc0))
+* add plugin controller ui for weTransfer and pdfSplitter ([b953027](https://github.com/ilya-lopukhin/deskfiler-private/commit/b953027))
+* restrict electron app to single instance ([7583c0f](https://github.com/ilya-lopukhin/deskfiler-private/commit/7583c0f))
+
+
+
+<a name=""></a>
 #  (2019-11-19)
 
 

@@ -26,12 +26,6 @@ function init() {
       }
     `;
     addStyles(styles);
-
-    const buttons = document.querySelectorAll('.button.warning.expanded');
-
-    [...buttons].forEach(b => {
-      b.setAttribute('href', 'https://plugins.deskfiler.org/sothanks.php');
-    });
   }
   if (global.location.pathname === '/sothanks.php') {
     const callout = document.querySelector('.callout');

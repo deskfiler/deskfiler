@@ -4,14 +4,16 @@
 > An Open Source electron plugin ecosystem for JS developers that makes tools for the desktop on Windows, Mac and Linux
 easily deployable and manageable as plugins.<br>
 
+<img src="https://deskfiler.org/img/GithubHeader.jpg" style="max-width:100%;">
+
 Get your binary downloads at [Deskfiler.org](https://www.deskfiler.org/)
 
 ## Table of Contents
 
 * [Features](#features)
 * [Contributing](#contributing)
-* [Install and Quickstart](#features)
-* [Documentation](#features)
+* [Install and Quickstart](#install-and-quickstart)
+* [Documentation](#documentation)
 * [License](#license)
 
 ## Features

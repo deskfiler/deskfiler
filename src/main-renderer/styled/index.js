@@ -50,6 +50,7 @@ export colors from './colors';
 export {
   Text,
   Fonts,
+  fontsCss,
 } from './typography';
 
 export default GlobalStyles;
