@@ -1,6 +1,6 @@
 {
   "name": "Deskfiler",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Open-source Electron.js plugin platform",
   "main": "./src/main/main.js",
   "build": {
@@ -105,8 +105,10 @@
     "css-loader": "^3.2.0",
     "dotenv": "^8.1.0",
     "electron-aspectratio": "^1.0.1",
+    "electron-log": "^3.0.9",
     "electron-dl": "^1.14.0",
     "electron-store": "^5.0.0",
+    "electron-updater": "^4.2.0",
     "fast-csv": "^3.4.0",
     "fetch-cookie": "^0.7.3",
     "file-type": "^12.4.0",

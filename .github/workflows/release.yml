@@ -8,20 +8,26 @@ on:
 jobs:
   release:
     name: Release distributables for ${{ matrix.os }}
-    runs-on: ${{ martix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Set up node using nvm
-        uses: dcodeIO/setup-node-nvm@v2.0.0
+      - name: Setup Node.js for use with actions
+        uses: actions/setup-node@v1.1.0
         with:
-          # The node.js version to use according to nvm. Uses the version specified in .nvmrc if omitted.
-          node-version: latest
+          version: 12.13.0
       - name: Checkout the code
         uses: actions/checkout@v1
-      - name: Install Dependencies
-        run: yarn
-      - name: Release
-        run: yarn release
+      - name: Electron Builder
+        uses: samuelmeuli/action-electron-builder@v1.0.0
+        with:
+          release: true
+          github_token: ${{ secrets.GH_TOKEN }}
+          # macOS code signing certificate
+          mac_certs: ${{ secrets.mac_certs }}
+          mac_certs_password: ${{ secrets.mac_certs_password }}
+          # windows code signing certificate
+          windows_certs: ${{ secrets.windows_certs }}
+          windows_certs_password: ${{ secrets.windows_certs_password }}

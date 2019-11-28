@@ -1,5 +1,6 @@
 const {
   app,
+  dialog,
   ipcMain,
   protocol,
   BrowserWindow,
@@ -13,6 +14,7 @@ const path = require('path');
 const util = require('util');
 const http = require('http');
 const childProcess = require('child_process');
+const { autoUpdater } = require('electron-updater')
 
 const mkdirp = require('mkdirp');
 const rmrf = require('rimraf');
@@ -44,6 +46,11 @@ let paymentWindow;
 const rimraf = util.promisify(rmrf);
 
 let server = null;
+
+autoUpdater.logger = require('electron-log');
+autoUpdater.logger.transports.file.level = 'info';
+
+autoUpdater.autoDownload = false;
 
 if (!app.isDefaultProtocolClient('deskfiler')) {
   app.setAsDefaultProtocolClient('deskfiler');
@@ -639,7 +646,7 @@ if (!isSingleAppInstance) {
     if (mainWindow === null) createWindow();
   });
 
-  app.on('ready', () => {
+  app.on('ready', async () => {
     log('App ready, creating window...');
 
     createWindow();
@@ -667,6 +674,44 @@ if (!isSingleAppInstance) {
     server.listen(PORT, () => {
       log(`Hosting plugins @ http://localhost:${PORT}.`);
     });
+
+    log('Checking for updates...');
+
+    autoUpdater.on('update-available', async (event) => {
+      const { version } = event;
+
+      log('found new version!', version, ' asking to download...');
+
+      const { response } = await dialog.showMessageBox({
+        type: 'question',
+        title: `New update available (${version})`,
+        message: 'Do you want to download update?',
+        buttons: ['cancel', 'Download'],
+      });
+
+      if (response === 1) {
+        log('user confirmed he wants to update, downloading...');
+        await autoUpdater.downloadUpdate();
+      }
+    });
+
+    autoUpdater.on('update-downloaded', async (event) => {
+      const { version } = event;
+
+      const { response } = await dialog.showMessageBox({
+        type: 'question',
+        title: `Update available (${version})`,
+        message: 'Do you want to install update?',
+        buttons: ['cancel', 'Quit and install'],
+      });
+
+      if (response === 1) {
+        log('user confirmed he wants to install update, rerunning app...');
+        await autoUpdater.quitAndInstall();
+      }
+    });
+
+    await autoUpdater.checkForUpdates();
   });
 
   app.on('login', (event, _, request, authInfo, callback) => {

@@ -16,6 +16,8 @@ const Flex = styled.div`
   align-items: ${getProp('align', 'flex-start')};
   justify-content: ${getProp('justify', 'flex-start')};
   position: ${getProp('position', 'relative')};
+  ${fromProp('grow', { make: 'flex-grow' })};
+  ${fromProp('shrink', { make: 'flex-shrink' })};
   ${fromProp('flex', { make: 'flex' })}
   ${fromProp('width', { make: 'width' })};
   ${fromProp('maxWidth', { make: 'max-width' })};
