@@ -45,9 +45,40 @@ const rimraf = util.promisify(rmrf);
 
 let server = null;
 
-app.setAsDefaultProtocolClient('deskfiler');
+if (!app.isDefaultProtocolClient('deskfiler')) {
+  app.setAsDefaultProtocolClient('deskfiler');
+}
 
 mkdirp.sync(LOGS_DIR);
+
+const downloadPlugin = async (url) => {
+  if (mainWindow && url.startsWith('deskfiler://plugins.deskfiler.org/up/')) {
+    const downloadsTempDir = path.join(TEMP_DIR, 'downloads');
+    try {
+      log('downloading plugin');
+  
+      await mkdirp(downloadsTempDir);
+  
+      mainWindow.focus();
+  
+      const downloadUrl = `https:${url.split(':')[1]}`;
+      const fileName = downloadUrl.split('/').slice(-1)[0];
+  
+      await download(mainWindow, downloadUrl, {
+        directory: downloadsTempDir,
+        onProgress: (progress) => { log(`download progress: ${progress * 100}%`); }
+      });
+  
+      log('plugin downloaded!');
+      const filePath = path.join(downloadsTempDir, fileName);
+  
+      await unpackPlugin(filePath);
+    } catch (err) {
+      log('error during download', err);
+      rimraf(downloadsTempDir);
+    }
+  }
+};
 
 const unpackPlugin = async (filePath) => {
   log('unpacking plugin', filePath);
@@ -591,7 +622,11 @@ const isSingleAppInstance = app.requestSingleInstanceLock();
 if (!isSingleAppInstance) {
   app.quit();
 } else {
-  app.on('second-instance', () => {
+  app.on('second-instance', (e, argv) => {
+    if (process.platform === 'win32') {
+      const url = argv.slice(-1)[0];
+      downloadPlugin(url);
+    }
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
@@ -607,19 +642,7 @@ if (!isSingleAppInstance) {
 
     createWindow();
 
-    log('Created main-renderer window, registering protocol...');
-
-    protocol.registerStringProtocol('deskfiler', (request, callback) => {
-      callback();
-    }, (err) => {
-      if (err) {
-        log('Error when registering deskfiler:// protocol', err);
-        return;
-      }
-      log('Registered deskfiler:// protocol');
-    });
-
-    log('Initializing serve for plugins');
+    log('Created main-renderer window, Initializing serve for plugins...');
 
     server = http.createServer((request, response) => (
       handler(request, response, {
@@ -637,33 +660,8 @@ if (!isSingleAppInstance) {
     callback('a', 'b');
   });
 
-  app.on('open-url', async (e, url) => {
-    if (mainWindow && url.startsWith('deskfiler://plugins.deskfiler.org/up/')) {
-      const downloadsTempDir = path.join(TEMP_DIR, 'downloads');
-      try {
-        log('downloading plugin');
-
-        await mkdirp(downloadsTempDir);
-  
-        mainWindow.focus();
-
-        const downloadUrl = `https:${url.split(':')[1]}`;
-        const fileName = downloadUrl.split('/').slice(-1)[0];
-    
-        await download(mainWindow, downloadUrl, {
-          directory: downloadsTempDir,
-          onProgress: (progress) => { log(`download progress: ${progress * 100}%`); }
-        });
-
-        log('plugin downloaded!');
-        const filePath = path.join(downloadsTempDir, fileName);
-
-        await unpackPlugin(filePath);
-      } catch (err) {
-        log('error during download', err);
-        rimraf(downloadsTempDir);
-      }
-    }
+  app.on('open-url', (e, url) => {
+    downloadPlugin(url);
   });
 
   app.on('window-all-closed', () => {
