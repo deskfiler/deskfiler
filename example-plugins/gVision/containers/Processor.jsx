@@ -94,9 +94,17 @@ const ImageProcessor = ({
     async function process() {
       const { tags, response } = await getGVisionTags({ filePath, labelsLanguage });
 
-      const filteredTags = tags
-        .filter(t => t.score >= parseInt(certaintyLevel || 0, 10))
-        .map(({ description }) => description);
+      const filteredTags = tags.reduce((acc, t, index) => {
+        if (t.score >= parseInt(certaintyLevel || 0, 10)) {
+          return [...acc, (
+            labelsLanguage && /^[\u0000-\u00ff]+$/.test(response.data[`${labelsLanguage}Labels`][index])
+              ? response.data[`${labelsLanguage}Labels`][index]
+              : t.description
+            )
+          ];
+        }
+        return acc;
+      }, []);
 
       writeTagsToExif({ filePath, tags: filteredTags, saveDir });
 
