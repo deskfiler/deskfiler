@@ -2,7 +2,7 @@ Installation and Development
 =============
 
 * [Quick start](./quick-start.md)
-* [Installing node](./getting-started/installing-node.md)
-* [OS-specific instructions](./getting-started/os-specific.md)
-* [Builing distributables](./getting-started/building-production-distributables.md)
+* [Installing node](./installing-node.md)
+* [OS-specific instructions](./os-specific.md)
+* [Builing distributables](./building-production-distributables.md)
 
