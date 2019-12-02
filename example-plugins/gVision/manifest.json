@@ -61,7 +61,7 @@
   ]
   }],
   "acceptRestrictions": {
-    "mime": ["image/jpeg"],
-    "ext": ["jpeg", "jpg", "gif", "png"]
+    "mime": ["image/jpeg", "image/png"],
+    "ext": ["jpeg", "jpg", "png"]
   }
 }

@@ -132,9 +132,8 @@ window.PLUGIN = {
                 </h2>
               )
             }
-            {filePaths.map((filePath, index) => (
+            {filePaths.map(filePath => (
               <ImageProcessor
-                index={index}
                 key={filePath}
                 filePath={filePath}
                 settings={settings}

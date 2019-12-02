@@ -3,6 +3,28 @@ import ReactDOM from 'react-dom';
 import piexifjs from 'piexifjs';
 import b64converter from 'base64-img';
 import sizeOf from 'image-size';
+import png from 'png-metadata';
+
+const getTags = ({ filePath, ext }) => {
+  const isPng = ext === '.png';
+  if (!isPng) {
+    const base64File = b64converter.base64Sync(filePath);
+    const loaded = piexifjs.load(base64File);
+    return loaded['0th']['270'] ? loaded['0th']['270'].split(', ') : [];
+  }
+  const chunks = png.readFileSync(filePath);
+  const tagChunk = png
+    .splitChunk(chunks)
+    .find(c => c.data.startsWith('Tagged by Google Vision, in Deskfiler.'));
+  if (tagChunk) {
+    const { data: tagString } = tagChunk || {};
+    const sliced = tagString.split('Tags:')[1]
+      .split(', ')
+      .map(t => t.trim());
+    return sliced;
+  }
+  return [];
+};
 
 window.PLUGIN = {
   handleFiles: async ({ inputs, context, system }) => {
@@ -26,10 +48,9 @@ window.PLUGIN = {
     const App = () => (
       <div style={{ display: 'flex', width: '100%', minHeight: 0, flexFlow: 'column nowrap' }}> {/* eslint-disable-line react/jsx-filename-extension */}
         {filePaths.map((filePath) => {
-          const base64File = b64converter.base64Sync(filePath);
-          const tags = piexifjs.load(base64File);
-          const dimensions = sizeOf(filePath);
           const { name, ext } = path.parse(filePath);
+          const dimensions = sizeOf(filePath);
+          const tags = getTags({ filePath, ext });
           return (
             <div style={{
               display: 'flex',
@@ -43,7 +64,7 @@ window.PLUGIN = {
                   {`${dimensions.width} x ${dimensions.height}`}
                 </span>
                 <img
-                  alt={tags['0th']['270'] ? tags['0th']['270'].split(', ')[0] : 'image'}
+                  alt={tags.length ? tags[0] : 'image'}
                   src={`file://${filePath}`}
                   style={{
                     width: '100%',
@@ -73,7 +94,7 @@ window.PLUGIN = {
                   }}
                 >
                   <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                    {tags['0th']['270'] ? tags['0th']['270'].split(', ').map(t => (
+                    {tags.length ? tags.map(t => (
                       <span
                         style={{
                           margin: '5px 10px',

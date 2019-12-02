@@ -2,9 +2,56 @@
 import React, { useEffect, useState } from 'react';
 import b64converter from 'base64-img';
 import piexif from 'piexifjs';
+import png from 'png-metadata';
+
+const writeTagsToExif = ({ filePath, tags, saveDir, fs, path }) => {
+  const { name, ext } = path.parse(filePath);
+
+  if (!/(\.jpg|\.jpeg|\.png)/i.test(ext)) {
+    throw new Error('Exif tags not written for', `${name}${ext}`, 'image not jpeg or png!');
+  }
+
+  if (ext !== '.png') {
+    const base64File = b64converter.base64Sync(filePath);
+    const [zeroth, exif, gps] = [{}, {}, {}];
+
+    exif[piexif.ExifIFD.UserComment] = `Tagged by Google Vision, in Deskfiler. \n Tags: ${tags.join(', ')}`;
+    zeroth[piexif.ImageIFD.ImageDescription] = `${tags.join(', ')}`;
+
+    const exifObj = { '0th': zeroth, Exif: exif, GPS: gps };
+    const exifStr = piexif.dump(exifObj);
+    const inserted = piexif.insert(exifStr, base64File);
+
+    b64converter.imgSync(inserted, filePath);
+
+  } else {
+    const fileBufferCopy = fs.readFileSync(filePath);
+    try {
+      const chunks = png.readFileSync(filePath);
+      const list = png
+        .splitChunk(chunks)
+        .filter(c => !c.data.startsWith('Tagged by Google Vision, in Deskfiler.')
+      );
+      const iend = list.pop();
+
+      const tagChunk = png.createChunk("aaAa", `Tagged by Google Vision, in Deskfiler. \n Tags: ${tags.join(', ')}`);
+      list.push(tagChunk);
+      list.push(iend);
+
+      const taggedImage = png.joinChunk(list);
+      fs.unlinkSync(filePath);
+      png.writeFileSync(filePath, taggedImage);
+    } catch (err) {
+      console.error(err);
+      fs.writeFileSync(filePath, fileBufferCopy, 'binary');
+    }
+  }
+  if (saveDir) {
+    fs.copyFileSync(filePath, `${saveDir}/${name}-tagged-copy${ext}`);
+  }
+};
 
 const ImageProcessor = ({
-  index,
   filePath,
   settings: {
     saveToJson,
@@ -66,34 +113,9 @@ const ImageProcessor = ({
     };
   };
 
-  const writeTagsToExif = ({ tags }) => {
-    const { name, ext, dir } = path.parse(filePath);
-
-    if (!/(\.jpg|\.jpeg)/i.test(ext)) {
-      throw new Error('Exif tags not written for', `${name}${ext}`, 'image not jpeg!');
-    }
-
-    const base64File = b64converter.base64Sync(filePath);
-    const [zeroth, exif, gps] = [{}, {}, {}];
-
-    exif[piexif.ExifIFD.UserComment] = `Tagged by Google Vision, in Deskfiler. \n Tags: ${tags.join(', ')}`;
-    zeroth[piexif.ImageIFD.ImageDescription] = `${tags.join(', ')}`;
-
-    const exifObj = { '0th': zeroth, Exif: exif, GPS: gps };
-    const exifStr = piexif.dump(exifObj);
-    const inserted = piexif.insert(exifStr, base64File);
-
-    b64converter.imgSync(inserted, filePath);
-
-    if (saveDir) {
-      fs.copyFileSync(filePath, `${saveDir}/${name}-tagged-copy${ext}`);
-    }
-  };
-
   useEffect(() => {
     async function process() {
       const { tags, response } = await getGVisionTags({ filePath, labelsLanguage });
-
       const filteredTags = tags.reduce((acc, t, index) => {
         if (t.score >= parseInt(certaintyLevel || 0, 10)) {
           return [...acc, (
@@ -106,7 +128,7 @@ const ImageProcessor = ({
         return acc;
       }, []);
 
-      writeTagsToExif({ filePath, tags: filteredTags, saveDir });
+      writeTagsToExif({ filePath, tags: filteredTags, saveDir, fs, path });
 
       if (saveToJson) {
         const { base } = path.parse(filePath);
