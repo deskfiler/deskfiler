@@ -4,24 +4,26 @@ import piexifjs from 'piexifjs';
 import b64converter from 'base64-img';
 import sizeOf from 'image-size';
 import png from 'png-metadata';
+import { XmlEntities } from 'html-entities';
 
-const getTags = ({ filePath, ext }) => {
-  const isPng = ext === '.png';
-  if (!isPng) {
+const entities = new XmlEntities();
+
+const getTags = (filePath) => {
+  const file = png.readFileSync(filePath);
+  if (!png.isPNG(file)) {
     const base64File = b64converter.base64Sync(filePath);
     const loaded = piexifjs.load(base64File);
     return loaded['0th']['270'] ? loaded['0th']['270'].split(', ') : [];
   }
-  const chunks = png.readFileSync(filePath);
   const tagChunk = png
-    .splitChunk(chunks)
+    .splitChunk(file)
     .find(c => c.data.startsWith('Tagged by Google Vision, in Deskfiler.'));
   if (tagChunk) {
     const { data: tagString } = tagChunk || {};
-    const sliced = tagString.split('Tags:')[1]
+    return tagString
+      .split('Tags:')[1]
       .split(', ')
       .map(t => t.trim());
-    return sliced;
   }
   return [];
 };
@@ -50,7 +52,7 @@ window.PLUGIN = {
         {filePaths.map((filePath) => {
           const { name, ext } = path.parse(filePath);
           const dimensions = sizeOf(filePath);
-          const tags = getTags({ filePath, ext });
+          const tags = getTags(filePath);
           return (
             <div style={{
               display: 'flex',
@@ -106,7 +108,7 @@ window.PLUGIN = {
                           wordBreak: 'break-word',
                         }}
                       >
-                        {t}
+                        {entities.decode(t)}
                       </span>
                     )) : <span style={{ margin: '5px 10px' }}>This image has no tags.</span>}
                   </div>
