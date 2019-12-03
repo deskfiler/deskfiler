@@ -22,8 +22,6 @@
                   </li>
                   <li class="heading-item -depth-2"><a class="hlink link-contributing" href="#contributing">Contributing</a>
                   </li>
-                  <li class="heading-item -depth-2"><a class="hlink link-install-and-quickstart" href="#install-and-quickstart">Install and Quickstart</a>
-                  </li>
                   <li class="heading-item -depth-2"><a class="hlink link-documentation" href="#documentation">Documentation</a>
                   </li>
                   <li class="heading-item -depth-2"><a class="hlink link-license" href="#license">License</a>
@@ -79,7 +77,6 @@ easily deployable and manageable as plugins.<br></p>
 <ul>
 <li><a href="#features">Features</a></li>
 <li><a href="#contributing">Contributing</a></li>
-<li><a href="#install-and-quickstart">Install and Quickstart</a></li>
 <li><a href="#documentation">Documentation</a></li>
 <li><a href="#license">License</a></li>
 </ul>
@@ -95,39 +92,8 @@ easily deployable and manageable as plugins.<br></p>
 </ul>
 <h2 id="contributing">Contributing</h2>
 <p>Please read <a href="CODE_OF_CONDUCT.html">Code of conduct</a> and <a href="CONTRIBUTING.html">Contributing instructions</a></p>
-<h2 id="install-and-quickstart">Install and Quickstart</h2>
-<p>Works on Win, Mac and Linux</p>
-<p>Your system needs the package manager yarn and a few npm packages to create Deskfiler from scratch:</p>
-<ol>
-<li>
-<p>Make sure your system can compile OS-specific node modules (build tools, see: <a href="https://github.com/nodejs/node-gyp">https://github.com/nodejs/node-gyp</a>)</p>
-</li>
-<li>
-<p>Install yarn: <a href="https://yarnpkg.com/en/">https://yarnpkg.com/en/</a></p>
-</li>
-<li>
-<p>Install required npm modules</p>
-<pre><code class="lang-sh">yarn global add cross-env concurrently
-</code></pre>
-<p>&quot;concurrently&quot; is used in the build process to parallelize the build process.</p>
-</li>
-<li>
-<p>Check out and compile</p>
-<pre><code class="lang-sh">git <span class="pl-c1">clone</span> https://github.com/deskfiler/deskfiler.git
-<span class="pl-c1">cd</span> deskfiler
-npm install crc  <span class="pl-c"># if you do not have it globally</span>
-yarn install
-yarn bootstrap:plugins:all
-yarn build:plugins:all
-yarn dev
-</code></pre>
-<p>Once checked out, you can also see your build options with</p>
-<pre><code class="lang-sh">yarn run
-</code></pre>
-</li>
-</ol>
 <h2 id="documentation">Documentation</h2>
-<p>All documentation resides <a href="https://github.com/deskfiler/deskfiler/tree/master/docs">here</a></p>
+<p>All documentation resides <a href="https://deskfiler.github.io/deskfiler/index.html">here</a></p>
 <h2 id="license">License</h2>
 <p>Deskfiler is published under the GPLv3. You will find the license within the code tree.</p>
 

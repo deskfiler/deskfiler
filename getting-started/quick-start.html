@@ -94,11 +94,21 @@
 <ol>
 <li>Ensure you have Node version 10.x or higher installed by running <code>node -v</code>,
 if you don&apos;t have <code>node</code> installed, refer to <a href="#installing-node">Installing node appendix</a></li>
-<li>Install &quot;cross-env&quot; for node on either platform &quot;npm install -g cross-env&quot;</li>
 <li>Ensure you have <code>yarn</code> installed or install it by either using <code>curl -o- -L https://yarnpkg.com/install.sh | bash</code> or downloading it from <a href="https://yarnpkg.com/lang/en/docs/install">here</a></li>
-<li>Clone this repository</li>
-<li>run <code>yarn</code> in root directory you just cloned and wait for dependency installation to finish</li>
-<li>run <code>yarn dev</code> in root directory to start up the local dev environment</li>
+<li>Install required npm modules<pre><code class="lang-sh">yarn global add cross-env concurrently
+</code></pre>
+&quot;concurrently&quot; is used in the build process to parallelize the build process.</li>
+<li>Check out and compile<pre><code class="lang-sh">git <span class="pl-c1">clone</span> https://github.com/deskfiler/deskfiler.git
+<span class="pl-c1">cd</span> deskfiler
+npm install crc  <span class="pl-c"># if you do not have it globally</span>
+yarn install
+yarn bootstrap:plugins:all
+yarn build:plugins:all
+yarn dev
+</code></pre>
+Once checked out, you can also see your build options with<pre><code class="lang-sh">yarn run
+</code></pre>
+</li>
 </ol>
 <p>Done! You should now see blank Deskfiler window open with DevTools enabled.</p>
 <h2 id="what&apos;s-next">What&apos;s next?</h2>
@@ -109,6 +119,8 @@ take a look at the <a href="https://github.com/deskfiler/deskfiler/issues?q=is%3
 and find yourself something you feel ready to tackle!</p>
 <p>Dureing the developemnt, you may compile a production distributables for your system to test them, check <a href="building-production-distributables.html">this guide</a> to get to know how to do it</p>
 <h3 id="plugin-development">Plugin Development</h3>
+<p>Most awesome thing about the deskfiler is that you can create your plugins for it obviously!
+If you want to create something cool, please refer to <a href="../plugin-development/readme.html">plugin development reference</a></p>
 <h2 id="appendix">Appendix</h2>
 <h3 id="installing-node">Installing node</h3>
 <p>A nice way to manage node environment on your system in by using &quot;Node Version Manager&quot;

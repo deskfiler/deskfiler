@@ -23,11 +23,6 @@
             "id": "contributing"
           },
           {
-            "title": "Install and Quickstart",
-            "depth": 2,
-            "id": "install-and-quickstart"
-          },
-          {
             "title": "Documentation",
             "depth": 2,
             "id": "documentation"
@@ -294,11 +289,6 @@
           "title": "Contributing",
           "depth": 2,
           "id": "contributing"
-        },
-        {
-          "title": "Install and Quickstart",
-          "depth": 2,
-          "id": "install-and-quickstart"
         },
         {
           "title": "Documentation",
