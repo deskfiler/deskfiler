@@ -6,7 +6,7 @@
   "legalhint": "Simple tag recognition plug-in: extract and view the EXIF information in images and control your tagging of pictures. Free and without any network activity!",
   "legallink": "https://plugins.deskfiler.org/",
   "acceptRestrictions": {
-    "mime": ["image/jpeg"],
-    "ext": ["jpeg", "jpg"]
+    "mime": ["image/jpeg", "image/png"],
+    "ext": ["jpeg", "jpg", "png"]
   }
 }
