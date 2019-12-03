@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="assets/style.css?t=90051322">
+    <script src="assets/script.js?t=93f1a66c"></script>
+    <title>Contributing - Deskfiler</title>
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body class="-menu-visible">
+    <div class="doc-layout">
+      <div class="toggle menu-toggle js-menu-toggle"></div>
+      <div class="menu toc-menu">
+        <ul>
+          <li class="menu-item -level-0 -parent">
+            <ul class="submenu">
+              <li class="menu-item -level-1"><a class="link title  link-index" href="index.html">Deskfiler</a>
+              </li>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-getting-startedreadme" href="getting-started/readme.html">Getting started</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedquick-start" href="getting-started/quick-start.html">Quick start</a>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedbuilding-production-distributables" href="getting-started/building-production-distributables.html">Builing distributables</a>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedinstalling-provided-plugins" href="getting-started/installing-provided-plugins.html">Building provided plugins</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-architecturereadme" href="architecture/readme.html">Deskfiler Architecture</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title  link-architectureoverview" href="architecture/overview.html">Overview</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-plugin-developmentreadme" href="plugin-development/readme.html">Plugin Development</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title  link-plugin-developmentbare-bone-plugin" href="plugin-development/bare-bone-plugin.html">Building bare bone plugin</a>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title  link-plugin-developmentapi" href="plugin-development/api.html">Api</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item -level-1"><a class="link title -active link-contributing" href="CONTRIBUTING.html">Contributing</a>
+                <ul class="headings heading-list">
+                  <li class="heading-item -depth-2"><a class="hlink link-gitflow" href="#gitflow">GitFlow</a>
+                  </li>
+                  <li class="heading-item -depth-2"><a class="hlink link-commit-changes" href="#commit-changes">Commit changes</a>
+                  </li>
+                  <li class="heading-item -depth-2"><a class="hlink link-developing" href="#developing">Developing</a>
+                  </li>
+                  <li class="heading-item -depth-2"><a class="hlink link-packaging" href="#packaging">Packaging</a>
+                  </li>
+                  <li class="heading-item -depth-2"><a class="hlink link-naming-convention" href="#naming-convention">Naming convention</a>
+                  </li>
+                  <li class="heading-item -depth-2"><a class="hlink link-containers-and-components" href="#containers-and-components">Containers and Components</a>
+                    <ul class="heading-list -depth-2">
+                      <li class="heading-item -depth-3"><a class="hlink link-module-structure" href="#module-structure">Module Structure</a>
+                      </li>
+                      <li class="heading-item -depth-3"><a class="hlink link-which-package.json-file-to-use" href="#which-package.json-file-to-use">Which `package.json` file to use</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="heading-item -depth-2"><a class="hlink link-pull-request-process" href="#pull-request-process">Pull Request Process</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item -level-1"><a class="link title  link-code_of_conduct" href="CODE_OF_CONDUCT.html">Code of conduct</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="body page-contributing">
+        <div class="header-nav">
+          <div class="right">
+          </div>
+        </div>
+        <div class="markdown-body"><h1 id="contributing">Contributing</h1>
+<p>When contributing to this repository, please first discuss the change you wish to make via issue,
+email, or any other method with the owners of this repository before making a change.</p>
+<p>Please note we have a code of conduct, please follow it in all your interactions with the project.</p>
+<h2 id="gitflow">GitFlow</h2>
+<p>We use <a href="http://nvie.com/posts/a-successful-git-branching-model/">Vincent Driessen&apos;s branching model.</a><br>
+Read details here:</p>
+<ul>
+<li><a href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></li>
+<li><a href="https://www.atlassian.com/git/tutorials/comparing-workflows#gitflow-workflow">https://www.atlassian.com/git/tutorials/comparing-workflows#gitflow-workflow</a></li>
+<li><a href="http://danielkummer.github.io/git-flow-cheatsheet/">http://danielkummer.github.io/git-flow-cheatsheet/</a></li>
+</ul>
+<p>Use <a href="https://github.com/petervanderdoes/gitflow-avh">git-flow</a> package for working with branches.</p>
+<h4 id="git-flow-init">git flow init</h4>
+<p>Use all init settings as default, except tag prefix, it must be &apos;v&apos;.</p>
+<h2 id="commit-changes">Commit changes</h2>
+<h4 id="conventional-commits">Conventional Commits</h4>
+<p>We use <a href="https://conventionalcommits.org/">conventional commits specification</a> for commit messages.</p>
+<h4 id="commitizen">Commitizen</h4>
+<p>To ensure that all commit messages are formatted correctly, you can use
+<a href="http://commitizen.github.io/cz-cli/">Commitizen</a> cli tool.
+It provides interactive interface that creates your commit messages for you.</p>
+<pre><code class="lang-sh">sudo npm install -g commitizen cz-customizable
+</code></pre>
+<p>From now on, instead of <code>git commit</code> you type <code>git cz</code> and let the tool do the work for you.</p>
+<p>The following commit types are used on the project:</p>
+<ul>
+<li><strong>feat</strong> - A new feature</li>
+<li><strong>fix</strong>- A bug fix</li>
+<li><strong>improvement</strong> - Improve a current implementation without adding a new feature or fixing a bug</li>
+<li><strong>docs</strong> - Documentation only changes</li>
+<li><strong>style</strong> - Changes that do not affect the meaning of the code(white-space, formatting, missing semi-colons, etc)</li>
+<li><strong>refactor</strong> - A code change that neither fixes a bug nor adds a feature</li>
+<li><strong>perf</strong> - A code change that improves performance</li>
+<li><strong>test</strong> - Adding missing tests</li>
+<li><strong>chore</strong> - Changes to the build process or auxiliary tools and libraries such as documentation generation</li>
+<li><strong>revert</strong> - Revert to a commit</li>
+<li><strong>WIP</strong> - Work in progress</li>
+</ul>
+<p>You should strive for a clear informative commit message.
+Read <strong><a href="https://chris.beams.io/posts/git-commit/">How to Write a Git Commit Message</a></strong>.</p>
+<p><strong>Helpful hint</strong>: You can always edit your last commit message, before pushing, by using:</p>
+<pre><code class="lang-sh">git commit --amend
+</code></pre>
+<h2 id="developing">Developing</h2>
+<p>Install dependecies:</p>
+<pre><code>yarn
+</code></pre>
+<p>Run dev process:</p>
+<pre><code>yarn dev
+</code></pre>
+<h2 id="packaging">Packaging</h2>
+<p>To package an app for production, please ensure that env variables are set.</p>
+<pre><code>  export DEBUG_PROD=&lt;true|false&gt;
+  export DISABLE_MIXPANEL=&lt;0|1&gt;
+  export SENTRY_DRY_RUN=&lt;true|false&gt;
+  export GH_TOKEN=&lt;github_token&gt;
+  export SENTRY_API_KEY=&lt;your_sentry_api_key&gt;
+  export MIXPANEL_API_TOKEN=&lt;your_mixpanel_api_token&gt;
+</code></pre>
+<p>Then you can package an app with:</p>
+<h4 id="will-include-uploading-sentry-artifacts">will include uploading sentry artifacts</h4>
+<pre><code>  yarn build &amp;&amp; yarn release
+</code></pre>
+<h2 id="naming-convention">Naming convention</h2>
+<p>Use airbnb naming conventions:</p>
+<ul>
+<li><a href="https://github.com/airbnb/javascript/tree/master/react#naming">https://github.com/airbnb/javascript/tree/master/react#naming</a></li>
+<li><a href="https://github.com/airbnb/javascript#naming-conventions">https://github.com/airbnb/javascript#naming-conventions</a></li>
+</ul>
+<h4 id="variables">Variables</h4>
+<p>Use declarative style and avoid single letter names.
+If you use abbreveature leave comment with deciphering abbreviations.</p>
+<h4 id="selectors">Selectors</h4>
+<p>All selectors should have a &apos;get&apos; prefix.</p>
+<h4 id="actions">Actions</h4>
+<p>Actions must begin with some verb - set, fetch, fill, add, delete, etc...</p>
+<h2 id="containers-and-components">Containers and Components</h2>
+<ul>
+<li><a href="https://medium.com/@learnreact/container-components-c0e67432e005">Simple article about it</a></li>
+<li><a href="https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0">Dan Abramov about it</a></li>
+</ul>
+<h3 id="module-structure">Module Structure</h3>
+<p>This boilerplate uses a <a href="https://www.electron.build/tutorials/two-package-structure">two package.json structure</a>.
+This means, you will have two <code>package.json</code> files.</p>
+<ol>
+<li><code>./package.json</code> in the root of your project</li>
+<li><code>./app/package.json</code> inside <code>app</code> folder</li>
+</ol>
+<h3 id="which-package.json-file-to-use">Which <code>package.json</code> file to use</h3>
+<p><strong>Rule of thumb</strong> is: all modules go into <code>./package.json</code> except native modules.
+Native modules go into <code>./app/package.json</code>.</p>
+<ol>
+<li>If the module is native to a platform (like system-idle-time) or otherwise should be included
+with the published package (i.e. bcrypt, openbci), it should be listed under <code>dependencies</code> in <code>./app/package.json</code>.</li>
+<li>If a module is <code>import</code>ed by another module, include it in <code>dependencies</code> in <code>./package.json</code>.
+See <a href="https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-extraneous-dependencies.md">this ESLint rule</a>.
+Examples of such modules are <code>redux-saga</code>, <code>redux-form</code>, and <code>moment</code>.</li>
+<li>Otherwise, modules used for building, testing and debugging should be included in <code>devDependencies</code> in <code>./package.json</code>.</li>
+</ol>
+<h2 id="pull-request-process">Pull Request Process</h2>
+<ol>
+<li>Ensure any install or build dependencies are removed before the end of the layer when doing a
+build.</li>
+<li>Update the <a href="http://README.md">README.md</a> with details of changes to the interface, this includes new environment
+variables, exposed ports, useful file locations and container parameters.</li>
+<li>You may merge the Pull Request in once you have the sign-off of two other developers, or if you
+do not have permission to do that, you may request the second reviewer to merge it for you.</li>
+</ol>
+
+        </div>
+        <div class="footer-nav">
+          <div class="left"><a href="plugin-development/api.html"><span class="title">Api</span></a></div>
+          <div class="right"><a href="CODE_OF_CONDUCT.html"><span class="label">Next: </span><span class="title">Code of conduct</span></a></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

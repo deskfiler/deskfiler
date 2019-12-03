@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../assets/style.css?t=90051322">
+    <script src="../assets/script.js?t=93f1a66c"></script>
+    <title>Building bare bone plugin - Deskfiler</title>
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body class="-menu-visible">
+    <div class="doc-layout">
+      <div class="toggle menu-toggle js-menu-toggle"></div>
+      <div class="menu toc-menu">
+        <ul>
+          <li class="menu-item -level-0 -parent">
+            <ul class="submenu">
+              <li class="menu-item -level-1"><a class="link title  link-index" href="../index.html">Deskfiler</a>
+              </li>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-getting-startedreadme" href="../getting-started/readme.html">Getting started</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedquick-start" href="../getting-started/quick-start.html">Quick start</a>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedbuilding-production-distributables" href="../getting-started/building-production-distributables.html">Builing distributables</a>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedinstalling-provided-plugins" href="../getting-started/installing-provided-plugins.html">Building provided plugins</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-architecturereadme" href="../architecture/readme.html">Deskfiler Architecture</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title  link-architectureoverview" href="../architecture/overview.html">Overview</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-plugin-developmentreadme" href="../plugin-development/readme.html">Plugin Development</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title -active link-plugin-developmentbare-bone-plugin" href="../plugin-development/bare-bone-plugin.html">Building bare bone plugin</a>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title  link-plugin-developmentapi" href="../plugin-development/api.html">Api</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item -level-1"><a class="link title  link-contributing" href="../CONTRIBUTING.html">Contributing</a>
+              </li>
+              <li class="menu-item -level-1"><a class="link title  link-code_of_conduct" href="../CODE_OF_CONDUCT.html">Code of conduct</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="body page-plugin-developmentbare-bone-plugin">
+        <div class="header-nav">
+          <div class="right">
+          </div>
+        </div>
+        <div class="markdown-body"><h1 id="creating-a-basic-plugin">Creating a basic plugin</h1>
+<p><em>in alpha stage</em></p>
+<ol>
+<li>Create your <strong>plugin manifest</strong> of following shape:</li>
+</ol>
+<p><em>manifest.json</em></p>
+<pre><code class="lang-json">{
+  <span class="hljs-attr">&quot;name&quot;</span>: <span class="pl-s">&quot;PLUGIN_NAME&quot;</span>,
+  <span class="hljs-attr">&quot;author&quot;</span>: <span class="pl-s">&quot;PLUGIN_AUTHOR&quot;</span>,
+  <span class="hljs-attr">&quot;version&quot;</span>: <span class="pl-s">&quot;1.0.0&quot;</span>,
+  <span class="hljs-attr">&quot;icon&quot;</span>: <span class="pl-s">&quot;RELATIVE_PATH_TO_ICON&quot;</span>
+}
+</code></pre>
+<ol start="2">
+<li>
+<p>Create <code>index.js</code> <strong>entry file</strong>, and define window.PLUGIN global variable to an
+object with either <strong>handleFiles</strong> method, <strong>handleOpen</strong> method or both.
+If some files are dropped on a plugin icon in Deskfiler main app, <strong>handleFiles</strong> method would be called,
+If plugin icon is clicked instead, plugin controller window will raise with empty HTML template and your <strong>handleOpen</strong> method would be called right after. Please refer to example plugins to see how it&apos;s implemented.</p>
+</li>
+<li>
+<p>Add an icon for your plugin and set path to it in <strong>manifest.json</strong></p>
+</li>
+<li>
+<p>Tar your plugin files with tar cli tool. For example: <code>tar -cvf plugin.tar index.js manifest.json icon.png</code></p>
+</li>
+<li>
+<p>Now drop resulting archive on top of add plugin card on Deskfiler dashboard.</p>
+</li>
+<li>
+<p>You should see your new plugin added to Deskfiler. Now either drop some files on it on open it with a mouseclick!</p>
+</li>
+<li>
+<p>Customize your plugin code using Deskfiler API&apos;s</p>
+</li>
+</ol>
+
+        </div>
+        <div class="footer-nav">
+          <div class="left"><a href="../plugin-development/readme.html"><span class="title">Plugin Development</span></a></div>
+          <div class="right"><a href="../plugin-development/api.html"><span class="label">Next: </span><span class="title">Api</span></a></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

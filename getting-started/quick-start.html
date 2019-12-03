@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../assets/style.css?t=90051322">
+    <script src="../assets/script.js?t=93f1a66c"></script>
+    <title>Quick start - Deskfiler</title>
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body class="-menu-visible">
+    <div class="doc-layout">
+      <div class="toggle menu-toggle js-menu-toggle"></div>
+      <div class="menu toc-menu">
+        <ul>
+          <li class="menu-item -level-0 -parent">
+            <ul class="submenu">
+              <li class="menu-item -level-1"><a class="link title  link-index" href="../index.html">Deskfiler</a>
+              </li>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-getting-startedreadme" href="../getting-started/readme.html">Getting started</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title -active link-getting-startedquick-start" href="../getting-started/quick-start.html">Quick start</a>
+                    <ul class="headings heading-list">
+                      <li class="heading-item -depth-2"><a class="hlink link-os-specific-instructions" href="#os-specific-instructions">OS-specific instructions</a>
+                        <ul class="heading-list -depth-2">
+                          <li class="heading-item -depth-3"><a class="hlink link-windows" href="#windows">Windows</a>
+                          </li>
+                          <li class="heading-item -depth-3"><a class="hlink link-macos" href="#macos">MacOS</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li class="heading-item -depth-2"><a class="hlink link-instructions" href="#instructions">Instructions</a>
+                      </li>
+                      <li class="heading-item -depth-2"><a class="hlink link-what's-next" href="#what's-next">What's next?</a>
+                        <ul class="heading-list -depth-2">
+                          <li class="heading-item -depth-3"><a class="hlink link-deskfiler-development" href="#deskfiler-development">Deskfiler development</a>
+                          </li>
+                          <li class="heading-item -depth-3"><a class="hlink link-plugin-development" href="#plugin-development">Plugin Development</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li class="heading-item -depth-2"><a class="hlink link-appendix" href="#appendix">Appendix</a>
+                        <ul class="heading-list -depth-2">
+                          <li class="heading-item -depth-3"><a class="hlink link-installing-node" href="#installing-node">Installing node</a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedbuilding-production-distributables" href="../getting-started/building-production-distributables.html">Builing distributables</a>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedinstalling-provided-plugins" href="../getting-started/installing-provided-plugins.html">Building provided plugins</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-architecturereadme" href="../architecture/readme.html">Deskfiler Architecture</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title  link-architectureoverview" href="../architecture/overview.html">Overview</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-plugin-developmentreadme" href="../plugin-development/readme.html">Plugin Development</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title  link-plugin-developmentbare-bone-plugin" href="../plugin-development/bare-bone-plugin.html">Building bare bone plugin</a>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title  link-plugin-developmentapi" href="../plugin-development/api.html">Api</a>
+                  </li>
+                </ul>
+              </li>
+              <li class="menu-item -level-1"><a class="link title  link-contributing" href="../CONTRIBUTING.html">Contributing</a>
+              </li>
+              <li class="menu-item -level-1"><a class="link title  link-code_of_conduct" href="../CODE_OF_CONDUCT.html">Code of conduct</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="body page-getting-startedquick-start">
+        <div class="header-nav">
+          <div class="right">
+          </div>
+        </div>
+        <div class="markdown-body"><h1 id="quick-start">Quick Start</h1>
+<p>Just follow these instructions to get yourself set-up!</p>
+<h2 id="os-specific-instructions">OS-specific instructions</h2>
+<p>Deskfiler is a cross-platform Electron.js app, so you will need OS-level build tools to be able to build native dependencies such as <code>hummusjs</code></p>
+<h3 id="windows">Windows</h3>
+<p>Make sure, you have the development tools to recompile node modules installed (eg. Visual Studio Community Edition)</p>
+<ul>
+<li>needed to run <a href="https://github.com/nodejs/node-gyp">node-gyp</a>.</li>
+</ul>
+<h3 id="macos">MacOS</h3>
+<p>On OSX, make sure to install the console tools for Xcode to recompile node modules as needed.</p>
+<h2 id="instructions">Instructions</h2>
+<ol>
+<li>Ensure you have Node version 10.x or higher installed by running <code>node -v</code>,
+if you don&apos;t have <code>node</code> installed, refer to <a href="#installing-node">Installing node appendix</a></li>
+<li>Install &quot;cross-env&quot; for node on either platform &quot;npm install -g cross-env&quot;</li>
+<li>Ensure you have <code>yarn</code> installed or install it by either using <code>curl -o- -L https://yarnpkg.com/install.sh | bash</code> or downloading it from <a href="https://yarnpkg.com/lang/en/docs/install">here</a></li>
+<li>Clone this repository</li>
+<li>run <code>yarn</code> in root directory you just cloned and wait for dependency installation to finish</li>
+<li>run <code>yarn dev</code> in root directory to start up the local dev environment</li>
+</ol>
+<p>Done! You should now see blank Deskfiler window open with DevTools enabled.</p>
+<h2 id="what&apos;s-next">What&apos;s next?</h2>
+<p>Here you have two options either <strong>working on Deskfiler core</strong>, or <strong>developing your own plugin</strong></p>
+<h3 id="deskfiler-development">Deskfiler development</h3>
+<p>Dive into the code to understand how Deskfiler works from inside with help or the <a href="../architecture/readme.html">architecture reference</a>,
+take a look at the <a href="https://github.com/deskfiler/deskfiler/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+label%3A%22help+wanted%22">issues</a>
+and find yourself something you feel ready to tackle!</p>
+<p>Dureing the developemnt, you may compile a production distributables for your system to test them, check <a href="building-production-distributables.html">this guide</a> to get to know how to do it</p>
+<h3 id="plugin-development">Plugin Development</h3>
+<h2 id="appendix">Appendix</h2>
+<h3 id="installing-node">Installing node</h3>
+<p>A nice way to manage node environment on your system in by using &quot;Node Version Manager&quot;
+Install it using installation instructions on <a href="https://github.com/nvm-sh/nvm">their github repo</a>,
+confirm it&apos;s installed by running <code>nvm -c</code> and then run <code>nvm install latest &amp;&amp; nvm use latest</code>.</p>
+<p>After downloading and installing node, nvm will create something like <code>virtualenv</code> for your node,
+and you will see the latest node version installed which can also be verified with <code>node -v</code></p>
+
+        </div>
+        <div class="footer-nav">
+          <div class="left"><a href="../getting-started/readme.html"><span class="title">Getting started</span></a></div>
+          <div class="right"><a href="../getting-started/building-production-distributables.html"><span class="label">Next: </span><span class="title">Builing distributables</span></a></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
