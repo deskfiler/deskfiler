@@ -2,8 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="assets/style.css?t=90051322">
-    <script src="assets/script.js?t=93f1a66c"></script>
+    <link rel="stylesheet" href="../assets/style.css?t=90051322">
+    <script src="../assets/script.js?t=93f1a66c"></script>
     <title>Api - Deskfiler</title>
     <meta name="viewport" content="width=device-width">
   </head>
@@ -14,42 +14,52 @@
         <ul>
           <li class="menu-item -level-0 -parent">
             <ul class="submenu">
-              <li class="menu-item -level-1"><a class="link title  link-index" href="index.html">Deskfiler</a>
+              <li class="menu-item -level-1"><a class="link title  link-index" href="../index.html">Deskfiler</a>
               </li>
-              <li class="menu-item -level-1 -parent"><a class="link title  link-getting-startedreadme" href="getting-started/readme.html">Installation and development</a>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-getting-startedreadme" href="../getting-started/readme.html">Getting started</a>
                 <ul class="submenu">
-                  <li class="menu-item -level-2"><a class="link title  link-getting-startedquick-start" href="getting-started/quick-start.html">Quick start</a>
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedquick-start" href="../getting-started/quick-start.html">Quick start</a>
                   </li>
-                  <li class="menu-item -level-2"><a class="link title  link-getting-startedinstalling-node" href="getting-started/installing-node.html">Installing node</a>
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedbuilding-production-distributables" href="../getting-started/building-production-distributables.html">Builing distributables</a>
                   </li>
-                  <li class="menu-item -level-2"><a class="link title  link-getting-startedos-specific" href="getting-started/os-specific.html">OS-specific instructions</a>
-                  </li>
-                  <li class="menu-item -level-2"><a class="link title  link-getting-startedbuilding-production-distributables" href="getting-started/building-production-distributables.html">Builing distributables</a>
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedinstalling-provided-plugins" href="../getting-started/installing-provided-plugins.html">Building provided plugins</a>
                   </li>
                 </ul>
               </li>
-              <li class="menu-item -level-1"><a class="link title  link-plugins" href="PLUGINS.html">Plugins</a>
-              </li>
-              <li class="menu-item -level-1"><a class="link title -active link-api" href="API.html">Api</a>
-                <ul class="headings heading-list">
-                  <li class="heading-item -depth-2"><a class="hlink link-api-docs" href="#api-docs">API docs</a>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-architecturereadme" href="../architecture/readme.html">Deskfiler Architecture</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title  link-architectureoverview" href="../architecture/overview.html">Overview</a>
                   </li>
                 </ul>
               </li>
-              <li class="menu-item -level-1"><a class="link title  link-contributing" href="CONTRIBUTING.html">Code of conduct</a>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-plugin-developmentreadme" href="../plugin-development/readme.html">Plugin Development</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title  link-plugin-developmentbare-bone-plugin" href="../plugin-development/bare-bone-plugin.html">Building bare bone plugin</a>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title -active link-plugin-developmentapi" href="../plugin-development/api.html">Api</a>
+                    <ul class="headings heading-list">
+                      <li class="heading-item -depth-2"><a class="hlink link-system" href="#system">System</a>
+                      </li>
+                      <li class="heading-item -depth-2"><a class="hlink link-context" href="#context">Context</a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
               </li>
-              <li class="menu-item -level-1"><a class="link title  link-code_of_conduct" href="CODE_OF_CONDUCT.html">Code of conduct</a>
+              <li class="menu-item -level-1"><a class="link title  link-contributing" href="../CONTRIBUTING.html">Contributing</a>
+              </li>
+              <li class="menu-item -level-1"><a class="link title  link-code_of_conduct" href="../CODE_OF_CONDUCT.html">Code of conduct</a>
               </li>
             </ul>
           </li>
         </ul>
       </div>
-      <div class="body page-api">
+      <div class="body page-plugin-developmentapi">
         <div class="header-nav">
           <div class="right">
           </div>
         </div>
-        <div class="markdown-body"><h2 id="api-docs">API docs</h2>
+        <div class="markdown-body"><h1 id="api-docs">API docs</h1>
 <p>Plugin handlers receive an objects as it&apos;s first argument.
 Both <strong>handleFiles</strong> and <strong>handleOpen</strong> object contains <code>system</code> and <code>context</code> variables,
 but, only <strong>handleFiles</strong> receives <code>inputs</code> which is an array of paths which were dropped on the plugin.</p>
@@ -89,7 +99,7 @@ but, only <strong>handleFiles</strong> receives <code>inputs</code> which is an 
   },
 }
 </code></pre>
-<h4 id="system-spec">System spec</h4>
+<h2 id="system">System</h2>
 <p>As for now, system just fowards default node.js <code>fs</code> package to work with file-system</p>
 <pre><code class="lang-js">
 <span class="pl-c">/* Now purely node.js fs module to work with file-system */</span>
@@ -101,7 +111,7 @@ but, only <strong>handleFiles</strong> receives <code>inputs</code> which is an 
 }
 
 </code></pre>
-<h4 id="context-spec">Context spec</h4>
+<h2 id="context">Context</h2>
 <p>As for now, contains 4 basic methods to interact with Deskfiler core app.</p>
 <pre><code class="lang-js">
 {
@@ -117,8 +127,8 @@ but, only <strong>handleFiles</strong> receives <code>inputs</code> which is an 
 
         </div>
         <div class="footer-nav">
-          <div class="left"><a href="PLUGINS.html"><span class="title">Plugins</span></a></div>
-          <div class="right"><a href="CONTRIBUTING.html"><span class="label">Next: </span><span class="title">Code of conduct</span></a></div>
+          <div class="left"><a href="../plugin-development/bare-bone-plugin.html"><span class="title">Building bare bone plugin</span></a></div>
+          <div class="right"><a href="../CONTRIBUTING.html"><span class="label">Next: </span><span class="title">Contributing</span></a></div>
         </div>
       </div>
     </div>

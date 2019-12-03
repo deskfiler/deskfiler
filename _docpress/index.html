@@ -22,29 +22,39 @@
                   </li>
                   <li class="heading-item -depth-2"><a class="hlink link-contributing" href="#contributing">Contributing</a>
                   </li>
+                  <li class="heading-item -depth-2"><a class="hlink link-install-and-quickstart" href="#install-and-quickstart">Install and Quickstart</a>
+                  </li>
                   <li class="heading-item -depth-2"><a class="hlink link-documentation" href="#documentation">Documentation</a>
                   </li>
                   <li class="heading-item -depth-2"><a class="hlink link-license" href="#license">License</a>
                   </li>
                 </ul>
               </li>
-              <li class="menu-item -level-1 -parent"><a class="link title  link-getting-startedreadme" href="getting-started/readme.html">Installation and development</a>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-getting-startedreadme" href="getting-started/readme.html">Getting started</a>
                 <ul class="submenu">
                   <li class="menu-item -level-2"><a class="link title  link-getting-startedquick-start" href="getting-started/quick-start.html">Quick start</a>
                   </li>
-                  <li class="menu-item -level-2"><a class="link title  link-getting-startedinstalling-node" href="getting-started/installing-node.html">Installing node</a>
-                  </li>
-                  <li class="menu-item -level-2"><a class="link title  link-getting-startedos-specific" href="getting-started/os-specific.html">OS-specific instructions</a>
-                  </li>
                   <li class="menu-item -level-2"><a class="link title  link-getting-startedbuilding-production-distributables" href="getting-started/building-production-distributables.html">Builing distributables</a>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title  link-getting-startedinstalling-provided-plugins" href="getting-started/installing-provided-plugins.html">Building provided plugins</a>
                   </li>
                 </ul>
               </li>
-              <li class="menu-item -level-1"><a class="link title  link-plugins" href="PLUGINS.html">Plugins</a>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-architecturereadme" href="architecture/readme.html">Deskfiler Architecture</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title  link-architectureoverview" href="architecture/overview.html">Overview</a>
+                  </li>
+                </ul>
               </li>
-              <li class="menu-item -level-1"><a class="link title  link-api" href="API.html">Api</a>
+              <li class="menu-item -level-1 -parent"><a class="link title  link-plugin-developmentreadme" href="plugin-development/readme.html">Plugin Development</a>
+                <ul class="submenu">
+                  <li class="menu-item -level-2"><a class="link title  link-plugin-developmentbare-bone-plugin" href="plugin-development/bare-bone-plugin.html">Building bare bone plugin</a>
+                  </li>
+                  <li class="menu-item -level-2"><a class="link title  link-plugin-developmentapi" href="plugin-development/api.html">Api</a>
+                  </li>
+                </ul>
               </li>
-              <li class="menu-item -level-1"><a class="link title  link-contributing" href="CONTRIBUTING.html">Code of conduct</a>
+              <li class="menu-item -level-1"><a class="link title  link-contributing" href="CONTRIBUTING.html">Contributing</a>
               </li>
               <li class="menu-item -level-1"><a class="link title  link-code_of_conduct" href="CODE_OF_CONDUCT.html">Code of conduct</a>
               </li>
@@ -63,12 +73,14 @@
 <p>An Open Source electron plugin ecosystem for JS developers that makes tools for the desktop on Windows, Mac and Linux
 easily deployable and manageable as plugins.<br></p>
 </blockquote>
+<img src="https://deskfiler.org/img/GithubHeader.jpg" style="max-width:100%;">
 <p>Get your binary downloads at <a href="https://www.deskfiler.org/">Deskfiler.org</a></p>
 <h2 id="table-of-contents">Table of Contents</h2>
 <ul>
 <li><a href="#features">Features</a></li>
 <li><a href="#contributing">Contributing</a></li>
-<li><a href="#features">Documentation</a></li>
+<li><a href="#install-and-quickstart">Install and Quickstart</a></li>
+<li><a href="#documentation">Documentation</a></li>
 <li><a href="#license">License</a></li>
 </ul>
 <h2 id="features">Features</h2>
@@ -83,14 +95,45 @@ easily deployable and manageable as plugins.<br></p>
 </ul>
 <h2 id="contributing">Contributing</h2>
 <p>Please read <a href="CODE_OF_CONDUCT.html">Code of conduct</a> and <a href="CONTRIBUTING.html">Contributing instructions</a></p>
+<h2 id="install-and-quickstart">Install and Quickstart</h2>
+<p>Works on Win, Mac and Linux</p>
+<p>Your system needs the package manager yarn and a few npm packages to create Deskfiler from scratch:</p>
+<ol>
+<li>
+<p>Make sure your system can compile OS-specific node modules (build tools, see: <a href="https://github.com/nodejs/node-gyp">https://github.com/nodejs/node-gyp</a>)</p>
+</li>
+<li>
+<p>Install yarn: <a href="https://yarnpkg.com/en/">https://yarnpkg.com/en/</a></p>
+</li>
+<li>
+<p>Install required npm modules</p>
+<pre><code class="lang-sh">yarn global add cross-env concurrently
+</code></pre>
+<p>&quot;concurrently&quot; is used in the build process to parallelize the build process.</p>
+</li>
+<li>
+<p>Check out and compile</p>
+<pre><code class="lang-sh">git <span class="pl-c1">clone</span> https://github.com/deskfiler/deskfiler.git
+<span class="pl-c1">cd</span> deskfiler
+npm install crc  <span class="pl-c"># if you do not have it globally</span>
+yarn install
+yarn bootstrap:plugins:all
+yarn build:plugins:all
+yarn dev
+</code></pre>
+<p>Once checked out, you can also see your build options with</p>
+<pre><code class="lang-sh">yarn run
+</code></pre>
+</li>
+</ol>
 <h2 id="documentation">Documentation</h2>
-<p>All documentation resides <a href="https://deskfiler.github.io">here</a></p>
+<p>All documentation resides <a href="https://github.com/deskfiler/deskfiler/tree/master/docs">here</a></p>
 <h2 id="license">License</h2>
-<p>TODO: add license info</p>
+<p>Deskfiler is published under the GPLv3. You will find the license within the code tree.</p>
 
         </div>
         <div class="footer-nav">
-          <div class="right"><a href="getting-started/readme.html"><span class="label">Next: </span><span class="title">Installation and development</span></a></div>
+          <div class="right"><a href="getting-started/readme.html"><span class="label">Next: </span><span class="title">Getting started</span></a></div>
         </div>
       </div>
     </div>

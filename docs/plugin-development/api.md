@@ -1,4 +1,4 @@
-## API docs
+# API docs
 
 Plugin handlers receive an objects as it's first argument.
 Both **handleFiles** and **handleOpen** object contains `system` and `context` variables,
@@ -43,7 +43,7 @@ window.PLUGIN = {
 }
 ```
 
-#### System spec
+## System
 
 As for now, system just fowards default node.js `fs` package to work with file-system
 
@@ -59,7 +59,7 @@ As for now, system just fowards default node.js `fs` package to work with file-s
 
 ```
 
-#### Context spec
+## Context
 
 As for now, contains 4 basic methods to interact with Deskfiler core app.
 ```js
