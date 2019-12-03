@@ -35,7 +35,7 @@
         ]
       },
       {
-        "title": "Installation and development",
+        "title": "Getting started",
         "source": "docs/getting-started/readme.md",
         "url": "getting-started/readme.html",
         "slug": "getting-startedreadme",
@@ -44,29 +44,58 @@
             "title": "Quick start",
             "source": "docs/getting-started/quick-start.md",
             "url": "getting-started/quick-start.html",
-            "slug": "getting-startedquick-start"
-          },
-          {
-            "title": "Installing node",
-            "source": "docs/getting-started/installing-node.md",
-            "url": "getting-started/installing-node.html",
-            "slug": "getting-startedinstalling-node"
-          },
-          {
-            "title": "OS-specific instructions",
-            "source": "docs/getting-started/os-specific.md",
-            "url": "getting-started/os-specific.html",
-            "slug": "getting-startedos-specific",
+            "slug": "getting-startedquick-start",
             "headings": [
               {
-                "title": "Windows related",
+                "title": "OS-specific instructions",
                 "depth": 2,
-                "id": "windows-related"
+                "id": "os-specific-instructions",
+                "headings": [
+                  {
+                    "title": "Windows",
+                    "depth": 3,
+                    "id": "windows"
+                  },
+                  {
+                    "title": "MacOS",
+                    "depth": 3,
+                    "id": "macos"
+                  }
+                ]
               },
               {
-                "title": "Mac related",
+                "title": "Instructions",
                 "depth": 2,
-                "id": "mac-related"
+                "id": "instructions"
+              },
+              {
+                "title": "What's next?",
+                "depth": 2,
+                "id": "what's-next",
+                "headings": [
+                  {
+                    "title": "Deskfiler development",
+                    "depth": 3,
+                    "id": "deskfiler-development"
+                  },
+                  {
+                    "title": "Plugin Development",
+                    "depth": 3,
+                    "id": "plugin-development"
+                  }
+                ]
+              },
+              {
+                "title": "Appendix",
+                "depth": 2,
+                "id": "appendix",
+                "headings": [
+                  {
+                    "title": "Installing node",
+                    "depth": 3,
+                    "id": "installing-node"
+                  }
+                ]
               }
             ]
           },
@@ -77,42 +106,75 @@
             "slug": "getting-startedbuilding-production-distributables",
             "headings": [
               {
-                "title": "Building production distributable",
+                "title": "Instructions",
                 "depth": 2,
-                "id": "building-production-distributable"
+                "id": "instructions"
+              }
+            ]
+          },
+          {
+            "title": "Building provided plugins",
+            "source": "docs/getting-started/installing-provided-plugins.md",
+            "url": "getting-started/installing-provided-plugins.html",
+            "slug": "getting-startedinstalling-provided-plugins"
+          }
+        ]
+      },
+      {
+        "title": "Deskfiler Architecture",
+        "source": "docs/architecture/readme.md",
+        "url": "architecture/readme.html",
+        "slug": "architecturereadme",
+        "headings": [
+          {
+            "title": "Resources",
+            "depth": 3,
+            "id": "resources"
+          }
+        ],
+        "sections": [
+          {
+            "title": "Overview",
+            "source": "docs/architecture/overview.md",
+            "url": "architecture/overview.html",
+            "slug": "architectureoverview"
+          }
+        ]
+      },
+      {
+        "title": "Plugin Development",
+        "source": "docs/plugin-development/readme.md",
+        "url": "plugin-development/readme.html",
+        "slug": "plugin-developmentreadme",
+        "sections": [
+          {
+            "title": "Building bare bone plugin",
+            "source": "docs/plugin-development/bare-bone-plugin.md",
+            "url": "plugin-development/bare-bone-plugin.html",
+            "slug": "plugin-developmentbare-bone-plugin"
+          },
+          {
+            "title": "Api",
+            "source": "docs/plugin-development/api.md",
+            "url": "plugin-development/api.html",
+            "slug": "plugin-developmentapi",
+            "headings": [
+              {
+                "title": "System",
+                "depth": 2,
+                "id": "system"
+              },
+              {
+                "title": "Context",
+                "depth": 2,
+                "id": "context"
               }
             ]
           }
         ]
       },
       {
-        "title": "Plugins",
-        "source": "docs/PLUGINS.md",
-        "url": "PLUGINS.html",
-        "slug": "plugins",
-        "headings": [
-          {
-            "title": "Plugin development",
-            "depth": 2,
-            "id": "plugin-development"
-          }
-        ]
-      },
-      {
-        "title": "Api",
-        "source": "docs/API.md",
-        "url": "API.html",
-        "slug": "api",
-        "headings": [
-          {
-            "title": "API docs",
-            "depth": 2,
-            "id": "api-docs"
-          }
-        ]
-      },
-      {
-        "title": "Code of conduct",
+        "title": "Contributing",
         "source": "docs/CONTRIBUTING.md",
         "url": "CONTRIBUTING.html",
         "slug": "contributing",
@@ -242,37 +304,66 @@
     },
     "getting-started/readme.html": {
       "source": "docs/getting-started/readme.md",
-      "title": "Installation and development - Deskfiler",
-      "pageTitle": "Installation and development",
+      "title": "Getting started - Deskfiler",
+      "pageTitle": "Getting started",
       "slug": "getting-startedreadme"
     },
     "getting-started/quick-start.html": {
       "source": "docs/getting-started/quick-start.md",
       "title": "Quick start - Deskfiler",
       "pageTitle": "Quick start",
-      "slug": "getting-startedquick-start"
-    },
-    "getting-started/installing-node.html": {
-      "source": "docs/getting-started/installing-node.md",
-      "title": "Installing node - Deskfiler",
-      "pageTitle": "Installing node",
-      "slug": "getting-startedinstalling-node"
-    },
-    "getting-started/os-specific.html": {
-      "source": "docs/getting-started/os-specific.md",
-      "title": "OS-specific instructions - Deskfiler",
-      "pageTitle": "OS-specific instructions",
-      "slug": "getting-startedos-specific",
+      "slug": "getting-startedquick-start",
       "headings": [
         {
-          "title": "Windows related",
+          "title": "OS-specific instructions",
           "depth": 2,
-          "id": "windows-related"
+          "id": "os-specific-instructions",
+          "headings": [
+            {
+              "title": "Windows",
+              "depth": 3,
+              "id": "windows"
+            },
+            {
+              "title": "MacOS",
+              "depth": 3,
+              "id": "macos"
+            }
+          ]
         },
         {
-          "title": "Mac related",
+          "title": "Instructions",
           "depth": 2,
-          "id": "mac-related"
+          "id": "instructions"
+        },
+        {
+          "title": "What's next?",
+          "depth": 2,
+          "id": "what's-next",
+          "headings": [
+            {
+              "title": "Deskfiler development",
+              "depth": 3,
+              "id": "deskfiler-development"
+            },
+            {
+              "title": "Plugin Development",
+              "depth": 3,
+              "id": "plugin-development"
+            }
+          ]
+        },
+        {
+          "title": "Appendix",
+          "depth": 2,
+          "id": "appendix",
+          "headings": [
+            {
+              "title": "Installing node",
+              "depth": 3,
+              "id": "installing-node"
+            }
+          ]
         }
       ]
     },
@@ -283,42 +374,71 @@
       "slug": "getting-startedbuilding-production-distributables",
       "headings": [
         {
-          "title": "Building production distributable",
+          "title": "Instructions",
           "depth": 2,
-          "id": "building-production-distributable"
+          "id": "instructions"
         }
       ]
     },
-    "PLUGINS.html": {
-      "source": "docs/PLUGINS.md",
-      "title": "Plugins - Deskfiler",
-      "pageTitle": "Plugins",
-      "slug": "plugins",
+    "getting-started/installing-provided-plugins.html": {
+      "source": "docs/getting-started/installing-provided-plugins.md",
+      "title": "Building provided plugins - Deskfiler",
+      "pageTitle": "Building provided plugins",
+      "slug": "getting-startedinstalling-provided-plugins"
+    },
+    "architecture/readme.html": {
+      "source": "docs/architecture/readme.md",
+      "title": "Deskfiler Architecture - Deskfiler",
+      "pageTitle": "Deskfiler Architecture",
+      "slug": "architecturereadme",
       "headings": [
         {
-          "title": "Plugin development",
-          "depth": 2,
-          "id": "plugin-development"
+          "title": "Resources",
+          "depth": 3,
+          "id": "resources"
         }
       ]
     },
-    "API.html": {
-      "source": "docs/API.md",
+    "architecture/overview.html": {
+      "source": "docs/architecture/overview.md",
+      "title": "Overview - Deskfiler",
+      "pageTitle": "Overview",
+      "slug": "architectureoverview"
+    },
+    "plugin-development/readme.html": {
+      "source": "docs/plugin-development/readme.md",
+      "title": "Plugin Development - Deskfiler",
+      "pageTitle": "Plugin Development",
+      "slug": "plugin-developmentreadme"
+    },
+    "plugin-development/bare-bone-plugin.html": {
+      "source": "docs/plugin-development/bare-bone-plugin.md",
+      "title": "Building bare bone plugin - Deskfiler",
+      "pageTitle": "Building bare bone plugin",
+      "slug": "plugin-developmentbare-bone-plugin"
+    },
+    "plugin-development/api.html": {
+      "source": "docs/plugin-development/api.md",
       "title": "Api - Deskfiler",
       "pageTitle": "Api",
-      "slug": "api",
+      "slug": "plugin-developmentapi",
       "headings": [
         {
-          "title": "API docs",
+          "title": "System",
           "depth": 2,
-          "id": "api-docs"
+          "id": "system"
+        },
+        {
+          "title": "Context",
+          "depth": 2,
+          "id": "context"
         }
       ]
     },
     "CONTRIBUTING.html": {
       "source": "docs/CONTRIBUTING.md",
-      "title": "Code of conduct - Deskfiler",
-      "pageTitle": "Code of conduct",
+      "title": "Contributing - Deskfiler",
+      "pageTitle": "Contributing",
       "slug": "contributing",
       "headings": [
         {
@@ -413,11 +533,13 @@
     "README.md": "index.html",
     "docs/getting-started/readme.md": "getting-started/readme.html",
     "docs/getting-started/quick-start.md": "getting-started/quick-start.html",
-    "docs/getting-started/installing-node.md": "getting-started/installing-node.html",
-    "docs/getting-started/os-specific.md": "getting-started/os-specific.html",
     "docs/getting-started/building-production-distributables.md": "getting-started/building-production-distributables.html",
-    "docs/PLUGINS.md": "PLUGINS.html",
-    "docs/API.md": "API.html",
+    "docs/getting-started/installing-provided-plugins.md": "getting-started/installing-provided-plugins.html",
+    "docs/architecture/readme.md": "architecture/readme.html",
+    "docs/architecture/overview.md": "architecture/overview.html",
+    "docs/plugin-development/readme.md": "plugin-development/readme.html",
+    "docs/plugin-development/bare-bone-plugin.md": "plugin-development/bare-bone-plugin.html",
+    "docs/plugin-development/api.md": "plugin-development/api.html",
     "docs/CONTRIBUTING.md": "CONTRIBUTING.html",
     "docs/CODE_OF_CONDUCT.md": "CODE_OF_CONDUCT.html"
   }
