@@ -12,7 +12,6 @@ Get your binary downloads at [Deskfiler.org](https://www.deskfiler.org/)
 
 * [Features](#features)
 * [Contributing](#contributing)
-* [Install and Quickstart](#install-and-quickstart)
 * [Documentation](#documentation)
 * [License](#license)
 
@@ -29,35 +28,6 @@ Get your binary downloads at [Deskfiler.org](https://www.deskfiler.org/)
 
 Please read [Code of conduct](./docs/CODE_OF_CONDUCT.md) and [Contributing instructions](./docs/CONTRIBUTING.md)
 
-## Install and Quickstart 
-Works on Win, Mac and Linux
-
-Your system needs the package manager yarn and a few npm packages to create Deskfiler from scratch:
-
-1. Make sure your system can compile OS-specific node modules (build tools, see: https://github.com/nodejs/node-gyp)
-
-2. Install yarn: https://yarnpkg.com/en/
-
-3. Install required npm modules
-   ```sh
-   yarn global add cross-env concurrently
-   ```
-   "concurrently" is used in the build process to parallelize the build process. 
-4. Check out and compile
-    ```sh
-    git clone https://github.com/deskfiler/deskfiler.git
-    cd deskfiler
-    npm install crc  # if you do not have it globally
-    yarn install
-    yarn bootstrap:plugins:all
-    yarn build:plugins:all
-    yarn dev
-    ```
-    Once checked out, you can also see your build options with
-    ```sh
-    yarn run
-    ```
-   
 ## Documentation
 
 All documentation resides [here](https://deskfiler.github.io/deskfiler/index.html)
