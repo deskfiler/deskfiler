@@ -60,7 +60,7 @@ Your system needs the package manager yarn and a few npm packages to create Desk
    
 ## Documentation
 
-All documentation resides [here](https://github.com/deskfiler/deskfiler/tree/master/docs)
+All documentation resides [here](https://deskfiler.github.io/deskfiler/index.html)
 
 ## License
 
