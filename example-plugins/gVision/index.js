@@ -38,6 +38,7 @@ window.PLUGIN = {
       const [saveDir, setSaveDir] = useState(null);
       const [settings, setSettings] = useState(initialSettings);
       const [processedFiles, setProcessedFiles] = useState(0);
+      const [errorFiles, setErrorFiles] = useState(0);
       const [outputPaths, setOutputPaths] = useState(filePaths);
 
       const onSubmit = async (newSettings) => {
@@ -68,12 +69,16 @@ window.PLUGIN = {
         syncSettings();
       }, [settings]);
 
-      const increment = () => {
-        setProcessedFiles(processedFiles + 1)
+      const incrementProcessedFiles = () => {
+        setProcessedFiles(processedFiles + 1);
+      };
+
+      const incrementErrorFiles = () => {
+        setErrorFiles(errorFiles + 1);
       };
 
       useEffect(() => {
-        if (processedFiles === filePaths.length) {
+        if ((processedFiles + errorFiles) === filePaths.length) {
           const { userticket, plugindetails } = ticket || {};
           const { dir } = system.path.parse(outputPaths[0]);
           finishProgress();
@@ -90,7 +95,7 @@ window.PLUGIN = {
             },
           });
         }
-      }, [processedFiles, filePaths.length, outputPaths]);
+      }, [processedFiles, errorFiles, filePaths.length, outputPaths]);
 
       if (processing) {
         return (
@@ -103,7 +108,7 @@ window.PLUGIN = {
               overflow: 'auto',
             }}
           >
-            {processedFiles < filePaths.length
+            {(processedFiles + errorFiles) < filePaths.length
               ? (
                 <h2>
                   Processing. <br />
@@ -113,6 +118,12 @@ window.PLUGIN = {
               ) : (
                 <h2>
                   Done! <br />
+                  {!!errorFiles && (
+                    <>
+                      <span>{`${errorFiles} file${errorFiles > 1 ? 's were' : ' was'} not processed.`}</span>
+                      <br />
+                    </>
+                  )}
                   <button
                     style={{
                       background: 'blue',
@@ -140,7 +151,8 @@ window.PLUGIN = {
                 system={system}
                 token={token}
                 saveDir={saveDir}
-                onSuccess={increment}
+                onSuccess={incrementProcessedFiles}
+                onError={incrementErrorFiles}
               />
             ))}
           </div>
