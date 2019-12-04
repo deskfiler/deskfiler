@@ -295,10 +295,12 @@ async function createPluginControllerWindow({
     minWidth: 800,
     minHeight: 600,
     show: showOnStart,
-    ...((whichScreen.bounds.x !== 0 && whichScreen.bounds.y !== 0) ? {
-      x: externalDisplay.bounds.x + 50,
-      y: externalDisplay.bounds.y + 50
-    } : {}),
+    // ...((whichScreen.bounds.x !== 0 && whichScreen.bounds.y !== 0) ? {
+    //   x: externalDisplay.bounds.x + 50,
+    //   y: externalDisplay.bounds.y + 50
+    // } : {}),
+    x: winBounds.x + 10,
+    y: winBounds.y + 10,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
