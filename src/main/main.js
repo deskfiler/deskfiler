@@ -1,10 +1,12 @@
-const {
-  app,
-  ipcMain,
-  protocol,
-  BrowserWindow,
-  webContents,
-} = require('electron');
+// const {
+//   app,
+//   ipcMain,
+//   protocol,
+//   BrowserWindow,
+//   webContents,
+// } = require('electron');
+
+const electron = require('electron');
 
 const { download } = require('electron-dl');
 const { dissoc } = require('ramda');
@@ -33,6 +35,14 @@ const {
   LOGS_DIR,
   PORT,
 } = require('./constants');
+
+const {
+  app,
+  ipcMain,
+  protocol,
+  BrowserWindow,
+  webContents,
+} = electron;
 
 let mainWindow;
 let pluginControllerWindow;
@@ -263,10 +273,34 @@ async function createPluginControllerWindow({
   showOnStart,
   ticket,
 }) {
+  const { screen } = electron;
+  console.log('screenBefore plugin controller', screen);
+  const primaryDisplay = screen.getPrimaryDisplay();
+  console.log('primaryDisplay2', primaryDisplay);
+
+  const displays = screen.getAllDisplays();
+  console.log('displays2', displays);
+
+  const winBounds = mainWindow.getBounds();
+  console.log('winBounds', winBounds);
+  const whichScreen = screen.getDisplayNearestPoint({ x: winBounds.x, y: winBounds.y });
+  console.log('whichScreen', whichScreen);
+  const externalDisplay = displays.find((display) => {
+    return display.bounds.x !== 0 || display.bounds.y !== 0
+  });
+
+  console.log('externalDisplay', externalDisplay);
+
   pluginControllerWindow = new BrowserWindow({
     minWidth: 800,
     minHeight: 600,
     show: showOnStart,
+    // ...((whichScreen.bounds.x !== 0 && whichScreen.bounds.y !== 0) ? {
+    //   x: externalDisplay.bounds.x + 50,
+    //   y: externalDisplay.bounds.y + 50
+    // } : {}),
+    x: winBounds.x + 10,
+    y: winBounds.y + 10,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
@@ -640,6 +674,14 @@ if (!isSingleAppInstance) {
   });
 
   app.on('ready', () => {
+    const { screen } = electron;
+    console.log('screen', screen);
+    const primaryDisplay = screen.getPrimaryDisplay();
+    console.log('primaryDisplay', primaryDisplay);
+
+    const displays = screen.getAllDisplays();
+    console.log('displays', displays);
+
     log('App ready, creating window...');
 
     createWindow();
