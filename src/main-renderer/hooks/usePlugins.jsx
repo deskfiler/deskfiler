@@ -15,13 +15,13 @@ const usePlugins = () => useContext(pluginsContext);
 function pluginsReducer(state, action) {
   switch (action.type) {
     case 'update': {
-      return {
+      return state[action.key] ? {
         ...state,
         [action.key]: {
           ...state[action.key],
           ...action.payload,
-        }
-      }
+        },
+      } : state
     }
     case 'set':
       return {
@@ -34,6 +34,7 @@ function pluginsReducer(state, action) {
 
 export const ProvidePlugins = ({ children }) => {
   const [plugins, dispatch] = useReducer(pluginsReducer, {});
+  console.log('plugins!!!', plugins);
 
   const setPlugins = payload => dispatch({
     type: 'set',
