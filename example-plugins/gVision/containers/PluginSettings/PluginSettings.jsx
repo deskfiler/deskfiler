@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 
 import {
+  Grid,
+  Cell,
   Button,
 } from 'react-foundation';
 
 import {
   Formik,
 } from 'formik';
+
+import chevronRightIcon from '../../assets/images/chevron-right.svg';
+import closeIcon from '../../assets/images/closewhite.svg';
 
 import Checkbox from '../../components/Checkbox';
 import Select from '../../components/Select';
@@ -15,7 +20,7 @@ import { Flex } from '../../styled';
 
 import 'foundation-sites/dist/css/foundation.min.css';
 
-import * as S from './styled'; 
+import * as S from './styled';
 
 const inputs = {
   saveLabelInfo: {
@@ -77,11 +82,11 @@ const checkFundsPerFile = ({ ticket, filesCount }) => {
     } = ticket || {};
     const availableFilesToProcessCount = Math.floor(userticket.OZVALUE / plugindetails.OZPRICE);
     return {
-      showPaymentInfo: availableFilesToProcessCount < filesCount,
+      isInsufficientFunds: availableFilesToProcessCount < filesCount,
       fundsToSpend: filesCount * plugindetails.OZPRICE,
     };
   }
-  return { showPaymentInfo: true, fundsToSpend: null };
+  return { isInsufficientFunds: true, fundsToSpend: null };
 };
 
 const PluginSettings = ({
@@ -98,11 +103,13 @@ const PluginSettings = ({
 
   const round = value => Math.floor(value * 1000) / 1000;
 
-  const { showPaymentInfo, fundsToSpend } = checkFundsPerFile({ ticket, filesCount });
+  const { isInsufficientFunds, fundsToSpend } = checkFundsPerFile({ ticket, filesCount });
   return (
     <S.PluginSettings>
-      <S.Title>gVision</S.Title>
-      <S.Title>You have dropped {filesCount} file{filesCount > 1 ? 's' : ''}, what shall I do?</S.Title>
+      <S.Title>
+        gVision
+      </S.Title>
+      <S.HeaderLabel>You have dropped {filesCount} file{filesCount > 1 ? 's' : ''}, what shall I do?</S.HeaderLabel>
       <Formik
         enableReinitialize
         initialValues={settings}
@@ -116,48 +123,78 @@ const PluginSettings = ({
               <Checkbox {...inputs.copyTaggedToExtraFolder} />
               <Checkbox {...inputs.saveToJson} />
             </Flex>
-            <Flex>
-              <Select {...inputs.labelsLanguage} />
-              <Select {...inputs.certaintyLevel} />
-            </Flex>
-            <Flex
-              row
-            >
-              <S.PaymentInfo>
-                {showPaymentInfo ? (
+            <Grid className="grid-margin-x">
+              <Cell small={6}>
+                <Select style={{ flex: 1 }} {...inputs.labelsLanguage} />
+              </Cell>
+              <Cell large={6}>
+                <Select style={{ height: '100%' }} style={{ flex: 1 }} {...inputs.certaintyLevel} />
+              </Cell>
+            </Grid>
+            <Flex row style={{ marginTop: 12 }}>
+              <Flex flex="0 0 50%">
+                {isInsufficientFunds ? (
                   'Please add some funds to your account, this plugin requires payment in steps of 1,000 calls.'
                 ) : (
-                  [
-                    `1 picture x $${plugindetails.OZPRICE}.`,
-                    `Current balance: $${round(userticket.OZVALUE)}.`,
-                    `Balance after processing: $${round(userticket.OZVALUE - fundsToSpend)}.`
-                  ].join('\n')
+                  <>
+                    <Flex row justify="space-between">
+                      <span>Current balance:</span>
+                      <span>{`$ ${round(userticket.OZVALUE)}`}</span>
+                    </Flex>
+                    <Flex row justify="space-between" style={{ fontWeight: 700 }}>
+                      <span>{`${filesCount} picture${filesCount > 1 ? 's' : ''} x $${plugindetails.OZPRICE}.`}</span>
+                      <span>{`$ ${round(fundsToSpend)}`}</span>
+                    </Flex>
+                    <S.Divider />
+                    <Flex row justify="space-between">
+                      <span>Balance after processing:</span>
+                      <span>{`$ ${round(userticket.OZVALUE - fundsToSpend)}`}</span>
+                    </Flex>
+                  </>
                 )}
-              </S.PaymentInfo>
-              <Button
-                style={{ flex: '0 0 auto' }}
-                color={showPaymentInfo ? 'alert' : 'primary'}
-                onClick={async () => {
-                  if (showPaymentInfo) {
-                    const newTicket = await openPaymentWindow(plugindetails.OZUSERID);
-                    if (ticket) setTicket(newTicket);
-                    return;
-                  }
-                  handleSubmit();
-                }}
-              >
-                {showPaymentInfo ? 'Add funds' : 'Start processing'}
-              </Button>
-              <Button
-                color="secondary"
-                style={{ flex: '0 0 auto' }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  cancel();
-                }}
-              >
-                Cancel
-              </Button>
+              </Flex>
+              <Flex flex="0 0 50%" justify="flex-end" align="flex-end">
+                <Flex row justify="flex-end" >
+                  <Button
+                    color="secondary"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      flex: '0 0 auto',
+                      margin: '0 8px 0 0',
+                      fontSize: '16px'
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      cancel();
+                    }}
+                  >
+                    <S.Icon src={closeIcon} style={{ height: '15px', marginRight: '5px' }} />
+                    Cancel
+                  </Button>
+                  <Button
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      flex: '0 0 auto',
+                      margin: 0,
+                      fontSize: '16px',
+                    }}
+                    color={isInsufficientFunds ? 'alert' : 'primary'}
+                    onClick={async () => {
+                      if (isInsufficientFunds) {
+                        const newTicket = await openPaymentWindow(plugindetails.OZUSERID);
+                        if (ticket) setTicket(newTicket);
+                        return;
+                      }
+                      handleSubmit();
+                    }}
+                  >
+                    {isInsufficientFunds ? 'Add funds' : 'Start processing'}
+                    <S.Icon src={chevronRightIcon} style={{ marginLeft: '5px' }} />
+                  </Button>
+                </Flex>
+              </Flex>
             </Flex>
           </>
         )}
