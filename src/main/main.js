@@ -301,10 +301,12 @@ async function createPluginControllerWindow({
   pluginControllerWindow.on('closed', async () => {
     pluginControllerWindow = null;
     const plugin = await store.get(`pluginData.${pluginKey}`);
-    store.set(`pluginData.${pluginKey}`, {
-      ...plugin,
-      isWorking: false,
-    });
+    if (plugin) {
+      store.set(`pluginData.${pluginKey}`, {
+        ...plugin,
+        isWorking: false,
+      });
+    }
   });
 }
 
