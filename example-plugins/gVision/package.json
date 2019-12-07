@@ -13,6 +13,7 @@
     "@babel/preset-react": "^7.6.3",
     "base64-img": "https://github.com/teorge/base64-img.git",
     "foundation-sites": "^6.5.3",
+    "image-size": "^0.8.3",
     "piexifjs": "^1.0.6",
     "png-metadata": "^1.0.2",
     "react": "^16.11.0",
