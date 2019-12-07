@@ -4,6 +4,13 @@ import b64converter from 'base64-img';
 import piexif from 'piexifjs';
 import png from 'png-metadata';
 
+import xmarkIcon from '../../assets/images/x-mark.svg';
+import checkmarkIcon from '../../assets/images/check-mark.svg';
+import arrowRoundIcon from '../../assets/images/arrow-round.svg';
+
+import { Flex } from '../../styled';
+import * as S from './styled';
+
 const writeTagsToExif = ({ filePath, tags, saveDir, fs, path }) => {
   try {
     const { name, ext } = path.parse(filePath);
@@ -69,11 +76,13 @@ const ImageProcessor = ({
   saveDir,
   onSuccess,
   onError,
+  onInfo,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [imageData, setImageData] = useState(null);
 
-  const getGVisionTags = async () => {
+  const getGVisionTags = async ({ filePath, labelsLanguage }) => {
     const { base } = path.parse(filePath);
 
     const url = 'https://plugins.deskfiler.org/api/index.php';
@@ -134,6 +143,8 @@ const ImageProcessor = ({
           return acc;
         }, []);
 
+        setImageData({ ...response.data, tags: filteredTags });
+
         writeTagsToExif({ filePath, tags: filteredTags, saveDir, fs, path });
 
         if (saveToJson) {
@@ -163,18 +174,66 @@ const ImageProcessor = ({
     }
   }, [isLoading, error]);
 
-  return (
-    <img
-      style={{
-        width: 125,
-        height: 125,
-        margin: 10,
-        border: `4px solid ${isLoading ? '#666' : (error ? 'red' : '#66ff66')}`,
-        transition: 'all .3s ease',
-      }}
-      src={`file://${filePath}`}
-      alt={filePath}
-    />
+  const { name, ext } = path.parse(filePath);
+
+  return isLoading ? <S.Spinner src={arrowRoundIcon} /> : (
+    <Flex style={{ margin: '10px 10px 25px' }}>
+      <S.ImageWrapper onClick={() => {
+        if (!error) {
+          onInfo({ filePath, data: imageData, labelsLanguage });
+        }
+      }}>
+        <S.Image
+          src={`file://${filePath}`}
+          alt={filePath}
+        />
+        <Flex
+          style={{
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            padding: '3px',
+            background: error ? 'red' : '#00CC33'
+          }}
+        >
+          <S.Icon src={error ? xmarkIcon : checkmarkIcon} />
+        </Flex> 
+      </S.ImageWrapper>
+      <div style={{ maxWidth: '125px' }}>
+        <span
+          style={{
+            display: 'block',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            fontWeight: 700,
+          }}
+        >
+          {`${name}${ext}`}
+        </span>
+        <span
+          style={{
+            display: 'block',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {error ? 'Processing failed' : `${imageData.tags.length} Tags set to image`}
+        </span>
+      </div>
+      {!error && (
+        <S.InfoLink
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            onInfo({ filePath, data: imageData, labelsLanguage });
+          }}
+        >
+          More information
+        </S.InfoLink>
+      )}
+    </Flex>
   );
 };
 

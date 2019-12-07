@@ -34,7 +34,6 @@ function pluginsReducer(state, action) {
 
 export const ProvidePlugins = ({ children }) => {
   const [plugins, dispatch] = useReducer(pluginsReducer, {});
-  console.log('plugins!!!', plugins);
 
   const setPlugins = payload => dispatch({
     type: 'set',

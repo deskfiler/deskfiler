@@ -10,15 +10,15 @@ import {
   Formik,
 } from 'formik';
 
+import { round } from '../../utils';
+
 import chevronRightIcon from '../../assets/images/chevron-right.svg';
 import closeIcon from '../../assets/images/closewhite.svg';
 
 import Checkbox from '../../components/Checkbox';
 import Select from '../../components/Select';
 
-import { Flex } from '../../styled';
-
-import 'foundation-sites/dist/css/foundation.min.css';
+import { Flex, Title, HeaderLabel } from '../../styled';
 
 import * as S from './styled';
 
@@ -101,20 +101,16 @@ const PluginSettings = ({
 
   const { userticket, plugindetails } = ticket || {};
 
-  const round = value => Math.floor(value * 1000) / 1000;
-
   const { isInsufficientFunds, fundsToSpend } = checkFundsPerFile({ ticket, filesCount });
   return (
     <S.PluginSettings>
-      <S.Title>
-        gVision
-      </S.Title>
-      <S.HeaderLabel>You have dropped {filesCount} file{filesCount > 1 ? 's' : ''}, what shall I do?</S.HeaderLabel>
+      <Title>gVision</Title>
+      <HeaderLabel>You have dropped {filesCount} file{filesCount > 1 ? 's' : ''}, what shall I do?</HeaderLabel>
       <Formik
         enableReinitialize
         initialValues={settings}
         onSubmit={(values) => {
-          onSubmit(values);
+          onSubmit({ newSettings: values, fundsToSpend });
         }}
         render={({ handleSubmit }) => (
           <>
