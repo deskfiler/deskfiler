@@ -24,5 +24,5 @@ export const HeaderLabel = styled.div`
   color: #fff;
   background: #00CC33;
   padding: 10px 15px;
-  margin: 24px 0;
+  margin: 2rem 0;
 `;

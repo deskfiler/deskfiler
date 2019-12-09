@@ -12,7 +12,7 @@ const Select = ({ form, field, lib }) => {
       <div style={{ marginBottom: 5 }}>
         <Label value={label} />
       </div>
-      <select {...field}>
+      <select style={{ fontSize: '.875rem' }} {...field}>
         {options.map(({ value, label }, idx) => (
           <option
             key={idx}

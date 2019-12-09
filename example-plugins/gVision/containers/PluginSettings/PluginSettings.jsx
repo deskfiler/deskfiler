@@ -114,84 +114,82 @@ const PluginSettings = ({
         }}
         render={({ handleSubmit }) => (
           <>
-            <Flex>
+            <Flex style={{ marginBottom: '2rem' }}>
               <Checkbox {...inputs.saveLabelInfo} />
               <Checkbox {...inputs.copyTaggedToExtraFolder} />
               <Checkbox {...inputs.saveToJson} />
             </Flex>
-            <Grid className="grid-margin-x">
-              <Cell small={6}>
-                <Select style={{ flex: 1 }} {...inputs.labelsLanguage} />
+            <Grid className="grid-margin-x" style={{ flex: '1 1 auto' }}>
+              <Cell small={6} style={{ height: '100%' }}>
+                <Flex style={{ height: '100%' }}>
+                  <Select {...inputs.labelsLanguage} />
+                  <Flex justify="flex-end" style={{ flex: '1 1 auto', fontSize: '.875rem', marginBottom: '2rem' }}>
+                    {isInsufficientFunds ? (
+                      'Please add some funds to your account, this plugin requires payment in steps of 1,000 calls.'
+                    ) : (
+                      <>
+                        <Flex row justify="space-between">
+                          <span>Current balance:</span>
+                          <span>{`$ ${round(userticket.OZVALUE)}`}</span>
+                        </Flex>
+                        <Flex row justify="space-between" style={{ fontWeight: 700 }}>
+                          <span>{`${filesCount} picture${filesCount > 1 ? 's' : ''} x $${plugindetails.OZPRICE}.`}</span>
+                          <span>{`$ ${round(fundsToSpend)}`}</span>
+                        </Flex>
+                        <S.Divider />
+                        <Flex row justify="space-between">
+                          <span>Balance after processing:</span>
+                          <span>{`$ ${round(userticket.OZVALUE - fundsToSpend)}`}</span>
+                        </Flex>
+                      </>
+                    )}
+                  </Flex>
+                </Flex>
               </Cell>
-              <Cell large={6}>
-                <Select style={{ height: '100%' }} style={{ flex: 1 }} {...inputs.certaintyLevel} />
+              <Cell small={6} style={{ height: '100%' }}>
+                <Flex style={{ height: '100%' }}>
+                  <Select style={{ marginBottom: '2rem' }} {...inputs.certaintyLevel} />
+                  <Flex row align="flex-end" justify="flex-end" flex="1 1 auto" style={{ marginBottom: '2rem' }}>
+                    <Button
+                      color="secondary"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        flex: '0 0 auto',
+                        margin: '0 8px 0 0',
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        cancel();
+                      }}
+                    >
+                      <S.Icon src={closeIcon} style={{ height: '9px', marginRight: '5px' }} />
+                      Cancel
+                    </Button>
+                    <Button
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        flex: '0 0 auto',
+                        margin: 0,
+                      }}
+                      color={isInsufficientFunds ? 'alert' : 'primary'}
+                      onClick={async () => {
+                        if (isInsufficientFunds) {
+                          const newTicket = await openPaymentWindow(plugindetails.OZUSERID);
+                          if (ticket) setTicket(newTicket);
+                          return;
+                        }
+                        handleSubmit();
+                      }}
+                    >
+                      {isInsufficientFunds ? 'Add funds' : 'Start processing'}
+                      <S.Icon src={chevronRightIcon} style={{ marginLeft: '5px', height: '12px' }} />
+                    </Button>
+                  </Flex>
+                </Flex>
               </Cell>
             </Grid>
-            <Flex row style={{ marginTop: 12 }}>
-              <Flex flex="0 0 50%">
-                {isInsufficientFunds ? (
-                  'Please add some funds to your account, this plugin requires payment in steps of 1,000 calls.'
-                ) : (
-                  <>
-                    <Flex row justify="space-between">
-                      <span>Current balance:</span>
-                      <span>{`$ ${round(userticket.OZVALUE)}`}</span>
-                    </Flex>
-                    <Flex row justify="space-between" style={{ fontWeight: 700 }}>
-                      <span>{`${filesCount} picture${filesCount > 1 ? 's' : ''} x $${plugindetails.OZPRICE}.`}</span>
-                      <span>{`$ ${round(fundsToSpend)}`}</span>
-                    </Flex>
-                    <S.Divider />
-                    <Flex row justify="space-between">
-                      <span>Balance after processing:</span>
-                      <span>{`$ ${round(userticket.OZVALUE - fundsToSpend)}`}</span>
-                    </Flex>
-                  </>
-                )}
-              </Flex>
-              <Flex flex="0 0 50%" justify="flex-end" align="flex-end">
-                <Flex row justify="flex-end" >
-                  <Button
-                    color="secondary"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      flex: '0 0 auto',
-                      margin: '0 8px 0 0',
-                      fontSize: '16px'
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      cancel();
-                    }}
-                  >
-                    <S.Icon src={closeIcon} style={{ height: '15px', marginRight: '5px' }} />
-                    Cancel
-                  </Button>
-                  <Button
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      flex: '0 0 auto',
-                      margin: 0,
-                      fontSize: '16px',
-                    }}
-                    color={isInsufficientFunds ? 'alert' : 'primary'}
-                    onClick={async () => {
-                      if (isInsufficientFunds) {
-                        const newTicket = await openPaymentWindow(plugindetails.OZUSERID);
-                        if (ticket) setTicket(newTicket);
-                        return;
-                      }
-                      handleSubmit();
-                    }}
-                  >
-                    {isInsufficientFunds ? 'Add funds' : 'Start processing'}
-                    <S.Icon src={chevronRightIcon} style={{ marginLeft: '5px' }} />
-                  </Button>
-                </Flex>
-              </Flex>
-            </Flex>
           </>
         )}
       />

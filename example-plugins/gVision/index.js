@@ -158,7 +158,7 @@ window.PLUGIN = {
               ))}
             </Flex>
             {(processedFiles + errorFiles) === filePaths.length && (
-              <Flex row flex="0 0 auto" align="flex-end" justify="space-between">
+              <Flex row flex="0 0 auto" align="flex-end" justify="space-between" style={{ fontSize: '.875rem;' }}>
                 <Flex row justify="space-between" flex="0 0 50%">
                   <span>Balance after processing:</span>
                   <span>{`$ ${round(userticket.OZVALUE - chargedFunds)}`}</span>
@@ -170,8 +170,7 @@ window.PLUGIN = {
                       display: 'flex',
                       alignItems: 'center',
                       flex: '0 0 auto',
-                      margin: '0 8px 0 0',
-                      fontSize: '16px'
+                      margin: 0,
                     }}
                     onClick={() => {
                       exit();

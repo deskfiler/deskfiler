@@ -177,7 +177,7 @@ const ImageProcessor = ({
   const { name, ext } = path.parse(filePath);
 
   return isLoading ? <S.Spinner src={arrowRoundIcon} /> : (
-    <Flex style={{ margin: '10px 10px 25px' }}>
+    <Flex style={{ margin: '10px 10px 25px', fontSize: '.875rem' }}>
       <S.ImageWrapper onClick={() => {
         if (!error) {
           onInfo({ filePath, data: imageData, labelsLanguage });

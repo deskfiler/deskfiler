@@ -26,6 +26,7 @@ export const ModalContainer = styled.div`
   background-color: rgba(10, 10, 10, 0.45);
   z-index: 8;
   animation: ${backdropBlur} .3s ease-in forwards;
+  font-size: .875rem;
 `;
 
 export const Modal = styled(Flex)`

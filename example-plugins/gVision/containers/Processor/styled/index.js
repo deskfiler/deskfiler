@@ -17,13 +17,14 @@ export const Spinner = styled.img`
   height: 125px;
   width: 125px;
   margin: 10px 10px 25px;
-  animation: ${spin} .6s linear infinite;
+  animation: ${spin} 1.5s linear infinite;
 `;
 
 export const Image = styled.img`
   width: 125px;
   height: 125px;
-  transition: 'all .5s ease';
+  object-fit: cover;
+  transition: all .5s ease;
 `;
 
 export const ImageWrapper = styled.div`
@@ -36,6 +37,7 @@ export const ImageWrapper = styled.div`
   &:hover {
     & > ${Image} {
       transform: scale(1.5);
+      filter: brightness(0.5);
     }
   }
 `;

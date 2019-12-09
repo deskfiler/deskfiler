@@ -1,7 +1,11 @@
 import styled from 'styled-components';
 
 export const PluginSettings = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   padding: 20px 30px;
+  font-size: .875rem;
 `;
 
 export const Divider = styled.hr`
