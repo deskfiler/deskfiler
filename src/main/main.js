@@ -1,3 +1,7 @@
+/*
+ * DESKFILER MAIN THREAD
+ * Author: Ilya Lopukhin
+ */
 const {
   app,
   dialog,
@@ -58,6 +62,7 @@ if (!app.isDefaultProtocolClient('deskfiler')) {
 
 mkdirp.sync(LOGS_DIR);
 
+// Download plugin from deskfiler store via deskfiler:// protocol
 const downloadPlugin = async (url) => {
   if (mainWindow && url.startsWith('deskfiler://plugins.deskfiler.org/up/')) {
     const downloadsTempDir = path.join(TEMP_DIR, 'downloads');
@@ -87,6 +92,7 @@ const downloadPlugin = async (url) => {
   }
 };
 
+// Unpack and install plugin from a tarball
 const unpackPlugin = async (filePath) => {
   log('unpacking plugin', filePath);
 
@@ -261,6 +267,7 @@ const unpackPlugin = async (filePath) => {
   }
 };
 
+// Create a plugin instance and open a window for it
 async function createPluginControllerWindow({
   pluginKey,
   allowedExtensions,
@@ -310,6 +317,7 @@ async function createPluginControllerWindow({
   });
 }
 
+// Create a window to add funds to user account
 async function createPaymentWindow({ fromId, userId }) {
   paymentWindow = new BrowserWindow({
     minWidth: 800,
@@ -339,6 +347,7 @@ async function createPaymentWindow({ fromId, userId }) {
   });
 }
 
+// Create window to register user account
 async function createRegisterWindow() {
   log('creating login window');
 
@@ -373,6 +382,7 @@ async function createRegisterWindow() {
   });
 }
 
+// Create window to log in into existing account
 async function createLoginWindow() {
   log('creating login window');
 
@@ -405,6 +415,7 @@ async function createLoginWindow() {
   });
 }
 
+// Create window to display plugin settings
 async function createPluginConfigWindow({ pluginKey }) {
   pluginConfigWindow = new BrowserWindow({
     minWidth: 800,
@@ -434,6 +445,7 @@ async function createPluginConfigWindow({ pluginKey }) {
   });
 }
 
+// Create main application window
 async function createWindow() {
   mainWindow = new BrowserWindow({
     minWidth: 700,
@@ -485,6 +497,7 @@ async function createWindow() {
     });
   }
 
+  // Install plugin and add its data to electron-store
   ipcMain.on('recieved-plugin-tarball', async (event, filePath) => {
     try {
       await unpackPlugin(filePath);
@@ -558,16 +571,14 @@ async function createWindow() {
     }
   });
 
+  // Handle successful login
   ipcMain.on('logged-in', (event, user) => {
     log('logged in as', user.email);
     store.set('user', user);
     mainWindow.webContents.send('logged-in');
   });
 
-  ipcMain.on('send-auth-token', (event, token) => {
-    log('got auth token', token);
-  });
-
+  // Uninstall and remove data from all plugins
   ipcMain.on('manifest-delete-all', async () => {
     try {
       store.delete('pluginData');
@@ -582,6 +593,7 @@ async function createWindow() {
     }
   });
 
+  // Uninstall plugin and remove its data from electron-store
   ipcMain.on('remove-plugin', async (e, pluginKey) => {
     log(`removing plugin ${pluginKey} requested`);
     try {
@@ -612,6 +624,7 @@ async function createWindow() {
   });
 }
 
+// Clear local cache on error boundary
 ipcMain.on('clear-local-cache', async (e) => {
   const cachedir = app.getPath('userData');
 
@@ -624,17 +637,21 @@ ipcMain.on('clear-local-cache', async (e) => {
   e.reply('local-cache-cleared');
 });
 
+
+// Handling app restart
 ipcMain.on('restart-app', () => {
   app.relaunch();
 });
 
+// Restrict deskfiler instances to one at a time
 const isSingleAppInstance = app.requestSingleInstanceLock();
 
 if (!isSingleAppInstance) {
   app.quit();
 } else {
   app.on('second-instance', (e, argv) => {
-    if (process.platform === 'win32') {
+    if (process.platform === 'win32') {  
+      // On Windows, custom protocol url can be recieved through a argv argument
       const url = argv.slice(-1)[0];
       downloadPlugin(url);
     }
@@ -648,6 +665,7 @@ if (!isSingleAppInstance) {
     if (mainWindow === null) createWindow();
   });
 
+  // Event that shows that electron app is ready to work
   app.on('ready', async () => {
     log('App ready, creating window...');
 
@@ -655,6 +673,7 @@ if (!isSingleAppInstance) {
 
     log('Created main-renderer window, registering protocol...');
 
+    // Register a custom protocol scheme 
     protocol.registerStringProtocol('deskfiler', (request, callback) => {
       callback();
     }, (err) => {
@@ -667,6 +686,7 @@ if (!isSingleAppInstance) {
 
     log('Initializing serve for plugins');
 
+    // Start local server to host plugins
     server = http.createServer((request, response) => (
       handler(request, response, {
         public: PLUGINS_DIR,
@@ -679,6 +699,7 @@ if (!isSingleAppInstance) {
 
     log('Checking for updates...');
 
+    // Offer user to download newest update if available
     autoUpdater.on('update-available', async (event) => {
       const { version } = event;
 
@@ -697,6 +718,7 @@ if (!isSingleAppInstance) {
       }
     });
 
+    // Offer user to install newest update
     autoUpdater.on('update-downloaded', async (event) => {
       const { version } = event;
 
@@ -716,15 +738,18 @@ if (!isSingleAppInstance) {
     await autoUpdater.checkForUpdates();
   });
 
+  // Authorize user through basic auth
   app.on('login', (event, _, request, authInfo, callback) => {
     event.preventDefault();
     callback('a', 'b');
   });
 
+  // On MacOS, custom protocol links work through the 'open-url' event
   app.on('open-url', (e, url) => {
     downloadPlugin(url);
   });
 
+  // If all windows are closed - terminate the app on all platforms, except for MacOS
   app.on('window-all-closed', () => {
     server.close(() => { log('Plugins server closed.'); });
     log('Terminating app...');
