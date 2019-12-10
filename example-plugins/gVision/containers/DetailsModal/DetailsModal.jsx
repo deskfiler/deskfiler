@@ -37,13 +37,15 @@ const DetailsModal = ({
   if (!isOpen || !data) return null;
 
   const { 
+    textAnnotations,
     webDetection: {
-      webEntities,
       fullMatchingImages,
       visuallySimilarImages,
     },
     tags,
   } = data;
+
+  console.log('data', data);
 
   const { shell, path } = system;
 
@@ -83,11 +85,15 @@ const DetailsModal = ({
                         </td>
                       </tr>
                     )}
-                    {webEntities && (
+                    {textAnnotations && textAnnotations[0] && (
                       <tr key="Found text">
                         <td style={{ verticalAlign: 'baseline', maxWidth: 0, whiteSpace: 'nowrap' }}>Found text:</td>
                         <td style={{ maxWidth: 0, overflow: 'auto' }}>
-                          {webEntities.map(({ description }) => description).join(', ')}
+                          {textAnnotations[0].description
+                            .split('\n')
+                            .filter(a => a !== "")
+                            .map(a => a.trim())
+                            .join(', ')}
                         </td>
                       </tr>
                     )}

@@ -43,6 +43,7 @@ export const Image = styled.img`
   width: 200px;
   height: 200px;
   flex: 0 0 auto;
+  object-fit: cover;
 `;
 
 export const Table = styled.table`
