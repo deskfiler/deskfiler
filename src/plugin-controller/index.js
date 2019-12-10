@@ -295,7 +295,11 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
       currentWindow.close();
     },
     alert: (data) => {
-      ipcRenderer.sendTo(mainId, 'open-alert-modal', { fromId: selfId, pluginKey, data });
+      if (typeof data === 'string' || Array.isArray(data)) {
+        ipcRenderer.sendTo(mainId, 'open-alert-modal', { fromId: selfId, pluginKey, data });
+        return;
+      }
+      throw new Error('Invalid argument type for "alert" method. Can only be a string or an array');
     },
     focus: () => {
       currentWindow.focus();

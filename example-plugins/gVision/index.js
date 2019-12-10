@@ -1,8 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
+import 'foundation-sites/dist/css/foundation.min.css';
+
+import { Button } from 'react-foundation';
+
 import PluginSettings from './containers/PluginSettings';
 import ImageProcessor from './containers/Processor';
+import DetailsModal from './containers/DetailsModal';
+
+import closeIcon from './assets/images/closewhite.svg';
+
+import { round } from './utils';
+
+import { Flex, Title, HeaderLabel } from './styled';
+
+const getHeaderLabel = ({ processedFiles, errorFiles, totalFiles }) => {
+  const isDone = !((processedFiles + errorFiles) < totalFiles);
+  return `${isDone ? 'Done' : 'Processing'}: ${processedFiles} processed ${errorFiles ? `/ ${errorFiles} failed` : ''} ${!isDone ? ` / ${totalFiles - (processedFiles + errorFiles)} yet to process` : ''}`; 
+};
 
 window.PLUGIN = {
   handleFiles: async ({
@@ -37,12 +53,16 @@ window.PLUGIN = {
       const [processing, setProcessing] = useState(false);
       const [saveDir, setSaveDir] = useState(null);
       const [settings, setSettings] = useState(initialSettings);
+      const [chargedFunds, setChargedFunds] = useState(0);
       const [processedFiles, setProcessedFiles] = useState(0);
       const [errorFiles, setErrorFiles] = useState(0);
       const [outputPaths, setOutputPaths] = useState(filePaths);
+      const [modalInfo, setModalInfo] = useState({});
+      const [isModalOpen, setModalOpen] = useState(false);
 
-      const onSubmit = async (newSettings) => {
+      const onSubmit = async ({ newSettings, fundsToSpend }) => {
         setSettings(newSettings);
+        setChargedFunds(fundsToSpend);
 
         const { copyTaggedToExtraFolder, saveToJson } = newSettings;
 
@@ -88,7 +108,7 @@ window.PLUGIN = {
             meta: {
               type: 'text',
               value: [
-                `Ticket start: ${Math.floor(userticket.OZVALUE * 1000) / 1000} ${userticket.OZCURR} - Ticket end: ${Math.floor((userticket.OZVALUE - (plugindetails.OZPRICE * processedFiles)) * 1000) / 1000} ${userticket.OZCURR}`,
+                `Ticket start: ${round(userticket.OZVALUE)} ${userticket.OZCURR} - Ticket end: ${round((userticket.OZVALUE - (plugindetails.OZPRICE * (processedFiles + errorFiles))))} ${userticket.OZCURR}`,
                 `${outputPaths.length} file${outputPaths.length > 1 ? 's' : ''} tagged`,
                 ...(outputPaths.length > 10 ? [`Output directory: ${dir}`] : outputPaths),
               ].join('; '),
@@ -98,39 +118,60 @@ window.PLUGIN = {
       }, [processedFiles, errorFiles, filePaths.length, outputPaths]);
 
       if (processing) {
+        const { userticket } = ticket || {};
         return (
-          <div
+          <Flex
             style={{
-              display: 'flex',
-              flexFlow: 'row wrap',
-              justifyContent: 'center',
-              alignItems: 'center',
-              overflow: 'auto',
+              width: '100%',
+              height: '100%',
+              padding: '20px 30px',
+              position: 'absolute',
             }}
           >
-            {(processedFiles + errorFiles) < filePaths.length
-              ? (
-                <h2>
-                  Processing. <br />
-                  {processedFiles} processed; <br />
-                  {filePaths.length - processedFiles} yet to process;
-                </h2>
-              ) : (
-                <h2>
-                  Done! <br />
-                  {!!errorFiles && (
-                    <>
-                      <span>{`${errorFiles} file${errorFiles > 1 ? 's were' : ' was'} not processed.`}</span>
-                      <br />
-                    </>
-                  )}
-                  <button
-                    style={{
-                      background: 'blue',
-                      color: 'white',
-                      cursor: 'pointer',
-                    }}
+            <Flex flex="0 0 auto">
+              <Title>gVision</Title>
+              <HeaderLabel>
+                {getHeaderLabel({ processedFiles, errorFiles, totalFiles: filePaths.length })}
+              </HeaderLabel>
+            </Flex>
+            <Flex
+              row
+              flexWrap
+              flex="1 1 300px"
+              style={{ overflow: 'auto', border: '1px solid #eee', marginBottom: 20 }}
+            >
+              {filePaths.map(filePath => (
+                <ImageProcessor
+                  key={filePath}
+                  filePath={filePath}
+                  settings={settings}
+                  system={system}
+                  token={token}
+                  saveDir={saveDir}
+                  onSuccess={incrementProcessedFiles}
+                  onError={incrementErrorFiles}
+                  onInfo={(modalInfo) => {
+                    setModalInfo(modalInfo);
+                    setModalOpen(true);
+                  }}
+                />
+              ))}
+            </Flex>
+            {(processedFiles + errorFiles) === filePaths.length && (
+              <Flex row flex="0 0 auto" align="flex-end" justify="space-between" style={{ fontSize: '.875rem;' }}>
+                <Flex row justify="space-between" flex="0 0 50%">
+                  <span>Balance after processing:</span>
+                  <span>{`$ ${round(userticket.OZVALUE - chargedFunds)}`}</span>
+                </Flex>
+                <Flex row align="center" justify="flex-end" flex="0 0 50%">
+                  <Button
                     type="button"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      flex: '0 0 auto',
+                      margin: 0,
+                    }}
                     onClick={() => {
                       exit();
                       if (saveDir) {
@@ -138,24 +179,19 @@ window.PLUGIN = {
                       }
                     }}
                   >
-                    Close
-                  </button>
-                </h2>
-              )
-            }
-            {filePaths.map(filePath => (
-              <ImageProcessor
-                key={filePath}
-                filePath={filePath}
-                settings={settings}
-                system={system}
-                token={token}
-                saveDir={saveDir}
-                onSuccess={incrementProcessedFiles}
-                onError={incrementErrorFiles}
-              />
-            ))}
-          </div>
+                    <img src={closeIcon} style={{ height: '15px', marginRight: '5px' }} />
+                    Done, close panel
+                  </Button>
+                </Flex>
+              </Flex>
+            )}
+            <DetailsModal
+              {...modalInfo}
+              system={system}
+              isOpen={isModalOpen}
+              close={() => setModalOpen(false)}
+            />
+          </Flex>
         );
       }
 
