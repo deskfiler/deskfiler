@@ -49,11 +49,19 @@
       }
     ],
     "win": {
-      "target": "nsis"
+      "target": [{
+        "target": "nsis"
+      },
+      {
+        "target": "appx"
+      }]
     },
     "nsis": {
       "oneClick": true,
       "perMachine": true
+    },
+    "appx": {
+      "backgroundColor": "#ffffff"
     },
     "directories": {
       "app": "src",
