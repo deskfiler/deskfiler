@@ -1,3 +1,7 @@
+/*
+ * DESKFILER MAIN THREAD
+ * Author: Ilya Lopukhin
+ */
 const {
   app,
   dialog,
@@ -29,7 +33,8 @@ const isIt = require('./utils/whichEnvIsIt');
 const {
   HOME_DIR,
   PLUGINS_DIR,
-  /* PREPACKED_PLUGINS, */
+  APP_DIR,
+  PREPACKED_PLUGINS,
   PRELOADS_DIR,
   TEMP_DIR,
   LOGS_DIR,
@@ -58,6 +63,7 @@ if (!app.isDefaultProtocolClient('deskfiler')) {
 
 mkdirp.sync(LOGS_DIR);
 
+// Download plugin from deskfiler store via deskfiler:// protocol
 const downloadPlugin = async (url) => {
   if (mainWindow && url.startsWith('deskfiler://plugins.deskfiler.org/up/')) {
     const downloadsTempDir = path.join(TEMP_DIR, 'downloads');
@@ -87,7 +93,8 @@ const downloadPlugin = async (url) => {
   }
 };
 
-const unpackPlugin = async (filePath) => {
+// Unpack and install plugin from a tarball
+const unpackPlugin = async (filePath, skipConfirmation) => {
   log('unpacking plugin', filePath);
 
   const pluginTempDir = path.join(TEMP_DIR, 'plugin');
@@ -175,33 +182,35 @@ const unpackPlugin = async (filePath) => {
 
     log('added plugin to plugins list');
 
-    mainWindow.webContents.send('unpacked-plugin', {
-      pluginKey,
-      name,
-      author,
-      version,
-      icon,
-      legallink,
-      legalhint,
-    });
-
-    await new Promise((resolve, reject) => {
-      ipcMain.once('continue-plugin-installation', (e, { shouldContinue }) => {
-        if (shouldContinue) {
-          resolve();
-        } else {
-          log('installation cancelled by user');
-          if (pluginDataCopy) {
-            store.set(`pluginData.${pluginKey}`, pluginDataCopy);
-          } else {
-            store.delete(`pluginData.${pluginKey}`);
-          }
-          reject(new Error('Installation Cancelled'));
-        }
+    if (!skipConfirmation) {
+      mainWindow.webContents.send('unpacked-plugin', {
+        pluginKey,
+        name,
+        author,
+        version,
+        icon,
+        legallink,
+        legalhint,
       });
-    });
 
-    log('install confirmed');
+      await new Promise((resolve, reject) => {
+        ipcMain.once('continue-plugin-installation', (e, { shouldContinue }) => {
+          if (shouldContinue) {
+            resolve();
+          } else {
+            log('installation cancelled by user');
+            if (pluginDataCopy) {
+              store.set(`pluginData.${pluginKey}`, pluginDataCopy);
+            } else {
+              store.delete(`pluginData.${pluginKey}`);
+            }
+            reject(new Error('Installation Cancelled'));
+          }
+        });
+      });
+
+      log('install confirmed');
+    }
 
     if (pluginSettings) {
       log('found settings definition in manifest', pluginSettings);
@@ -256,11 +265,33 @@ const unpackPlugin = async (filePath) => {
     return manifestData;
   } catch (err) {
     log('error during installation', err);
+    store.delete(`pluginData.${pluginKey}`);
     rimraf(TEMP_DIR);
     return null;
   }
 };
 
+// Install plugins on first app start
+const preinstallPlugins = async () => {
+  try {
+    if (isIt('production')) {
+      const pluginsPath = path.join(APP_DIR, '..', '..', 'dist', 'plugins');
+      
+      for (const plugin of PREPACKED_PLUGINS) {
+        const filePath = path.join(pluginsPath, `${plugin}.tar.gz`);
+        if (fs.existsSync(filePath)) {
+          log('installing prepacked plugin', plugin);
+          await unpackPlugin(filePath, true);
+        }
+      }
+      store.set('isPluginsPreinstalled', true);
+    }
+  } catch (err) {
+    log('error during preinstalling', err);
+  }
+};
+
+// Create a plugin instance and open a window for it
 async function createPluginControllerWindow({
   pluginKey,
   allowedExtensions,
@@ -310,6 +341,7 @@ async function createPluginControllerWindow({
   });
 }
 
+// Create a window to add funds to user account
 async function createPaymentWindow({ fromId, userId }) {
   paymentWindow = new BrowserWindow({
     minWidth: 800,
@@ -339,6 +371,7 @@ async function createPaymentWindow({ fromId, userId }) {
   });
 }
 
+// Create window to register user account
 async function createRegisterWindow() {
   log('creating login window');
 
@@ -373,6 +406,7 @@ async function createRegisterWindow() {
   });
 }
 
+// Create window to log in into existing account
 async function createLoginWindow() {
   log('creating login window');
 
@@ -405,6 +439,7 @@ async function createLoginWindow() {
   });
 }
 
+// Create window to display plugin settings
 async function createPluginConfigWindow({ pluginKey }) {
   pluginConfigWindow = new BrowserWindow({
     minWidth: 800,
@@ -434,6 +469,7 @@ async function createPluginConfigWindow({ pluginKey }) {
   });
 }
 
+// Create main application window
 async function createWindow() {
   mainWindow = new BrowserWindow({
     minWidth: 700,
@@ -485,6 +521,12 @@ async function createWindow() {
     });
   }
 
+  const isPluginsPreinstalled = await store.get('isPluginsPreinstalled');
+  if (!isPluginsPreinstalled) {
+    preinstallPlugins();
+  }
+
+  // Install plugin and add its data to electron-store
   ipcMain.on('recieved-plugin-tarball', async (event, filePath) => {
     try {
       await unpackPlugin(filePath);
@@ -492,23 +534,6 @@ async function createWindow() {
       console.log(err);
     }
   });
-
-  /* TODO: implement preinstalled plugins feature. Right now stuck on a way to
-   * copy plugin tarballs into the actual distributable. copy-webpack-plugin don't
-   * work for some reason. Specifying them in package.json > build > files don't
-   * work either. */
-
-  /* const installPromises = [];
-
-  for (const plugin of PREPACKED_PLUGINS) {
-    const filePath = path.join(__dirname, `${plugin}.tar.gz`);
-
-    log('installing prepacked plugin', plugin, 'filePath', filePath);
-
-    installPromises.push(unpackPlugin(filePath))
-  }
-
-  Promise.all(installPromises).then(() => log('installed!')) */
 
   ipcMain.on('open-plugin-controller-window', async (event, {
     pluginKey,
@@ -558,16 +583,14 @@ async function createWindow() {
     }
   });
 
+  // Handle successful login
   ipcMain.on('logged-in', (event, user) => {
     log('logged in as', user.email);
     store.set('user', user);
     mainWindow.webContents.send('logged-in');
   });
 
-  ipcMain.on('send-auth-token', (event, token) => {
-    log('got auth token', token);
-  });
-
+  // Uninstall and remove data from all plugins
   ipcMain.on('manifest-delete-all', async () => {
     try {
       store.delete('pluginData');
@@ -582,6 +605,7 @@ async function createWindow() {
     }
   });
 
+  // Uninstall plugin and remove its data from electron-store
   ipcMain.on('remove-plugin', async (e, pluginKey) => {
     log(`removing plugin ${pluginKey} requested`);
     try {
@@ -612,6 +636,7 @@ async function createWindow() {
   });
 }
 
+// Clear local cache on error boundary
 ipcMain.on('clear-local-cache', async (e) => {
   const cachedir = app.getPath('userData');
 
@@ -624,17 +649,21 @@ ipcMain.on('clear-local-cache', async (e) => {
   e.reply('local-cache-cleared');
 });
 
+
+// Handling app restart
 ipcMain.on('restart-app', () => {
   app.relaunch();
 });
 
+// Restrict deskfiler instances to one at a time
 const isSingleAppInstance = app.requestSingleInstanceLock();
 
 if (!isSingleAppInstance) {
   app.quit();
 } else {
   app.on('second-instance', (e, argv) => {
-    if (process.platform === 'win32') {
+    if (process.platform === 'win32') {  
+      // On Windows, custom protocol url can be recieved through a argv argument
       const url = argv.slice(-1)[0];
       downloadPlugin(url);
     }
@@ -648,6 +677,7 @@ if (!isSingleAppInstance) {
     if (mainWindow === null) createWindow();
   });
 
+  // Event that shows that electron app is ready to work
   app.on('ready', async () => {
     log('App ready, creating window...');
 
@@ -655,6 +685,7 @@ if (!isSingleAppInstance) {
 
     log('Created main-renderer window, registering protocol...');
 
+    // Register a custom protocol scheme 
     protocol.registerStringProtocol('deskfiler', (request, callback) => {
       callback();
     }, (err) => {
@@ -667,6 +698,7 @@ if (!isSingleAppInstance) {
 
     log('Initializing serve for plugins');
 
+    // Start local server to host plugins
     server = http.createServer((request, response) => (
       handler(request, response, {
         public: PLUGINS_DIR,
@@ -679,6 +711,7 @@ if (!isSingleAppInstance) {
 
     log('Checking for updates...');
 
+    // Offer user to download newest update if available
     autoUpdater.on('update-available', async (event) => {
       const { version } = event;
 
@@ -697,6 +730,7 @@ if (!isSingleAppInstance) {
       }
     });
 
+    // Offer user to install newest update
     autoUpdater.on('update-downloaded', async (event) => {
       const { version } = event;
 
@@ -716,15 +750,18 @@ if (!isSingleAppInstance) {
     await autoUpdater.checkForUpdates();
   });
 
+  // Authorize user through basic auth
   app.on('login', (event, _, request, authInfo, callback) => {
     event.preventDefault();
     callback('a', 'b');
   });
 
+  // On MacOS, custom protocol links work through the 'open-url' event
   app.on('open-url', (e, url) => {
     downloadPlugin(url);
   });
 
+  // If all windows are closed - terminate the app on all platforms, except for MacOS
   app.on('window-all-closed', () => {
     server.close(() => { log('Plugins server closed.'); });
     log('Terminating app...');

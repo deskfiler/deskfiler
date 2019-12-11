@@ -19,6 +19,9 @@
       "dist/*.svg",
       "package.json"
     ],
+    "extraFiles": [
+      "dist/plugins/*.tar.gz"
+    ],
     "dmg": {
       "contents": [
         {
@@ -49,11 +52,19 @@
       }
     ],
     "win": {
-      "target": "nsis"
+      "target": [{
+        "target": "nsis"
+      },
+      {
+        "target": "appx"
+      }]
     },
     "nsis": {
       "oneClick": true,
       "perMachine": true
+    },
+    "appx": {
+      "backgroundColor": "#ffffff"
     },
     "directories": {
       "app": "src",

@@ -5,6 +5,7 @@ const isIt = require('./utils/whichEnvIsIt');
 
 /* Directories */
 const DESKFILER_DIR = app.getPath('userData');
+const APP_DIR =  app.getAppPath();
 const HOME_DIR = app.getPath('home');
 const PLUGINS_DIR = path.join(DESKFILER_DIR, 'plugins');
 const LOGS_DIR = path.join(DESKFILER_DIR, 'logs');
@@ -16,7 +17,7 @@ const PRELOADS_DIR = isIt('development').env
   ? path.join(__dirname, 'preloads')
   : path.join(__dirname);
 
-const PREPACKED_PLUGINS = ['gVision', 'imageTagViewer', 'zip'];
+const PREPACKED_PLUGINS = ['gVision', 'imageTagViewer', 'zipPw', 'weTransferConnect', 'pdfSplitter'];
 
 module.exports = {
   PLUGINS_DIR,
@@ -26,5 +27,6 @@ module.exports = {
   DESKFILER_DIR,
   PREPACKED_PLUGINS,
   HOME_DIR,
+  APP_DIR,
   PORT,
 };
