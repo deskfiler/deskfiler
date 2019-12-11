@@ -1,5 +1,7 @@
 # Overview
 
+> This article is a stub. You can help by expanding it.
+
 ![Image of Yaktocat](https://i.imgur.com/25Rg4U2.png)
 
 Deskfiler application shell is built on top on Electron.js framework.

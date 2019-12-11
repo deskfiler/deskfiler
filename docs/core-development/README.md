@@ -5,6 +5,6 @@ It is written purely in Javascript and html templates.
 
 ### Resources
 
-* [Overview](./overview.md) – a good place to start getting to know deskfiler's internals.
+* [Overview](core-development/overview.md) – a good place to start getting to know deskfiler's internals.
 * [Electron documentation](https://electronjs.org/docs) - electron documentation reference
 

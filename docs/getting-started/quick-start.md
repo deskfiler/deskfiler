@@ -8,8 +8,10 @@ Deskfiler is a cross-platform Electron.js app, so you will need OS-level build t
 
 ### Windows
 
-Make sure, you have the development tools to recompile node modules installed (eg. Visual Studio Community Edition)
-- needed to run [node-gyp](https://github.com/nodejs/node-gyp).
+Make sure, you have the build tools to compile native Addon modules installed with [node-gyp](https://github.com/nodejs/node-gyp)
+(eg. Visual Studio Community Edition).
+
+There are [great guidelines from microsoft](https://github.com/microsoft/nodejs-guidelines/blob/master/windows-environment.md) on the topic.
 
 ### MacOS
 
@@ -44,26 +46,30 @@ Done! You should now see blank Deskfiler window open with DevTools enabled.
 
 ## What's next?
 
-Here you have two options either **working on Deskfiler core**, or **developing your own plugin**
-
-### Deskfiler development
-
-Dive into the code to understand how Deskfiler works from inside with help or the [architecture reference](../architecture/readme.md),
-take a look at the [issues](https://github.com/deskfiler/deskfiler/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+label%3A%22help+wanted%22)
-and find yourself something you feel ready to tackle!
-
-Dureing the developemnt, you may compile a production distributables for your system to test them, check [this guide](./building-production-distributables.md) to get to know how to do it
+Here you have two options either **developing your own plugin**, or **working on Deskfiler core**.
 
 ### Plugin Development
 
 Most awesome thing about the deskfiler is that you can create your plugins for it obviously!
-If you want to create something cool, please refer to [plugin development reference](../plugin-development/readme.md)
+Deskfiler plugins are intended to work with files, but you can actually run any arbitrary JS code inside the plugin container.
+
+If you want to create something cool, please refer to [plugin development reference](plugin-development/readme.md)
+
+Also, check out [deskfiler plugin ideas]().
+
+### Deskfiler development
+
+Dive into the code to understand how Deskfiler works from inside with help of the [architecture reference](architecture/readme.md),
+take a look at the [issues](https://github.com/deskfiler/deskfiler/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+label%3A%22help+wanted%22)
+and find yourself something you feel ready to tackle!
+
+During the developemnt, you may compile a production distributables for your system to test them, check [this guide](getting-started/building-production-distributables.md) to get to know how to do it
 
 ## Appendix
 
 ### Installing node
 
-A nice way to manage node environment on your system in by using "Node Version Manager"
+A nice way to manage node environment on your system is by using "Node Version Manager"
 Install it using installation instructions on [their github repo](https://github.com/nvm-sh/nvm),
 confirm it's installed by running `nvm -c` and then run `nvm install latest && nvm use latest`.
 

@@ -1,5 +1,7 @@
 # API docs
 
+> This article is a stub. You can help by expanding it.
+
 Plugin handlers receive an objects as it's first argument.
 Both **handleFiles** and **handleOpen** object contains `system` and `context` variables,
 but, only **handleFiles** receives `inputs` which is an array of paths which were dropped on the plugin.
