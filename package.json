@@ -19,6 +19,9 @@
       "dist/*.svg",
       "package.json"
     ],
+    "extraFiles": [
+      "dist/plugins/*.tar.gz"
+    ],
     "dmg": {
       "contents": [
         {

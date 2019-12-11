@@ -33,7 +33,8 @@ const isIt = require('./utils/whichEnvIsIt');
 const {
   HOME_DIR,
   PLUGINS_DIR,
-  /* PREPACKED_PLUGINS, */
+  APP_DIR,
+  PREPACKED_PLUGINS,
   PRELOADS_DIR,
   TEMP_DIR,
   LOGS_DIR,
@@ -93,7 +94,7 @@ const downloadPlugin = async (url) => {
 };
 
 // Unpack and install plugin from a tarball
-const unpackPlugin = async (filePath) => {
+const unpackPlugin = async (filePath, skipConfirmation) => {
   log('unpacking plugin', filePath);
 
   const pluginTempDir = path.join(TEMP_DIR, 'plugin');
@@ -181,33 +182,35 @@ const unpackPlugin = async (filePath) => {
 
     log('added plugin to plugins list');
 
-    mainWindow.webContents.send('unpacked-plugin', {
-      pluginKey,
-      name,
-      author,
-      version,
-      icon,
-      legallink,
-      legalhint,
-    });
-
-    await new Promise((resolve, reject) => {
-      ipcMain.once('continue-plugin-installation', (e, { shouldContinue }) => {
-        if (shouldContinue) {
-          resolve();
-        } else {
-          log('installation cancelled by user');
-          if (pluginDataCopy) {
-            store.set(`pluginData.${pluginKey}`, pluginDataCopy);
-          } else {
-            store.delete(`pluginData.${pluginKey}`);
-          }
-          reject(new Error('Installation Cancelled'));
-        }
+    if (!skipConfirmation) {
+      mainWindow.webContents.send('unpacked-plugin', {
+        pluginKey,
+        name,
+        author,
+        version,
+        icon,
+        legallink,
+        legalhint,
       });
-    });
 
-    log('install confirmed');
+      await new Promise((resolve, reject) => {
+        ipcMain.once('continue-plugin-installation', (e, { shouldContinue }) => {
+          if (shouldContinue) {
+            resolve();
+          } else {
+            log('installation cancelled by user');
+            if (pluginDataCopy) {
+              store.set(`pluginData.${pluginKey}`, pluginDataCopy);
+            } else {
+              store.delete(`pluginData.${pluginKey}`);
+            }
+            reject(new Error('Installation Cancelled'));
+          }
+        });
+      });
+
+      log('install confirmed');
+    }
 
     if (pluginSettings) {
       log('found settings definition in manifest', pluginSettings);
@@ -262,8 +265,29 @@ const unpackPlugin = async (filePath) => {
     return manifestData;
   } catch (err) {
     log('error during installation', err);
+    store.delete(`pluginData.${pluginKey}`);
     rimraf(TEMP_DIR);
     return null;
+  }
+};
+
+// Install plugins on first app start
+const preinstallPlugins = async () => {
+  try {
+    if (isIt('production')) {
+      const pluginsPath = path.join(APP_DIR, '..', '..', 'dist', 'plugins');
+      
+      for (const plugin of PREPACKED_PLUGINS) {
+        const filePath = path.join(pluginsPath, `${plugin}.tar.gz`);
+        if (fs.existsSync(filePath)) {
+          log('installing prepacked plugin', plugin);
+          await unpackPlugin(filePath, true);
+        }
+      }
+      store.set('isPluginsPreinstalled', true);
+    }
+  } catch (err) {
+    log('error during preinstalling', err);
   }
 };
 
@@ -497,6 +521,11 @@ async function createWindow() {
     });
   }
 
+  const isPluginsPreinstalled = await store.get('isPluginsPreinstalled');
+  if (!isPluginsPreinstalled) {
+    preinstallPlugins();
+  }
+
   // Install plugin and add its data to electron-store
   ipcMain.on('recieved-plugin-tarball', async (event, filePath) => {
     try {
@@ -505,23 +534,6 @@ async function createWindow() {
       console.log(err);
     }
   });
-
-  /* TODO: implement preinstalled plugins feature. Right now stuck on a way to
-   * copy plugin tarballs into the actual distributable. copy-webpack-plugin don't
-   * work for some reason. Specifying them in package.json > build > files don't
-   * work either. */
-
-  /* const installPromises = [];
-
-  for (const plugin of PREPACKED_PLUGINS) {
-    const filePath = path.join(__dirname, `${plugin}.tar.gz`);
-
-    log('installing prepacked plugin', plugin, 'filePath', filePath);
-
-    installPromises.push(unpackPlugin(filePath))
-  }
-
-  Promise.all(installPromises).then(() => log('installed!')) */
 
   ipcMain.on('open-plugin-controller-window', async (event, {
     pluginKey,
