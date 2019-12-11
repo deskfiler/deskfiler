@@ -15,11 +15,14 @@
       name: 'Deskfiler',
       repo: 'https://github.com/deskfiler/deskfiler',
       loadSidebar: true,
-      alias: {
-        '/.*/_sidebar.md': '/_sidebar.md',
-      },
+      copyCode: {
+        buttonText : 'Copy to clipboard',
+        errorText  : 'Error',
+        successText: 'Copied'
+      }
     }
   </script>
   <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+  <script src="//unpkg.com/docsify-copy-code"></script>
 </body>
 </html>

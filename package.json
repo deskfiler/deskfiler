@@ -88,9 +88,9 @@
     "build:plugins:zipPw": "echo xxxxxx & cd example-plugins && cd zipPw && yarn build & cd .. & cd ..",
     "build:plugins:weTransferConnect": "echo xxxxxx & cd example-plugins && cd weTransferConnect && yarn build & cd .. & cd ..",
     "build:plugins:all": "yarn build:plugins:bareBone && yarn build:plugins:gVision && yarn build:plugins:imageTagViewer && yarn build:plugins:pdfSplitter && yarn build:plugins:zipPw && yarn build:plugins:weTransferConnect",
-    "docs:preview": "docpress s",
-    "docs:build": "docpress b",
-    "docs:publish": "yarn docs:build && yarn gh-pages -d _docpress -o ext-origin"
+    "docs:build": "docsify init docs",
+    "docs:preview": "docsify serve docs",
+    "docs:publish": "yarn docs:build && yarn gh-pages -d docs -o ext-origin"
   },
   "repository": "https://github.com/deskfiler/deskfiler",
   "keywords": [
