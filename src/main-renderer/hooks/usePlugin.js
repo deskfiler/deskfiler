@@ -46,8 +46,18 @@ export default function usePlugin(pluginKey) {
       const { isRegistered, ...pluginInfo } = await getPluginInfo({ token: auth.token, pluginKey });
       if (!isRegistered) {
         await addPluginToAccount({ pluginKey });
+        const newPluginInfo = await getPluginInfo({ token: auth.token, pluginKey });
+        ticket = newPluginInfo.isRegistered ? newPluginInfo.ticket : null;
+        if (pluginKey === 'gvision' && newPluginInfo.ticket && newPluginInfo.userticket) {
+          const { ticket: { userticket } } = newPluginInfo;
+          openModal('alert', {
+            title: 'Surprise!',
+            data: `Thanks for installing ${pluginKey}, we have loaded your account with $${userticket.OZVALUE} as a welcome gift!`
+          });
+        }
+      } else {
+        ({ ticket } = pluginInfo);
       }
-      ({ ticket } = pluginInfo);
     }
 
     const { inDevelopment, devPluginUrl } = plugin;
@@ -63,9 +73,10 @@ export default function usePlugin(pluginKey) {
   };
 
   const remove = useCallback(async () => {
-    if (isRequireAuth && auth) {
-      await removePluginFromAccount({ token: auth.token, pluginKey });
-    }
+    // Do not remove plugin info from server on plugin removal
+    // if (isRequireAuth && auth) {
+    //   await removePluginFromAccount({ token: auth.token, pluginKey });
+    // }
     ipcRenderer.send('remove-plugin', pluginKey);
   }, [auth]);
 

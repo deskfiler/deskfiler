@@ -6,13 +6,13 @@ import {
 import Label from '../Label';
 
 const Select = ({ form, field, lib }) => {
-  const { options, label } = lib;
+  const { options, label, style } = lib;
   return (
-    <>
-      <div>
+    <div style={style}>
+      <div style={{ marginBottom: 5 }}>
         <Label value={label} />
       </div>
-      <select {...field}>
+      <select style={{ fontSize: '.875rem' }} {...field}>
         {options.map(({ value, label }, idx) => (
           <option
             key={idx}
@@ -23,7 +23,7 @@ const Select = ({ form, field, lib }) => {
           </option>
         ))}
       </select>
-    </>
+    </div>
   );
 };
 

@@ -1,8 +1,8 @@
-Installation and Development
-=============
+# Getting started
 
-* [Quick start](./getting-started/quick-start.md)
-* [Installing node](./getting-started/installing-node.md)
-* [OS-specific instructions](./getting-started/os-specific.md)
-* [Builing distributables](./getting-started/building-production-distributables.md)
+Happy to see you at this page, fellow developer!
 
+Deskfiler development is easy and accessible for everyone!
+
+If you want to make some plugins within deskfiler, you will need to set up development environment
+first. In order to do that, please refer to [Quick Start](getting-started/quick-start.md)

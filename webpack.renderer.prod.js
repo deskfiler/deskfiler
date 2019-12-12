@@ -2,23 +2,34 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-/* const CopyPlugin = require('copy-webpack-plugin'); */
+const CopyPlugin = require('copy-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
 const config = require('./webpack.renderer.base.js');
 
 const plugins = [
-  /* new CopyPlugin([
+  new CopyPlugin([
     {
-      from: 'plugins-dist/gVision.tar.gz',
+      from: path.join(__dirname, 'plugins-dist', 'gVision.tar.gz'),
+      to: path.join(__dirname, 'dist', 'plugins'),
     },
     {
-      from: 'plugins-dist/imageTagViewer.tar.gz',
+      from: path.join(__dirname, 'plugins-dist', 'imageTagViewer.tar.gz'),
+      to: path.join(__dirname, 'dist', 'plugins'),
     },
     {
-      from: 'plugins-dist/zipPw.tar.gz',
+      from: path.join(__dirname, 'plugins-dist', 'zipPw.tar.gz'),
+      to: path.join(__dirname, 'dist', 'plugins'),
     },
-  ]), */
+    {
+      from: path.join(__dirname, 'plugins-dist', 'pdfSplitter.tar.gz'),
+      to: path.join(__dirname, 'dist', 'plugins'),
+    },
+    {
+      from: path.join(__dirname, 'plugins-dist', 'weTransferConnect.tar.gz'),
+      to: path.join(__dirname, 'dist', 'plugins'),
+    },
+  ]),
   new HtmlWebpackPlugin({
     template: path.resolve('src', 'main-renderer', 'index.tpl.html'),
     inject: 'body',

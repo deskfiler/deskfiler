@@ -76,7 +76,7 @@ export default () => {
     const url = 'https://plugins.deskfiler.org/api/index.php';
 
     const formData = getFormData({
-      appaction: 'plugadd',
+      appaction: 'plugremove',
       appid: pluginKey.split('-').join(''),
       appname: 'deskfiler',
     });
