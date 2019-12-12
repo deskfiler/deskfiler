@@ -1,4 +1,31 @@
 <a name=""></a>
+# [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v1.0.0...v) (2019-12-12)
+
+
+### Bug Fixes
+
+* fix error handling for gVision plugin ([dce263d](https://github.com/ilya-lopukhin/deskfiler-private/commit/dce263d))
+* fix gVision plugin non-english tags languages ([1128630](https://github.com/ilya-lopukhin/deskfiler-private/commit/1128630))
+* fix imageTagViewer unicode parsing and png check ([8486b23](https://github.com/ilya-lopukhin/deskfiler-private/commit/8486b23))
+* fix layout for gVision plugin ([457aeb5](https://github.com/ilya-lopukhin/deskfiler-private/commit/457aeb5))
+* fix plugin improper removal ([d4f34a9](https://github.com/ilya-lopukhin/deskfiler-private/commit/d4f34a9))
+* fix plugin register and removal, add welcome gift message for deskfiler plugin ([38a1192](https://github.com/ilya-lopukhin/deskfiler-private/commit/38a1192))
+* fix ui for <PluginSettings/> for gVision plugin ([3e8bc48](https://github.com/ilya-lopukhin/deskfiler-private/commit/3e8bc48))
+* take textAnnotations as found text field for gVision plugin ([7d2b739](https://github.com/ilya-lopukhin/deskfiler-private/commit/7d2b739))
+
+
+### Features
+
+* add appx installer ([1a8d982](https://github.com/ilya-lopukhin/deskfiler-private/commit/1a8d982))
+* add plugins preinstall ([b6850f6](https://github.com/ilya-lopukhin/deskfiler-private/commit/b6850f6))
+* add png support for gVision and imageTagViewer ([b3c7a30](https://github.com/ilya-lopukhin/deskfiler-private/commit/b3c7a30))
+* add proper ui for gvision plugin, remove console.logs ([46d0728](https://github.com/ilya-lopukhin/deskfiler-private/commit/46d0728))
+* comment main thread and plugin-contoller ([ff1cb02](https://github.com/ilya-lopukhin/deskfiler-private/commit/ff1cb02))
+* process images sequentially for gVision plugin ([d694587](https://github.com/ilya-lopukhin/deskfiler-private/commit/d694587))
+
+
+
+<a name=""></a>
 # [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v0.0.2...v) (2019-11-28)
 
 
