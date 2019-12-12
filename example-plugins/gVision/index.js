@@ -59,6 +59,7 @@ window.PLUGIN = {
       const [outputPaths, setOutputPaths] = useState(filePaths);
       const [modalInfo, setModalInfo] = useState({});
       const [isModalOpen, setModalOpen] = useState(false);
+      const [processingIndex, setProcessingIndex] = useState(0);
 
       const onSubmit = async ({ newSettings, fundsToSpend }) => {
         setSettings(newSettings);
@@ -89,12 +90,14 @@ window.PLUGIN = {
         syncSettings();
       }, [settings]);
 
-      const incrementProcessedFiles = () => {
+      const incrementProcessedFiles = (index) => {
         setProcessedFiles(processedFiles + 1);
+        setProcessingIndex(index + 1);
       };
 
-      const incrementErrorFiles = () => {
+      const incrementErrorFiles = (index) => {
         setErrorFiles(errorFiles + 1);
+        setProcessingIndex(index + 1);
       };
 
       useEffect(() => {
@@ -140,9 +143,11 @@ window.PLUGIN = {
               flex="1 1 300px"
               style={{ overflow: 'auto', border: '1px solid #eee', marginBottom: 20 }}
             >
-              {filePaths.map(filePath => (
+              {filePaths.map((filePath, index) => (
                 <ImageProcessor
                   key={filePath}
+                  index={index}
+                  processingIndex={processingIndex}
                   filePath={filePath}
                   settings={settings}
                   system={system}
