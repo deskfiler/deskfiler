@@ -93,14 +93,15 @@
     "bootstrap:plugins:pdfSplitter": "echo xxxxxx & cd example-plugins && cd pdfSplitter && yarn & cd .. & cd ..",
     "bootstrap:plugins:zipPw": "echo xxxxxx & cd example-plugins && cd zipPw && yarn & cd .. & cd ..",
     "bootstrap:plugins:weTransferConnect": "echo xxxxxx & cd example-plugins && cd weTransferConnect && yarn & cd .. & cd ..",
-    "bootstrap:plugins:all": "concurrently \"yarn bootstrap:plugins:bareBone\" \"yarn bootstrap:plugins:gVision\" \"yarn bootstrap:plugins:imageTagViewer\" \"yarn bootstrap:plugins:pdfSplitter\" \"yarn bootstrap:plugins:zipPw\" \"yarn bootstrap:plugins:weTransferConnect\"",
+    "bootstrap:plugins:all": "yarn concurrently \"yarn bootstrap:plugins:bareBone\" \"yarn bootstrap:plugins:gVision\" \"yarn bootstrap:plugins:imageTagViewer\" \"yarn bootstrap:plugins:pdfSplitter\" \"yarn bootstrap:plugins:zipPw\" \"yarn bootstrap:plugins:weTransferConnect\"",
     "build:plugins:bareBone": "echo xxxxxx & cd example-plugins && cd bareBone && yarn build & cd .. & cd ..",
     "build:plugins:gVision": "echo xxxxxx & cd example-plugins && cd gVision && yarn build & cd .. & cd ..",
     "build:plugins:imageTagViewer": "echo xxxxxx & cd example-plugins && cd imageTagViewer && yarn build & cd .. & cd ..",
     "build:plugins:pdfSplitter": "echo xxxxxx & cd example-plugins && cd pdfSplitter && yarn build & cd .. & cd ..",
     "build:plugins:zipPw": "echo xxxxxx & cd example-plugins && cd zipPw && yarn build & cd .. & cd ..",
     "build:plugins:weTransferConnect": "echo xxxxxx & cd example-plugins && cd weTransferConnect && yarn build & cd .. & cd ..",
-    "build:plugins:all": "concurrently \"yarn build:plugins:bareBone\" \"yarn build:plugins:gVision\" \"yarn build:plugins:imageTagViewer\" \"yarn build:plugins:pdfSplitter\" \"yarn build:plugins:zipPw\" \"yarn build:plugins:weTransferConnect\"",
+    "build:plugins:all": "yarn concurrently \"yarn build:plugins:bareBone\" \"yarn build:plugins:gVision\" \"yarn build:plugins:imageTagViewer\" \"yarn build:plugins:pdfSplitter\" \"yarn build:plugins:zipPw\" \"yarn build:plugins:weTransferConnect\"",
+
     "docs:build": "docsify init docs",
     "docs:preview": "docsify serve docs",
     "docs:publish": "yarn docs:build && yarn gh-pages -d docs -o ext-origin"
