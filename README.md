@@ -30,10 +30,7 @@ Please read [Code of conduct](./docs/CODE_OF_CONDUCT.md) and [Contributing instr
 
 ## Documentation
 
-All documentation resides [here](https://deskfiler.github.io/deskfiler/index.html)
-
-If you are already here, [getting started](/getting-started/readme.md) is a great starting point if
-you want to contribute to Deskfiler.
+All documentation resides [here](https://deskfiler.github.io/deskfiler/)
 
 ## License
 

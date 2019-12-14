@@ -52,12 +52,14 @@
       }
     ],
     "win": {
-      "target": [{
-        "target": "nsis"
-      },
-      {
-        "target": "appx"
-      }]
+      "target": [
+        {
+          "target": "nsis"
+        },
+        {
+          "target": "appx"
+        }
+      ]
     },
     "nsis": {
       "oneClick": true,
@@ -85,20 +87,20 @@
     "build-renderer": "cross-env webpack --env.NODE_ENV=production -r \"@babel/register\" --config  webpack.renderer.prod.js --colors --progress --profile",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server -r \"@babel/register\" --config webpack.renderer.dev.js --colors",
     "start-main-dev": "cross-env electron -r '@babel/register' app/main",
-    "bootstrap:plugins:bareBone": "echo xxxxxx & cd example-plugins && cd bareBone && yarn & cd .. & cd ..",
-    "bootstrap:plugins:gVision": "echo xxxxxx & cd example-plugins && cd gVision && yarn & cd .. & cd ..",
-    "bootstrap:plugins:imageTagViewer": "echo xxxxxx & cd example-plugins && cd imageTagViewer && yarn & cd .. & cd ..",
-    "bootstrap:plugins:pdfSplitter": "echo xxxxxx & cd example-plugins && cd pdfSplitter && yarn & cd .. & cd ..",
-    "bootstrap:plugins:zipPw": "echo xxxxxx & cd example-plugins && cd zipPw && yarn & cd .. & cd ..",
-    "bootstrap:plugins:weTransferConnect": "echo xxxxxx & cd example-plugins && cd weTransferConnect && yarn & cd .. & cd ..",
-    "bootstrap:plugins:all": "concurrently \"yarn bootstrap:plugins:bareBone\" \"yarn bootstrap:plugins:gVision\" \"yarn bootstrap:plugins:imageTagViewer\" \"yarn bootstrap:plugins:pdfSplitter\" \"yarn bootstrap:plugins:zipPw\" \"yarn bootstrap:plugins:weTransferConnect\"",
-    "build:plugins:bareBone": "echo xxxxxx & cd example-plugins && cd bareBone && yarn build & cd .. & cd ..",
-    "build:plugins:gVision": "echo xxxxxx & cd example-plugins && cd gVision && yarn build & cd .. & cd ..",
-    "build:plugins:imageTagViewer": "echo xxxxxx & cd example-plugins && cd imageTagViewer && yarn build & cd .. & cd ..",
-    "build:plugins:pdfSplitter": "echo xxxxxx & cd example-plugins && cd pdfSplitter && yarn build & cd .. & cd ..",
-    "build:plugins:zipPw": "echo xxxxxx & cd example-plugins && cd zipPw && yarn build & cd .. & cd ..",
-    "build:plugins:weTransferConnect": "echo xxxxxx & cd example-plugins && cd weTransferConnect && yarn build & cd .. & cd ..",
-    "build:plugins:all": "concurrently \"yarn build:plugins:bareBone\" \"yarn build:plugins:gVision\" \"yarn build:plugins:imageTagViewer\" \"yarn build:plugins:pdfSplitter\" \"yarn build:plugins:zipPw\" \"yarn build:plugins:weTransferConnect\"",
+    "bootstrap:plugins:bareBone": "cd example-plugins && cd bareBone && yarn && cd .. && cd ..",
+    "bootstrap:plugins:gVision": "cd example-plugins && cd gVision && yarn && cd .. && cd ..",
+    "bootstrap:plugins:imageTagViewer": "cd example-plugins && cd imageTagViewer && yarn && cd .. && cd ..",
+    "bootstrap:plugins:pdfSplitter": "cd example-plugins && cd pdfSplitter && yarn && cd .. && cd ..",
+    "bootstrap:plugins:zipPw": "cd example-plugins && cd zipPw && yarn && cd .. && cd ..",
+    "bootstrap:plugins:weTransferConnect": "cd example-plugins && cd weTransferConnect && yarn && cd .. && cd ..",
+    "bootstrap:plugins:all": "yarn bootstrap:plugins:bareBone && yarn bootstrap:plugins:gVision && yarn bootstrap:plugins:imageTagViewer && yarn bootstrap:plugins:pdfSplitter && yarn bootstrap:plugins:zipPw && yarn bootstrap:plugins:weTransferConnect",
+    "build:plugins:bareBone": "cd example-plugins && cd bareBone && yarn build && cd .. && cd ..",
+    "build:plugins:gVision": "cd example-plugins && cd gVision && yarn build && cd .. && cd ..",
+    "build:plugins:imageTagViewer": "cd example-plugins && cd imageTagViewer && yarn build && cd .. && cd ..",
+    "build:plugins:pdfSplitter": "cd example-plugins && cd pdfSplitter && yarn build && cd .. && cd ..",
+    "build:plugins:zipPw": "cd example-plugins && cd zipPw && yarn build && cd .. && cd ..",
+    "build:plugins:weTransferConnect": "cd example-plugins && cd weTransferConnect && yarn build && cd .. && cd ..",
+    "build:plugins:all": "yarn build:plugins:bareBone && yarn build:plugins:gVision && yarn build:plugins:imageTagViewer && yarn build:plugins:pdfSplitter && yarn build:plugins:zipPw && yarn build:plugins:weTransferConnect",
     "docs:build": "docsify init docs",
     "docs:preview": "docsify serve docs",
     "docs:publish": "yarn docs:build && yarn gh-pages -d docs -o ext-origin"
@@ -116,8 +118,8 @@
     "css-loader": "^3.2.0",
     "dotenv": "^8.1.0",
     "electron-aspectratio": "^1.0.1",
-    "electron-log": "^3.0.9",
     "electron-dl": "^1.14.0",
+    "electron-log": "^3.0.9",
     "electron-store": "^5.0.0",
     "electron-updater": "^4.2.0",
     "fast-csv": "^3.4.0",
@@ -163,7 +165,7 @@
     "babel-plugin-redux-saga": "^1.0.2",
     "babel-plugin-styled-components": "^1.10.0",
     "babili-webpack-plugin": "^0.1.2",
-    "concurrently": "^5.0.0",
+    "concurrently": "^5.0.1",
     "cross-env": "^6.0.3",
     "docpress": "^0.8.0",
     "dotenv-webpack": "^1.7.0",

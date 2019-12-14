@@ -1,6 +1,8 @@
 # Building production distributables
 
-Deskfiler utilizes [webpack]() to bundle it's JS code and [electron-builder]() to package it's native OS-level installers
+> This article is a stub. You can help by expanding it.
+
+Deskfiler utilizes [webpack]() to bundle its JS code and [electron-builder]() to package its native OS-level installers
 
 ## Instructions
 

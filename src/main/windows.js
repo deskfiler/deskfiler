@@ -25,7 +25,7 @@ const {
   preinstallPlugins,
 } = require('./plugins');
 
-const { getServer } = require('./server');
+const { closeServer } = require('./server');
 
 const rimraf = util.promisify(rmrf);
 
@@ -378,9 +378,7 @@ async function createMainWindow() {
 
   mainWindow.on('closed', () => {
     // Stop server when mainWindow is closed
-    const server = getServer();
-
-    if (server) server.close(() => { console.log('Server closed.'); });
+    closeServer();
 
     mainWindow = null;
   });

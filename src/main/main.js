@@ -30,8 +30,8 @@ const {
 } = require('./windows');
 
 const {
-  getServer,
-  createServer
+  closeServer,
+  createServer,
 } = require('./server');
 
 const rimraf = util.promisify(rmrf);
@@ -179,9 +179,7 @@ if (!isSingleAppInstance) {
 
   // If all windows are closed - terminate the app on all platforms, except for MacOS
   app.on('window-all-closed', () => {
-    const server = getServer();
-
-    if (server) server.close(() => { log('Plugins server closed.'); });
+    closeServer();
 
     log('Terminating app...');
     if (process.platform !== 'darwin') app.quit();
