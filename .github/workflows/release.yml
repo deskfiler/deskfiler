@@ -24,6 +24,8 @@ jobs:
         run: yarn bootstrap:plugins:all
       - name: Build plugins
         run: yarn build:plugins:all
+      - name: Check if plugins are in place
+        run: ls -al && ls -al ./plugins-dist
       - name: Electron Builder
         uses: samuelmeuli/action-electron-builder@v1.0.0
         with:
