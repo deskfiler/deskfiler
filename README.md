@@ -32,6 +32,9 @@ Please read [Code of conduct](./docs/CODE_OF_CONDUCT.md) and [Contributing instr
 
 All documentation resides [here](https://deskfiler.github.io/deskfiler/index.html)
 
+If you are already here, [getting started](/getting-started/readme.md) is a great starting point if
+you want to contribute to Deskfiler.
+
 ## License
 
 Deskfiler is published under the GPLv3. You will find the license within the code tree.

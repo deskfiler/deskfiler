@@ -1,5 +1,7 @@
 # Creating a basic plugin
 
+> This article is a stub. You can help by expanding it.
+
 *in alpha stage*
 
 1. Create your **plugin manifest** of following shape:

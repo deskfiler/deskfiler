@@ -39,6 +39,7 @@ const apiCall = async (url, params) => {
   }
 };
 
+// Gets latest info about current plugin from Deskfiler API
 const getPluginInfo = async ({ pluginKey, token }) => {
   const url = 'https://plugins.deskfiler.org/api/index.php';
 
@@ -69,6 +70,7 @@ const getPluginInfo = async ({ pluginKey, token }) => {
   }
 };
 
+// Function that injects plugin script into a plugin-controller markup
 function injectPlugin({
   pluginKey,
   inDevelopment,
@@ -80,6 +82,7 @@ function injectPlugin({
   selfId,
   ticket,
 }) {
+  // Making sure that injected plugin has unique url, so webpack could always host the newest plugin
   const newScriptSrc = inDevelopment
     ? `${devPluginUrl}/index.js?version=${Date.now().toString()}`
     : `http://localhost:${PORT}/${pluginKey}/index.js?version=${Date.now().toString()}`;
@@ -90,12 +93,15 @@ function injectPlugin({
     oldScriptNode.parentNode.removeChild(oldScriptNode);
   }
 
+  // Creating a <script/> tag for a new plugin 
   const scriptNode = document.createElement('script');
 
   scriptNode.setAttribute('type', 'text/javascript');
   scriptNode.setAttribute('src', newScriptSrc);
   scriptNode.setAttribute('id', 'plugin');
 
+  /* If one of two options - handle accepted files, 
+    or open modal to choose files to process, is not specified - use one that is present */
   scriptNode.onload = async () => {
     if (filePaths) {
       window.PLUGIN.handleFiles({
@@ -139,6 +145,7 @@ function injectPlugin({
     }
   };
   
+  // Adding default basic styles for plugin
   const styles = `
     ${fontsCss}
 
@@ -151,9 +158,11 @@ function injectPlugin({
 
   const body = document.querySelector('body');
 
+  // Adding new plugin script to the plugin-controller
   body.appendChild(scriptNode);
 }
 
+// Once 'new-plugin-loaded' event is catched from the main thread - gets all passed credentials of a plugin 
 ipcRenderer.once('new-plugin-loaded', async (event, {
   pluginKey,
   inDevelopment,
@@ -164,11 +173,15 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
   mainId,
   selfId,
 }) => {
+  // Provides api token for plugins that need subscription
   const user = await store.get('user');
   const { token } = user || {};
+
   // Context var which provides simple methods to communicate with main app
   const context = {
+    // Module to work with pdf
     pdf: hummus,
+    // Provides plugin specified settings
     settings: {
       get: async () => {
         const settings = await store.get(`settings.${pluginKey}`);
@@ -183,7 +196,9 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
         }
       },
     },
+    // Provides api token for plugins that need subscription
     token,
+    // Provides path to plugin own directory
     selfDir: path.join(PLUGINS_DIR, pluginKey),
     // Fires desktop notification with given message
     notify: (message) => {
@@ -222,6 +237,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
 
       fs.writeFileSync(logFile, JSON.stringify(newLogs, null, 2));
     },
+    // Opens a native open modal window
     openDialog: ({ options, properties }) => new Promise((resolve, reject) => {
       ipcRenderer.sendTo(mainId, 'open-dialog', {
         fromId: selfId,
@@ -242,6 +258,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
         resolve(filePaths[0]);
       });
     }),
+    // Opens a window for a subscription payment
     openPaymentWindow: userId => new Promise((resolve) => {
       ipcRenderer.send('open-payment-window', { fromId: selfId, userId });
       ipcRenderer.once('payment-recieved', async () => {
@@ -249,6 +266,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
         resolve(ticket);
       });
     }),
+    // Opens a native save modal window
     readFilePath: options => new Promise((resolve, reject) => {
       ipcRenderer.sendTo(mainId, 'save-dialog', {
         fromId: selfId,
@@ -280,40 +298,42 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
         }
       });
     }),
+    // Opens a folder in a default file manager
     openOutputFolder: filePath => new Promise((resolve, reject) => {
       shell.showItemInFolder(filePath);
       resolve();
     }),
+    // Shows a window with executing plugin
     showPluginWindow: () => new Promise((resolve) => {
       currentWindow.show();
       setTimeout(() => resolve(), 1000);
     }),
+    // Hides a window with executing plugin
     hidePluginWindow: () => {
       currentWindow.hide();
     },
+    // Closes executing plugin window and terminates all code inside it
     exit: () => {
       currentWindow.close();
     },
+    // Outputs user specified plugin data in a form of a alert modal window
     alert: (data) => {
-      ipcRenderer.sendTo(mainId, 'open-alert-modal', { fromId: selfId, pluginKey, data });
+      if (typeof data === 'string' || Array.isArray(data)) {
+        ipcRenderer.sendTo(mainId, 'open-alert-modal', { fromId: selfId, pluginKey, data });
+        return;
+      }
+      throw new Error('Invalid argument type for "alert" method. Can only be a string or an array');
     },
+    // Focuses on the window with executing plugin 
     focus: () => {
       currentWindow.focus();
     },
-    startProgress: (steps = -1) => {
-      ipcRenderer.sendTo(mainId, 'plugin-start-progress', { fromId: selfId, pluginKey, steps });
-    },
-    setProgressStep: (step) => {
-      ipcRenderer.sendTo(mainId, 'plugin-step-progress', { fromId: selfId, pluginKey, step });
-    },
-    setProgressETA: (eta) => {
-      ipcRenderer.sendTo(mainId, 'plugin-eta-progress', { fromId: selfId, pluginKey, eta });
+    // Start progress
+    startProgress: () => {
+      ipcRenderer.sendTo(mainId, 'plugin-start-progress', { fromId: selfId, pluginKey });
     },
     finishProgress: () => {
       ipcRenderer.sendTo(mainId, 'plugin-finish-progress', { fromId: selfId, pluginKey });
-    },
-    resetProgress: () => {
-      ipcRenderer.sendTo(mainId, 'plugin-reset-progress', { fromId: selfId, pluginKey });
     },
   };
 

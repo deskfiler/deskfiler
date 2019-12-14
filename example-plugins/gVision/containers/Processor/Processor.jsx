@@ -4,6 +4,13 @@ import b64converter from 'base64-img';
 import piexif from 'piexifjs';
 import png from 'png-metadata';
 
+import xmarkIcon from '../../assets/images/x-mark.svg';
+import checkmarkIcon from '../../assets/images/check-mark.svg';
+import arrowRoundIcon from '../../assets/images/arrow-round.svg';
+
+import { Flex } from '../../styled';
+import * as S from './styled';
+
 const writeTagsToExif = ({ filePath, tags, saveDir, fs, path }) => {
   try {
     const { name, ext } = path.parse(filePath);
@@ -55,6 +62,8 @@ const writeTagsToExif = ({ filePath, tags, saveDir, fs, path }) => {
 };
 
 const ImageProcessor = ({
+  index,
+  processingIndex,
   filePath,
   settings: {
     saveToJson,
@@ -69,11 +78,13 @@ const ImageProcessor = ({
   saveDir,
   onSuccess,
   onError,
+  onInfo,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [imageData, setImageData] = useState(null);
 
-  const getGVisionTags = async () => {
+  const getGVisionTags = async ({ filePath, labelsLanguage }) => {
     const { base } = path.parse(filePath);
 
     const url = 'https://plugins.deskfiler.org/api/index.php';
@@ -119,63 +130,118 @@ const ImageProcessor = ({
   };
 
   useEffect(() => {
-    async function process() {
-      try {
-        const { tags, response } = await getGVisionTags({ filePath, labelsLanguage });
-        const filteredTags = tags.reduce((acc, t, index) => {
-          if (t.score >= parseInt(certaintyLevel || 0, 10)) {
-            return [...acc, (
-              labelsLanguage && /^[\u0000-\u00ff]+$/.test(response.data[`${labelsLanguage}Labels`][index])
-                ? response.data[`${labelsLanguage}Labels`][index]
-                : t.description
-              )
-            ];
+    if (processingIndex >= index) {
+      async function process() {
+        try {
+          const { tags, response } = await getGVisionTags({ filePath, labelsLanguage });
+          const filteredTags = tags.reduce((acc, t, index) => {
+            if (t.score >= parseInt(certaintyLevel || 0, 10)) {
+              return [...acc, (
+                labelsLanguage && /^[\u0000-\u00ff]+$/.test(response.data[`${labelsLanguage}Labels`][index])
+                  ? response.data[`${labelsLanguage}Labels`][index]
+                  : t.description
+                )
+              ];
+            }
+            return acc;
+          }, []);
+  
+          setImageData({ ...response.data, tags: filteredTags });
+  
+          writeTagsToExif({ filePath, tags: filteredTags, saveDir, fs, path });
+  
+          if (saveToJson) {
+            const { base } = path.parse(filePath);
+            fs.writeFileSync(
+              path.join(saveDir, `${base}-gvision-data.json`),
+              JSON.stringify(response.data, null, 2),
+            );
           }
-          return acc;
-        }, []);
-
-        writeTagsToExif({ filePath, tags: filteredTags, saveDir, fs, path });
-
-        if (saveToJson) {
-          const { base } = path.parse(filePath);
-          fs.writeFileSync(
-            path.join(saveDir, `${base}-gvision-data.json`),
-            JSON.stringify(response.data, null, 2),
-          );
+        } catch (err) {
+          setError(err);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (err) {
-        setError(err);
-      } finally {
-        setIsLoading(false);
       }
+      process();
     }
-    process();
-  }, []);
+  }, [processingIndex >= index]);
 
   useEffect(() => {
     if (isLoading === false) {
       if (error) {
         console.error('Image is not processed: ', error);
-        onError(error);
+        onError(index);
       } else {
-        onSuccess();
+        onSuccess(index);
       }
     }
   }, [isLoading, error]);
 
-  return (
-    <img
-      style={{
-        width: 125,
-        height: 125,
-        margin: 10,
-        border: `4px solid ${isLoading ? '#666' : (error ? 'red' : '#66ff66')}`,
-        transition: 'all .3s ease',
-      }}
-      src={`file://${filePath}`}
-      alt={filePath}
-    />
-  );
+  const { name, ext } = path.parse(filePath);
+
+  return (processingIndex >= index) ? ( 
+    <>
+      {isLoading ? <S.Spinner src={arrowRoundIcon} /> : (
+      <Flex style={{ margin: '10px 10px 25px', fontSize: '.875rem' }}>
+        <S.ImageWrapper onClick={() => {
+          if (!error) {
+            onInfo({ filePath, data: imageData, labelsLanguage });
+          }
+        }}>
+          <S.Image
+            src={`file://${filePath}`}
+            alt={filePath}
+          />
+          <Flex
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              right: '10px',
+              padding: '3px',
+              background: error ? 'red' : '#00CC33'
+            }}
+          >
+            <S.Icon src={error ? xmarkIcon : checkmarkIcon} />
+          </Flex> 
+        </S.ImageWrapper>
+        <div style={{ maxWidth: '125px' }}>
+          <span
+            style={{
+              display: 'block',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              fontWeight: 700,
+            }}
+          >
+            {`${name}${ext}`}
+          </span>
+          <span
+            style={{
+              display: 'block',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {error ? 'Processing failed' : `${imageData.tags.length} Tags set to image`}
+          </span>
+        </div>
+        {!error && (
+          <S.InfoLink
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              onInfo({ filePath, data: imageData, labelsLanguage });
+            }}
+          >
+            More information
+          </S.InfoLink>
+        )}
+      </Flex>
+      )}
+  </>) : null 
 };
 
 export default ImageProcessor;
