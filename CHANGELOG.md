@@ -1,4 +1,14 @@
 <a name=""></a>
+# [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v1.1.0...v) (2019-12-14)
+
+
+### Bug Fixes
+
+* include plugins build step in CI ([2e23065](https://github.com/ilya-lopukhin/deskfiler-private/commit/2e23065))
+
+
+
+<a name=""></a>
 # [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v1.0.0...v) (2019-12-12)
 
 

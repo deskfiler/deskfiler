@@ -11,12 +11,15 @@ const PLUGINS_DIR = path.join(DESKFILER_DIR, 'plugins');
 const LOGS_DIR = path.join(DESKFILER_DIR, 'logs');
 const TEMP_DIR = path.join(app.getPath('temp'), 'deskfiler');
 
+// Port on which serve server should start
 const PORT = 4400;
 
+// Path to preloads directory
 const PRELOADS_DIR = isIt('development').env
   ? path.join(__dirname, 'preloads')
   : path.join(__dirname);
 
+// List of plugins to preinstall on first launch
 const PREPACKED_PLUGINS = ['gVision', 'imageTagViewer', 'zipPw', 'weTransferConnect', 'pdfSplitter'];
 
 module.exports = {

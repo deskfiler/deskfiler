@@ -7,634 +7,48 @@ const {
   dialog,
   ipcMain,
   protocol,
-  BrowserWindow,
-  webContents,
 } = require('electron');
 
-const { download } = require('electron-dl');
-const { dissoc } = require('ramda');
-const fs = require('fs');
-const path = require('path');
 const util = require('util');
-const http = require('http');
-const childProcess = require('child_process');
-const { autoUpdater } = require('electron-updater')
+
+const { autoUpdater } = require('electron-updater');
 
 const mkdirp = require('mkdirp');
 const rmrf = require('rimraf');
 
-const tar = require('tar');
-const handler = require('serve-handler');
-
-const store = require('./store');
 const log = require('./log');
-const baseUrl = require('./baseUrl');
-const isIt = require('./utils/whichEnvIsIt');
-const {
-  HOME_DIR,
-  PLUGINS_DIR,
-  APP_DIR,
-  PREPACKED_PLUGINS,
-  PRELOADS_DIR,
-  TEMP_DIR,
-  LOGS_DIR,
-  PORT,
-} = require('./constants');
 
-let mainWindow;
-let pluginControllerWindow;
-let pluginConfigWindow;
-let registerWindow;
-let loginWindow;
-let paymentWindow;
+const { LOGS_DIR } = require('./constants');
+
+const {
+  downloadPlugin,
+} = require('./plugins');
+
+const {
+  getMainWindow,
+  createMainWindow,
+} = require('./windows');
+
+const {
+  getServer,
+  createServer
+} = require('./server');
 
 const rimraf = util.promisify(rmrf);
 
-let server = null;
-
+// Set parameters for autoupdater
 autoUpdater.logger = require('electron-log');
 autoUpdater.logger.transports.file.level = 'info';
 
 autoUpdater.autoDownload = false;
 
+// Set custom 'deskfiler://' protocol as default 
 if (!app.isDefaultProtocolClient('deskfiler')) {
   app.setAsDefaultProtocolClient('deskfiler');
 }
 
+// Create directory for plugin-produced logs
 mkdirp.sync(LOGS_DIR);
-
-// Download plugin from deskfiler store via deskfiler:// protocol
-const downloadPlugin = async (url) => {
-  if (mainWindow && url.startsWith('deskfiler://plugins.deskfiler.org/up/')) {
-    const downloadsTempDir = path.join(TEMP_DIR, 'downloads');
-    try {
-      log('downloading plugin');
-  
-      await mkdirp(downloadsTempDir);
-  
-      mainWindow.focus();
-  
-      const downloadUrl = `https:${url.split(':')[1]}`;
-      const fileName = downloadUrl.split('/').slice(-1)[0];
-  
-      await download(mainWindow, downloadUrl, {
-        directory: downloadsTempDir,
-        onProgress: (progress) => { log(`download progress: ${progress * 100}%`); }
-      });
-  
-      log('plugin downloaded!');
-      const filePath = path.join(downloadsTempDir, fileName);
-  
-      await unpackPlugin(filePath);
-    } catch (err) {
-      log('error during download', err);
-      rimraf(downloadsTempDir);
-    }
-  }
-};
-
-// Unpack and install plugin from a tarball
-const unpackPlugin = async (filePath, skipConfirmation) => {
-  log('unpacking plugin', filePath);
-
-  const pluginTempDir = path.join(TEMP_DIR, 'plugin');
-  try {
-    await mkdirp(pluginTempDir);
-
-    log('created temporary directory', pluginTempDir);
-
-    log('unpacking plugin manifest...');
-
-    await tar.x({
-      file: filePath,
-      cwd: pluginTempDir,
-    }, ['manifest.json']);
-
-    log('unpacked');
-
-    const manifest = fs.readFileSync(path.join(pluginTempDir, 'manifest.json'), 'utf8');
-
-    log('found plugin manifest', manifest);
-
-    await rimraf(pluginTempDir);
-
-    log('removed temporary directory');
-
-    const manifestData = JSON.parse(manifest);
-
-    const {
-      name,
-      author,
-      version,
-      icon,
-      legallink,
-      legalhint,
-      executablesDir = 'executables',
-      settings: pluginSettings,
-      acceptRestrictions,
-    } = manifestData;
-
-    const pluginKey = name.trim().replace(/\s/g, '-').toLowerCase();
-
-    log('generated plugin key', pluginKey);
-
-
-    log('waiting for install confirmation...');
-
-    const dirPath = path.join(PLUGINS_DIR, pluginKey);
-
-    await mkdirp(dirPath);
-
-    log('created plugin directory', dirPath);
-
-    log('unpacking plugin...');
-
-    await tar.x({
-      file: filePath,
-      cwd: dirPath,
-    });
-
-    log('plugin unpacked');
-
-    await rimraf(TEMP_DIR);
-
-    const escapeSpaces = p => p.replace(/(\s+)/g, '\\$1');
-    const pathToExecutables = path.join(PLUGINS_DIR, pluginKey, executablesDir);
-    if (process.platform !== 'win32' && fs.existsSync(pathToExecutables)) {
-      childProcess.exec(`chmod -R 777 ${escapeSpaces(pathToExecutables)}`, (err) => {
-        if (err) {
-          throw new Error(err);
-        }
-        log('set permissions for plugin directory');
-      });
-    }
-
-    log('getting plugin copy if already installed');
-
-    const pluginDataCopy = await store.get(`pluginData.${pluginKey}`);
-
-    store.set(`pluginData.${pluginKey}`, {
-      key: pluginKey,
-      name,
-      icon,
-      isInstalling: true,
-    });
-
-    log('added plugin to plugins list');
-
-    if (!skipConfirmation) {
-      mainWindow.webContents.send('unpacked-plugin', {
-        pluginKey,
-        name,
-        author,
-        version,
-        icon,
-        legallink,
-        legalhint,
-      });
-
-      await new Promise((resolve, reject) => {
-        ipcMain.once('continue-plugin-installation', (e, { shouldContinue }) => {
-          if (shouldContinue) {
-            resolve();
-          } else {
-            log('installation cancelled by user');
-            if (pluginDataCopy) {
-              store.set(`pluginData.${pluginKey}`, pluginDataCopy);
-            } else {
-              store.delete(`pluginData.${pluginKey}`);
-            }
-            reject(new Error('Installation Cancelled'));
-          }
-        });
-      });
-
-      log('install confirmed');
-    }
-
-    if (pluginSettings) {
-      log('found settings definition in manifest', pluginSettings);
-
-      const getSettingsFromSections = sections => sections.reduce((acc, section) => {
-        const sectionSettings = section.children.reduce((prev, { name: n, value }) => ({
-          ...prev,
-          [n]: value,
-        }), {});
-
-        return { ...sectionSettings, ...acc };
-      }, {});
-
-      log('writing settings to store...');
-
-      const settings = await store.get('settings');
-
-      store.set('settings', {
-        ...(settings || {}),
-        [pluginKey]: getSettingsFromSections(pluginSettings),
-      });
-
-      log('done');
-    }
-
-
-    const logFile = path.join(LOGS_DIR, `${pluginKey}-logs.json`);
-
-    log(`checking whether log file exists for plugin ${pluginKey}`);
-
-    const logFileExists = fs.existsSync(logFile);
-
-    if (!logFileExists) {
-      log(`no log file found, creating ${logFile}`);
-      fs.writeFileSync(logFile, '[]');
-      log('created');
-    }
-
-    log('plugin installed!');
-
-    store.set(`pluginData.${pluginKey}`, {
-      key: pluginKey,
-      name,
-      author,
-      version,
-      icon,
-      pluginSettings,
-      acceptRestrictions,
-      isInstalling: false,
-      isWorking: false,
-    });
-    return manifestData;
-  } catch (err) {
-    log('error during installation', err);
-    store.delete(`pluginData.${pluginKey}`);
-    rimraf(TEMP_DIR);
-    return null;
-  }
-};
-
-// Install plugins on first app start
-const preinstallPlugins = async () => {
-  try {
-    if (isIt('production')) {
-      const pluginsPath = path.join(APP_DIR, '..', '..', 'dist', 'plugins');
-      
-      for (const plugin of PREPACKED_PLUGINS) {
-        const filePath = path.join(pluginsPath, `${plugin}.tar.gz`);
-        if (fs.existsSync(filePath)) {
-          log('installing prepacked plugin', plugin);
-          await unpackPlugin(filePath, true);
-        }
-      }
-      store.set('isPluginsPreinstalled', true);
-    }
-  } catch (err) {
-    log('error during preinstalling', err);
-  }
-};
-
-// Create a plugin instance and open a window for it
-async function createPluginControllerWindow({
-  pluginKey,
-  allowedExtensions,
-  inDevelopment,
-  devPluginUrl,
-  filePaths,
-  showOnStart,
-  ticket,
-}) {
-  pluginControllerWindow = new BrowserWindow({
-    minWidth: 800,
-    minHeight: 600,
-    show: showOnStart,
-    webPreferences: {
-      nodeIntegration: true,
-      webSecurity: false,
-    },
-  });
-
-  pluginControllerWindow.removeMenu();
-
-  await pluginControllerWindow.loadURL(path.join(baseUrl, 'public', 'plugin.html'));
-  if (process.env.NODE_ENV === 'development') {
-    pluginControllerWindow.webContents.openDevTools();
-  }
-
-  pluginControllerWindow.webContents.send('new-plugin-loaded', {
-    pluginKey,
-    allowedExtensions,
-    inDevelopment,
-    devPluginUrl,
-    filePaths,
-    ticket,
-    mainId: mainWindow.webContents.id,
-    selfId: pluginControllerWindow.webContents.id,
-  });
-
-  pluginControllerWindow.on('closed', async () => {
-    pluginControllerWindow = null;
-    const plugin = await store.get(`pluginData.${pluginKey}`);
-    if (plugin) {
-      store.set(`pluginData.${pluginKey}`, {
-        ...plugin,
-        isWorking: false,
-      });
-    }
-  });
-}
-
-// Create a window to add funds to user account
-async function createPaymentWindow({ fromId, userId }) {
-  paymentWindow = new BrowserWindow({
-    minWidth: 800,
-    minHeight: 600,
-    show: true,
-    webPreferences: {
-      nodeIntegration: true,
-      preload: path.join(__dirname, '/preloads/paymentPreload.js'),
-    },
-  });
-
-  await paymentWindow.loadURL(`https://plugins.deskfiler.org/tickets.php/gvision/${userId}`, {
-    extraHeaders: 'Authorization: Basic YTpi',
-  });
-
-  ipcMain.once('payment-recieved', () => {
-    log(`payment recieved from user ${userId}`);
-    webContents.fromId(fromId).send('payment-recieved');
-  });
-
-  if (process.env.NODE_ENV === 'development') {
-    paymentWindow.webContents.openDevTools();
-  }
-
-  paymentWindow.on('closed', () => {
-    paymentWindow = null;
-  });
-}
-
-// Create window to register user account
-async function createRegisterWindow() {
-  log('creating login window');
-
-  const preloadName = `registerPreload${isIt('production').env ? '.prod' : ''}.js`;
-
-  const preload = `${path.join(PRELOADS_DIR, preloadName)}`;
-
-  log('preload', preload);
-
-  registerWindow = new BrowserWindow({
-    minWidth: 800,
-    minHeight: 600,
-    show: true,
-    webPreferences: {
-      nodeIntegration: true,
-      preload,
-    },
-  });
-
-  registerWindow.removeMenu();
-
-  await registerWindow.loadURL('http://plugins.deskfiler.org/register.php?hidehead=yes', {
-    extraHeaders: 'Authorization: Basic YTpi',
-  });
-
-  if (process.env.NODE_ENV === 'development') {
-    registerWindow.webContents.openDevTools();
-  }
-
-  registerWindow.on('closed', () => {
-    registerWindow = null;
-  });
-}
-
-// Create window to log in into existing account
-async function createLoginWindow() {
-  log('creating login window');
-
-  const preloadName = `loginPreload${isIt('production').env ? '.prod' : ''}.js`;
-
-  const preload = `${path.join(PRELOADS_DIR, preloadName)}`;
-
-  log('preload', preload);
-
-  loginWindow = new BrowserWindow({
-    minWidth: 800,
-    minHeight: 600,
-    show: true,
-    webPreferences: {
-      nodeIntegration: true,
-      preload,
-    },
-  });
-
-  loginWindow.removeMenu();
-
-  await loginWindow.loadURL('https://plugins.deskfiler.org/?hidehead=yes&hideinfo=yes&json=yes');
-
-  if (process.env.NODE_ENV === 'development') {
-    loginWindow.webContents.openDevTools();
-  }
-
-  loginWindow.on('closed', () => {
-    loginWindow = null;
-  });
-}
-
-// Create window to display plugin settings
-async function createPluginConfigWindow({ pluginKey }) {
-  pluginConfigWindow = new BrowserWindow({
-    minWidth: 800,
-    minHeight: 600,
-    show: true,
-    webPreferences: {
-      nodeIntegration: true,
-    },
-  });
-
-  pluginConfigWindow.removeMenu();
-
-  await pluginConfigWindow.loadURL(path.join(baseUrl, 'public', 'config.html'));
-
-  if (process.env.NODE_ENV === 'development') {
-    pluginConfigWindow.webContents.openDevTools();
-  }
-
-  pluginConfigWindow.webContents.send('new-config-loaded', {
-    pluginKey,
-    mainId: mainWindow.webContents.id,
-    selfId: pluginConfigWindow.webContents.id,
-  });
-
-  pluginConfigWindow.on('closed', () => {
-    pluginConfigWindow = null;
-  });
-}
-
-// Create main application window
-async function createWindow() {
-  mainWindow = new BrowserWindow({
-    minWidth: 700,
-    minHeight: 600,
-    webPreferences: {
-      nodeIntegration: true,
-      webSecurity: false,
-    },
-  });
-
-  mainWindow.removeMenu();
-
-  mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
-
-  if (process.platform === 'win32') {
-    let resizeTimeout;
-    mainWindow.on('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        const size = mainWindow.getSize();
-        mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4, 10));
-      }, 100);
-    });
-  } else {
-    const defaultRatio = 4 / 3;
-    mainWindow.setAspectRatio(defaultRatio);
-  }
-
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
-  }
-
-  store.onDidChange('pluginData', (newData) => {
-    log('plugins store changed');
-    mainWindow.webContents.send('plugins-store-updated', newData);
-  });
-
-  const settings = await store.get('settings');
-
-  if (!settings) {
-    store.set('settings', {
-      general: {
-        masterPin: 'admin',
-        runOnStartUp: false,
-        language: 'english',
-        defaultStoragePath: HOME_DIR,
-        skipRegistration: false,
-      },
-    });
-  }
-
-  const isPluginsPreinstalled = await store.get('isPluginsPreinstalled');
-  if (!isPluginsPreinstalled) {
-    preinstallPlugins();
-  }
-
-  // Install plugin and add its data to electron-store
-  ipcMain.on('recieved-plugin-tarball', async (event, filePath) => {
-    try {
-      await unpackPlugin(filePath);
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
-  ipcMain.on('open-plugin-controller-window', async (event, {
-    pluginKey,
-    inDevelopment,
-    devPluginUrl,
-    filePaths,
-    ticket,
-  }) => {
-    const restrictions = await store.get(`pluginData.${pluginKey}.acceptRestrictions`);
-    createPluginControllerWindow({
-      pluginKey,
-      inDevelopment,
-      devPluginUrl,
-      allowedExtensions: (restrictions && restrictions.ext) || null,
-      filePaths,
-      showOnStart: false,
-      ticket,
-    });
-  });
-
-  ipcMain.on('open-plugin-config-window', (event, pluginKey) => {
-    createPluginConfigWindow({ pluginKey });
-  });
-
-  ipcMain.on('open-payment-window', (event, { fromId, userId }) => {
-    if (!paymentWindow) {
-      createPaymentWindow({ fromId, userId });
-    } else {
-      paymentWindow.show();
-    }
-  });
-
-  ipcMain.on('open-register-window', () => {
-    if (!registerWindow) {
-      createRegisterWindow();
-    } else {
-      registerWindow.show();
-    }
-  });
-
-  ipcMain.on('open-login-window', () => {
-    log('opening login window');
-    if (!loginWindow) {
-      createLoginWindow();
-    } else {
-      loginWindow.show();
-    }
-  });
-
-  // Handle successful login
-  ipcMain.on('logged-in', (event, user) => {
-    log('logged in as', user.email);
-    store.set('user', user);
-    mainWindow.webContents.send('logged-in');
-  });
-
-  // Uninstall and remove data from all plugins
-  ipcMain.on('manifest-delete-all', async () => {
-    try {
-      store.delete('pluginData');
-      await rimraf(path.join(process.cwd(), 'installed-plugins'));
-      await mkdirp(path.join(process.cwd(), 'installed-plugins'));
-      if (pluginControllerWindow) {
-        pluginControllerWindow.close();
-        pluginControllerWindow = null;
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
-  // Uninstall plugin and remove its data from electron-store
-  ipcMain.on('remove-plugin', async (e, pluginKey) => {
-    log(`removing plugin ${pluginKey} requested`);
-    try {
-      const plugins = await store.get('pluginData');
-
-      log(`deleting ${pluginKey} from store...`);
-      store.set('pluginData', dissoc(pluginKey, plugins));
-
-      log('done');
-
-      log(`deleting ${pluginKey} from physical disk...`);
-      await rimraf(path.join(process.cwd(), 'installed-plugins', pluginKey));
-
-      log('done');
-
-      if (pluginControllerWindow) {
-        pluginControllerWindow.close();
-        pluginControllerWindow = null;
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
-  mainWindow.on('closed', () => {
-    server.close(() => { console.log('Server closed.'); });
-    mainWindow = null;
-  });
-}
 
 // Clear local cache on error boundary
 ipcMain.on('clear-local-cache', async (e) => {
@@ -658,30 +72,38 @@ ipcMain.on('restart-app', () => {
 // Restrict deskfiler instances to one at a time
 const isSingleAppInstance = app.requestSingleInstanceLock();
 
+// On second-instance focus and restore first one
 if (!isSingleAppInstance) {
   app.quit();
 } else {
   app.on('second-instance', (e, argv) => {
-    if (process.platform === 'win32') {  
-      // On Windows, custom protocol url can be recieved through a argv argument
-      const url = argv.slice(-1)[0];
-      downloadPlugin(url);
-    }
+    const mainWindow = getMainWindow();
+
     if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
+      if (process.platform === 'win32') {  
+        // On Windows, custom protocol url can be recieved through a argv argument
+        const url = argv.slice(-1)[0];
+        downloadPlugin(url, mainWindow);
+      }
+
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore();
+      }
       mainWindow.focus();
     }
   });
 
+  // Restore application on relaunch from dock/taskbar
   app.on('activate', () => {
-    if (mainWindow === null) createWindow();
+    const mainWindow = getMainWindow();
+    if (mainWindow === null) createMainWindow();
   });
 
   // Event that shows that electron app is ready to work
   app.on('ready', async () => {
     log('App ready, creating window...');
 
-    createWindow();
+    createMainWindow();
 
     log('Created main-renderer window, registering protocol...');
 
@@ -699,15 +121,7 @@ if (!isSingleAppInstance) {
     log('Initializing serve for plugins');
 
     // Start local server to host plugins
-    server = http.createServer((request, response) => (
-      handler(request, response, {
-        public: PLUGINS_DIR,
-      })
-    ));
-
-    server.listen(PORT, () => {
-      log(`Hosting plugins @ http://localhost:${PORT}.`);
-    });
+    createServer();
 
     log('Checking for updates...');
 
@@ -758,12 +172,17 @@ if (!isSingleAppInstance) {
 
   // On MacOS, custom protocol links work through the 'open-url' event
   app.on('open-url', (e, url) => {
-    downloadPlugin(url);
+    const mainWindow = getMainWindow();
+
+    if (mainWindow) downloadPlugin(url, mainWindow);
   });
 
   // If all windows are closed - terminate the app on all platforms, except for MacOS
   app.on('window-all-closed', () => {
-    server.close(() => { log('Plugins server closed.'); });
+    const server = getServer();
+
+    if (server) server.close(() => { log('Plugins server closed.'); });
+
     log('Terminating app...');
     if (process.platform !== 'darwin') app.quit();
   });
