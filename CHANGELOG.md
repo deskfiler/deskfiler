@@ -1,4 +1,9 @@
 <a name=""></a>
+# [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v1.2.0...v) (2019-12-14)
+
+
+
+<a name=""></a>
 # [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v1.1.0...v) (2019-12-14)
 
 
