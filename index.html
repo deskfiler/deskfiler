@@ -12,11 +12,10 @@
   <div id="app"></div>
   <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
   <script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
-  <script src="//unpkg.com/docsify-edit-on-github/index.js"></script>
+  <script src="https://gitcdn.link/repo/xobo-team/docsify-edit-on-github/master/index.js"></script>
   <script>
     window.$docsify = {
       name: 'Deskfiler',
-      basePath: '/',
       repo: 'https://github.com/deskfiler/deskfiler',
       search: [
         '/',
@@ -29,9 +28,8 @@
         EditOnGithubPlugin.create(
           'https://github.com/deskfiler/deskfiler/blob/master/docs',
           'https://github.com/deskfiler/deskfiler/edit/master/docs',
-          function(file) {
-            return 'Edit on Github'
-          }
+          () => 'Edit on Github',
+          routeName => routeName.replace(/deskfiler\//, ''),
         )
       ],
     }
