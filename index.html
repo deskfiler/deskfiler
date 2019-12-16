@@ -10,12 +10,30 @@
 </head>
 <body>
   <div id="app"></div>
+  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+  <script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  <script src="//unpkg.com/docsify-edit-on-github/index.js"></script>
   <script>
     window.$docsify = {
       name: 'Deskfiler',
-      repo: 'https://github.com/deskfiler/deskfiler'
+      repo: 'https://github.com/deskfiler/deskfiler',
+      search: [
+        '/',
+      ],
+      relativePath: true,
+      loadSidebar: true,
+      routerMode: 'history',
+      logo: '/_media/logo.png',
+      plugins: [
+        EditOnGithubPlugin.create(
+          'https://github.com/deskfiler/deskfiler/blob/master/docs',
+          null,
+          function(file) {
+            return 'Edit on Github'
+          }
+        )
+      ],
     }
   </script>
-  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
 </body>
 </html>
