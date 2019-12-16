@@ -1,4 +1,17 @@
 <a name=""></a>
+# [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v1.2.1...v) (2019-12-16)
+
+
+### Bug Fixes
+
+* documentation links & prepacked plugins CI ([b1e3e33](https://github.com/ilya-lopukhin/deskfiler-private/commit/b1e3e33))
+* finally set up plugins building? ([7b9cfac](https://github.com/ilya-lopukhin/deskfiler-private/commit/7b9cfac))
+* plugins build commands for CI ([3e1b351](https://github.com/ilya-lopukhin/deskfiler-private/commit/3e1b351))
+* remove yarn from commands ([68b1617](https://github.com/ilya-lopukhin/deskfiler-private/commit/68b1617))
+
+
+
+<a name=""></a>
 # [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v1.2.0...v) (2019-12-14)
 
 
