@@ -146,12 +146,11 @@ const unpackPlugin = async (filePath, params) => {
 
     log('added plugin to plugins list');
 
-    console.log('params', params);
     const {
       mainWindow,
       skipConfirmation,
     } = params || {};
-    console.log('mainWindow', mainWindow);
+
     if (!skipConfirmation) {
       mainWindow.webContents.send('unpacked-plugin', {
         pluginKey,

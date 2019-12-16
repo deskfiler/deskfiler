@@ -55,9 +55,6 @@ module.exports = {
         from: 'manifest.json',
       },
       {
-        from: 'package.json',
-      },
-      {
         from: 'icon.png',
       },
     ]),
