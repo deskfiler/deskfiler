@@ -11,14 +11,17 @@
   },
   "dependencies": {
     "7zip-bin": "^5.0.3",
+    "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
+    "formik": "^1.5.8",
     "foundation-sites": "^6.5.3",
     "node-7z": "^2.0.3",
     "original-fs": "^1.1.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
-    "react-foundation": "^0.9.6"
+    "react-foundation": "^0.9.6",
+    "styled-components": "^4.3.2"
   },
   "devDependencies": {
     "babel-loader": "^8.0.6",

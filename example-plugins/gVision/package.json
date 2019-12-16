@@ -9,9 +9,11 @@
     "dev": "webpack-dev-server -c webpack.dev.config.js"
   },
   "dependencies": {
+    "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
     "base64-img": "https://github.com/teorge/base64-img.git",
+    "formik": "^1.5.8",
     "foundation-sites": "^6.5.3",
     "image-size": "^0.8.3",
     "piexifjs": "^1.0.6",
@@ -21,7 +23,8 @@
     "react-foundation": "^0.9.6",
     "request": "^2.88.0",
     "request-debug": "^0.2.0",
-    "request-promise-native": "^1.0.7"
+    "request-promise-native": "^1.0.7",
+    "styled-components": "^4.3.2"
   },
   "devDependencies": {
     "babel-loader": "^8.0.6",

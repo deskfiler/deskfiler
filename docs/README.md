@@ -26,13 +26,11 @@ Get your binary downloads at [Deskfiler.org](https://www.deskfiler.org/)
 
 ## Contributing
 
-Please read [Code of conduct](./docs/CODE_OF_CONDUCT.md) and [Contributing instructions](./docs/CONTRIBUTING.md)
+Please read [Code of conduct](./CODE_OF_CONDUCT.md) and [Contributing instructions](./CONTRIBUTING.md)
 
-## Documentation
+## Where to start
 
-All documentation resides [here](https://deskfiler.github.io/deskfiler)
-
-If you are already here, [getting started](/getting-started/readme.md) is a great starting point if
+[Getting started](./getting-started/) is a great starting point if
 you want to contribute to Deskfiler.
 
 ## License

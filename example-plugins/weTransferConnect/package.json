@@ -8,6 +8,7 @@
     "build": "webpack -c webpack.config.js --progress"
   },
   "dependencies": {
+    "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
     "animejs": "^3.1.0",
@@ -18,7 +19,8 @@
     "react-dom": "^16.11.0",
     "react-foundation": "^0.9.6",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.7"
+    "request-promise-native": "^1.0.7",
+    "styled-components": "^4.3.2"
   },
   "devDependencies": {
     "@wetransfer/js-sdk": "^1.2.0",
