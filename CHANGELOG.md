@@ -1,4 +1,14 @@
 <a name=""></a>
+# [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v1.2.2...v) (2019-12-17)
+
+
+### Bug Fixes
+
+* imageTagViewer prepack ([4732a84](https://github.com/ilya-lopukhin/deskfiler-private/commit/4732a84))
+
+
+
+<a name=""></a>
 # [](https://github.com/ilya-lopukhin/deskfiler-private/compare/v1.2.1...v) (2019-12-16)
 
 
