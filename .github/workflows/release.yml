@@ -20,6 +20,8 @@ jobs:
           version: 12.13.0
       - name: Checkout the code
         uses: actions/checkout@v1
+      - name: Install Concurrently
+        run: yarn global add concurrently
       - name: Bootstrap the plugins
         run: yarn bootstrap:plugins:all
       - name: Build plugins

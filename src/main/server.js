@@ -24,9 +24,14 @@ const createServer = () => {
   });
 };
 
-const getServer = () => server;
+const closeServer = () => {
+  if (server) {
+    server.close(() => { log('Plugin server is closed.') });
+    server = null;
+  }
+};
 
 module.exports = {
-  getServer,
+  closeServer,
   createServer,
 };

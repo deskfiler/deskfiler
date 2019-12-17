@@ -53,17 +53,17 @@ Here you have two options either **developing your own plugin**, or **working on
 Most awesome thing about the deskfiler is that you can create your plugins for it obviously!
 Deskfiler plugins are intended to work with files, but you can actually run any arbitrary JS code inside the plugin container.
 
-If you want to create something cool, please refer to [plugin development reference](plugin-development/readme.md)
+If you want to create something cool, please refer to [plugin development reference](../plugin-development/readme.md)
 
 Also, check out [deskfiler plugin ideas]().
 
 ### Deskfiler development
 
-Dive into the code to understand how Deskfiler works from inside with help of the [architecture reference](architecture/readme.md),
+Dive into the code to understand how Deskfiler works from inside with help of the [architecture reference](../architecture/readme.md),
 take a look at the [issues](https://github.com/deskfiler/deskfiler/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+label%3A%22help+wanted%22)
 and find yourself something you feel ready to tackle!
 
-During the developemnt, you may compile a production distributables for your system to test them, check [this guide](getting-started/building-production-distributables.md) to get to know how to do it
+During the developemnt, you may compile a production distributables for your system to test them, check [this guide](./building-production-distributables.md) to get to know how to do it
 
 ## Appendix
 
