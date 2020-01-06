@@ -33,7 +33,6 @@ let pluginConfigWindow;
 let registerWindow;
 let loginWindow;
 let paymentWindow;
-let installModal;
 
 // Create a plugin instance and open a window for it
 async function createPluginControllerWindow({
@@ -213,38 +212,15 @@ async function createPluginConfigWindow({ pluginKey }) {
   });
 }
 
-const position = store.get('windowPosition');
-if (!position) {
-  store.set('windowPosition', [0, 0]);
-}
-const windowSize = store.get('windowSize');
-if (!windowSize) {
-  store.set('windowSize', [800, 700]);
-}
-const bar = store.get('bar');
-if (!bar) {
-  store.set('bar', false);
-}
-
-
 // Create main application window
-async function createMainWindow(preinstallPlugins) {
-  const [width, height] = store.get('windowSize');
-
+async function createMainWindow() {
   mainWindow = new BrowserWindow({
-    minWidth: 80,
-    minHeight: 300,
-    width,
-    height,
-    x: store.get('windowPosition')[0],
-    y: store.get('windowPosition')[1],
+    minWidth: 700,
+    minHeight: 600,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
     },
-    transparent: true,
-    frame: false,
-    hasShadows: false,
   });
 
   // Remove menubar for Windows and Linux
@@ -252,27 +228,15 @@ async function createMainWindow(preinstallPlugins) {
 
   mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
 
-  if (/(win32|linux)/.test(process.platform)) {
+  if (process.platform === 'win32') {
     let resizeTimeout;
-    let prevSize = [width, height];
-
-    const onResize = debounce(() => {
+    mainWindow.on('resize', () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         const size = mainWindow.getSize();
-
-        if (size.width - prevSize.width === 1 || size.height - prevSize.height === 1) {
-          return;
-        }
-
-        prevSize = size;
-
-        if (size && size[0] && (size[0] / size[1] === 4 / 3)) {
-          mainWindow.setSize(size[0], parseInt((size[0] * 3) / 4, 10));
-        }
-      }, 1);
-    }, 500);
-    mainWindow.addListener('resize', onResize);
+        mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4, 10));
+      }, 100);
+    });
   } else {
     const defaultRatio = 4 / 3;
     mainWindow.setAspectRatio(defaultRatio);
@@ -301,25 +265,19 @@ async function createMainWindow(preinstallPlugins) {
     });
   }
 
-  const autolaunch = await store.get('autolaunch');
-  if (!autolaunch) {
-    store.set('autolaunch', false);
-  }
-
   const isPluginsPreinstalled = await store.get('isPluginsPreinstalled');
   if (!isPluginsPreinstalled) {
     preinstallPlugins();
   }
-  const onMove = debounce(() => {
-    const { screen } = require('electron');
-    const widthScreen = screen.getPrimaryDisplay().size.width;
-    store.set('windowPosition', mainWindow.getPosition());
-    const [x, y] = mainWindow.getPosition();
-    const [widthMainWindow] = mainWindow.getSize();
-    if (x < 5) mainWindow.setPosition(0, y);
-    if (x + widthMainWindow > widthScreen - 5) mainWindow.setPosition(widthScreen - widthMainWindow, y);
-  }, 10);
-  mainWindow.addListener('move', onMove);
+
+  // Install plugin and add its data to electron-store
+  ipcMain.on('recieved-plugin-tarball', async (event, filePath) => {
+    try {
+      await unpackPlugin(filePath, { mainWindow });
+    } catch (err) {
+      console.log(err);
+    }
+  });
 
   ipcMain.on('open-plugin-controller-window', async (event, {
     pluginKey,
@@ -328,7 +286,6 @@ async function createMainWindow(preinstallPlugins) {
     filePaths,
     ticket,
   }) => {
-    log('open-plugin-controller-window');
     const restrictions = await store.get(`pluginData.${pluginKey}.acceptRestrictions`);
     createPluginControllerWindow({
       pluginKey,
@@ -363,8 +320,11 @@ async function createMainWindow(preinstallPlugins) {
 
   ipcMain.on('open-login-window', () => {
     log('opening login window');
-
-    loginWindow ? loginWindow.show() : createLoginWindow();
+    if (!loginWindow) {
+      createLoginWindow();
+    } else {
+      loginWindow.show();
+    }
   });
 
   // Handle successful login
@@ -422,33 +382,9 @@ async function createMainWindow(preinstallPlugins) {
   });
 }
 
-
-// Create install modal window
-async function createInstallModalWindow(pluginParams) {
-  installModal = new BrowserWindow({
-    width: 500,
-    height: 300,
-    minWidth: 200,
-    minHeight: 200,
-    show: true,
-    webPreferences: {
-      nodeIntegration: true,
-    },
-    frame: false,
-  });
-  await installModal.loadURL(path.join(baseUrl, 'public', 'install-modal-window.html'));
-
-  installModal.webContents.send('unpacked-plugin-data', pluginParams);
-
-  installModal.on('closed', () => {
-    installModal = null;
-  });
-}
-
 const getMainWindow = () => mainWindow;
 
 module.exports = {
-  createInstallModalWindow,
   getMainWindow,
   createMainWindow,
 };
