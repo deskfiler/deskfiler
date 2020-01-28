@@ -448,7 +448,6 @@ async function createInstallModalWindow(pluginParams) {
 const getMainWindow = () => mainWindow;
 
 module.exports = {
-  createInstallModalWindow,
   getMainWindow,
   createMainWindow,
 };
