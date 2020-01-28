@@ -267,6 +267,11 @@ async function createMainWindow() {
     });
   }
 
+  const autolaunch = await store.get('autolaunch');
+  if(!autolaunch){
+    store.set('autolaunch',false);
+  }
+
   const isPluginsPreinstalled = await store.get('isPluginsPreinstalled');
   if (!isPluginsPreinstalled) {
     preinstallPlugins();
