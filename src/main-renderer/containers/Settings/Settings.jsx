@@ -5,12 +5,16 @@ import { Grid, Cell } from 'react-foundation';
 import { Icon } from 'components';
 
 import closeIcon from 'assets/images/close.svg';
+
 import chevronDownIcon from 'assets/images/chevron-down.svg';
+
 import chevronUpIcon from 'assets/images/chevron-up.svg';
 
 import InputGroup from 'components/InputGroup';
 
 import { Flex, Text } from 'styled';
+
+import FastCheckbox from '../../components/Checkbox';
 
 import {
   useSettings,
@@ -26,7 +30,7 @@ import inputs from './utils/inputsLib';
 import * as S from './styled';
 
 import pJson from '../../../package.json';
-
+const store = require('store');
 const tabs = {
   general: {
     title: 'General',
@@ -69,13 +73,16 @@ const SettingsView = () => {
   const tabsContent = {
     general: (
       <>
-        {/* <fieldset
-          className="fieldset"
-        >
-          <legend>Run on Startup</legend>
-          <Radio {...inputs.runOnStartUp} />
-          <Radio {...inputs.startWhenOpened} />
-        </fieldset> */}
+        {<div  style={{
+          width:"100%",
+          height:"40%"}}>
+
+         <FastCheckbox 
+            name={"startup"}
+            defaultChecked={store.get('autolaunch')}
+            />
+          <span>Run on startup</span>
+        </div> }
         {/* <Select {...inputs.language} options={languageOptions} /> */}
         <span>Default storage path</span>
         <InputGroup
