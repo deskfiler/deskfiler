@@ -212,11 +212,18 @@ async function createPluginConfigWindow({ pluginKey }) {
   });
 }
 
+const position = store.get('windowPosition');
+if(!position){
+  store.set('windowPosition',[0,0])
+}
+
 // Create main application window
 async function createMainWindow() {
   mainWindow = new BrowserWindow({
     minWidth: 700,
     minHeight: 600,
+    x: store.get('windowPosition')[0],
+    y: store.get('windowPosition')[1],
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
@@ -283,6 +290,12 @@ async function createMainWindow() {
       console.log(err);
     }
   });
+
+  mainWindow.on('move', ()=>{
+    store.set('windowPosition',mainWindow.getPosition());
+    //console.log('moved')
+  }
+  );
 
   ipcMain.on('open-plugin-controller-window', async (event, {
     pluginKey,
@@ -381,6 +394,7 @@ async function createMainWindow() {
 
   mainWindow.on('closed', () => {
     // Stop server when mainWindow is closed
+   
     closeServer();
 
     mainWindow = null;
