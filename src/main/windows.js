@@ -47,7 +47,7 @@ async function createPluginControllerWindow({
   ticket,
 }) {
   pluginControllerWindow = new BrowserWindow({
-    minWidth: 800,
+    minWidth: 20,
     minHeight: 600,
     show: showOnStart,
     webPreferences: {
@@ -89,7 +89,7 @@ async function createPluginControllerWindow({
 // Create a window to add funds to user account
 async function createPaymentWindow({ fromId, userId }) {
   paymentWindow = new BrowserWindow({
-    minWidth: 800,
+    minWidth: 20,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -127,7 +127,7 @@ async function createRegisterWindow() {
   log('preload', preload);
 
   registerWindow = new BrowserWindow({
-    minWidth: 800,
+    minWidth: 20,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -162,7 +162,7 @@ async function createLoginWindow() {
   log('preload', preload);
 
   loginWindow = new BrowserWindow({
-    minWidth: 800,
+    minWidth: 20,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -187,7 +187,7 @@ async function createLoginWindow() {
 // Create window to display plugin settings
 async function createPluginConfigWindow({ pluginKey }) {
   pluginConfigWindow = new BrowserWindow({
-    minWidth: 800,
+    minWidth: 20,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -214,15 +214,25 @@ async function createPluginConfigWindow({ pluginKey }) {
   });
 }
 
+const position = store.get('windowPosition');
+if(!position){
+  store.set('windowPosition',[0,0])
+}
+
 // Create main application window
 async function createMainWindow() {
   mainWindow = new BrowserWindow({
-    minWidth: 700,
-    minHeight: 600,
+    minWidth: 80,
+    x: store.get('windowPosition')[0],
+    y: store.get('windowPosition')[1],
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
     },
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true,
+    hasShadows: false,
   });
 
   // Remove menubar for Windows and Linux
@@ -236,13 +246,20 @@ async function createMainWindow() {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         const size = mainWindow.getSize();
-        mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4, 10));
+
+        if (size && size[0]) {
+          mainWindow.setSize(size[0], parseInt((size[0] * 3) / 4, 10));
+        }
       }, 100);
     });
   } else {
     const defaultRatio = 4 / 3;
     mainWindow.setAspectRatio(defaultRatio);
   }
+
+  mainWindow.on('resize', () => {
+    store.set('windowSize', mainWindow.getSize());
+  });
 
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
@@ -267,6 +284,11 @@ async function createMainWindow() {
     });
   }
 
+  const autolaunch = await store.get('autolaunch');
+  if(!autolaunch){
+    store.set('autolaunch',false);
+  }
+
   const isPluginsPreinstalled = await store.get('isPluginsPreinstalled');
   if (!isPluginsPreinstalled) {
     preinstallPlugins();
@@ -280,6 +302,12 @@ async function createMainWindow() {
       console.log(err);
     }
   });
+
+  mainWindow.on('move', ()=>{
+    store.set('windowPosition',mainWindow.getPosition());
+    //console.log('moved')
+  }
+  );
 
   ipcMain.on('open-plugin-controller-window', async (event, {
     pluginKey,
@@ -378,9 +406,17 @@ async function createMainWindow() {
 
   mainWindow.on('closed', () => {
     // Stop server when mainWindow is closed
+   
     closeServer();
 
     mainWindow = null;
+  });
+
+  mainWindow.on('show', () => {
+    const lastSize = store.get('windowSize');
+    if (lastSize) {
+      mainWindow.setSize(...lastSize);
+    }
   });
 }
 

@@ -11,11 +11,10 @@ import trashcanIcon from 'assets/images/trashcan.svg';
 
 import * as S from './styled';
 
-const Plugin = ({ pluginKey }) => {
+const Plugin = ({ pluginKey, showBar }) => {
   // eslint-disable-next-line
-  const [_, { openModal }] = useModals();
+    const [_, {openModal}] = useModals();
   const [plugin, { run, remove, openSettings }] = usePlugin(pluginKey);
-
   const {
     acceptRestrictions,
     devPluginUrl,
@@ -59,8 +58,18 @@ const Plugin = ({ pluginKey }) => {
     : `${process.env.LOCAL_URL}/${pluginKey}/${icon}`;
 
   return (
-    <Flex width="33%" height="50%" padding="0px 12px 12px 0px">
+    <Flex
+      width={showBar ? '55px' : '33%'}
+      height={showBar ? '55px' : '50%'}
+      min-height={showBar ? '55px' : '50%'}
+      marginTop={showBar && '26px'}
+      padding={!showBar && '0px 12px 12px 0px'}
+      radius={showBar ? '6px' : '50%'}
+      border={showBar ? '1px solid #c5c5c5' : 'none'}
+      app-region="no-drag"
+    >
       <S.CardOverlay
+        radius={showBar && '6px'}
         {...getRootProps()}
         isDragActive={isDragActive}
         isFileRejected={isFileRejected}
@@ -69,7 +78,7 @@ const Plugin = ({ pluginKey }) => {
         }}
       >
         <S.InstallingOverlay active={isInstalling} />
-        <S.DropFilesTitle>{isFileRejected ? 'Wrong file format' : 'Drop files'}</S.DropFilesTitle>
+        <S.DropFilesTitle showBar={showBar}>{ isFileRejected ? 'Wrong file format' : 'Drop files'}</S.DropFilesTitle>
         <S.AppCard>
           <input {...getInputProps()} />
           {isWorking ? (
@@ -90,33 +99,37 @@ const Plugin = ({ pluginKey }) => {
                 }}
               />
             </Flex>
-          ) : <S.AppIcon src={`${iconUrl}`} />}
-          <S.AppInfo>
-            <Flex width="50%" height="1px" background="black" marginBottom="8px" />
-            <Text size="18px">{isWorking ? 'Working...' : name}</Text>
-            <S.AppOptions>
-              <S.Remove
-                onClick={(e) => {
-                  openModal('confirm', {
-                    text: 'Are you sure you want to delete this plugin?',
-                    confirmLabel: 'Delete',
-                    onConfirm: remove,
-                  });
-                  e.stopPropagation();
-                }}
-              >
-                <S.RemoveIcon src={trashcanIcon} />
-              </S.Remove>
-              <S.Settings
-                onClick={(e) => {
-                  openSettings();
-                  e.stopPropagation();
-                }}
-              >
-                <S.SettingsIcon src={cogIcon} />
-              </S.Settings>
-            </S.AppOptions>
-          </S.AppInfo>
+          ) : <S.AppIcon showBar={showBar} src={`${iconUrl}`} />}
+
+          {showBar ? null : (
+            <S.AppInfo>
+              <Flex width="50%" height="1px" background="black" marginBottom="8px" />
+              <Text size="18px">{isWorking ? 'Working...' : name}</Text>
+              <S.AppOptions>
+                <S.Remove
+                  onClick={(e) => {
+                    openModal('confirm', {
+                      text: 'Are you sure you want to delete this plugin?',
+                      confirmLabel: 'Delete',
+                      onConfirm: remove,
+                    });
+                    e.stopPropagation();
+                  }}
+                >
+                  <S.RemoveIcon src={trashcanIcon} />
+                </S.Remove>
+                <S.Settings
+                  onClick={(e) => {
+                    openSettings();
+                    e.stopPropagation();
+                  }}
+                >
+                  <S.SettingsIcon src={cogIcon} />
+                </S.Settings>
+              </S.AppOptions>
+            </S.AppInfo>
+          )}
+
         </S.AppCard>
       </S.CardOverlay>
     </Flex>

@@ -20,9 +20,12 @@ const Flex = styled.div`
   ${fromProp('shrink', { make: 'flex-shrink' })};
   ${fromProp('flex', { make: 'flex' })}
   ${fromProp('width', { make: 'width' })};
+  ${fromProp('min-width', { make: 'min-width' })};
+  ${fromProp('min-height', { make: 'min-height' })};
   ${fromProp('maxWidth', { make: 'max-width' })};
   ${fromProp('height', { make: 'height' })};
   ${fromProp('maxHeight', { make: 'max-height' })};
+  ${fromProp('margin', { make: 'margin' })};
   ${fromProp('marginLeft', { make: 'margin-left' })};
   ${fromProp('marginRight', { make: 'margin-right' })};
   ${fromProp('marginTop', { make: 'margin-top' })};
@@ -52,6 +55,7 @@ const Flex = styled.div`
   ${fromProp('max-height', { make: 'left' })};
   ${fromProp('right', { make: 'right' })};
   ${fromProp('z', { make: 'z-index' })};
+  ${fromProp('app-region', { make: '-webkit-app-region' })};
   ${props => props.spacing && spacing}
 `;
 
@@ -61,8 +65,12 @@ Flex.Card = styled(Flex).attrs({
 })``;
 
 Flex.Absolute = styled(Flex).attrs({ position: 'absolute' })`
-  top: ${getProp('top', 0)};
-  left: ${getProp('left', 0)};
+  ${fromProp('top', { make: 'top' })};
+  ${fromProp('left', { make: 'left' })};
+  ${fromProp('bottom', { make: 'bottom' })};
+  ${fromProp('right', { make: 'right' })};
+  
+  
 `;
 
 export default Flex;

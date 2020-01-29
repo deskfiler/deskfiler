@@ -32,7 +32,7 @@ async function transferFiles({ filePaths, fs, path }) {
   const wtClient = await createWTClient(apiKey);
 
   const transfer = await wtClient.transfer.create({
-    message: 'Transfered from Deskfiler',
+    message: 'Transferred from Deskfiler',
     files,
   });
 
