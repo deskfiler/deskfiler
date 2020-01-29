@@ -45,7 +45,7 @@ export const AppFigure = styled.figure`
 `;
 
 export const AppIcon = styled.img`
-  width: 50%;
+  width: ${({ showBar }) => (showBar ? '90%' : '50%')};
   object-fit: scale-down;
   padding: 2px;
   flex: 0 0 75%;
@@ -130,7 +130,7 @@ export const DropFilesTitle = styled.span`
   display: none;
   pointer-events: none;
   position: absolute;
-  font-size: 20px;
+  font-size: ${({ showBar }) => (showBar ? '14px' : '20px')};
   color: rgba(255, 255, 255, 1);
   opacity: 0;
   transition: opacity .5s ease;
@@ -145,11 +145,13 @@ export const DropFilesTitle = styled.span`
 `;
 
 export const CardOverlay = styled.div`
+
   height: 100%;
   width: 100%;
   position: relative;
   overflow: hidden;
-  border-radius: 2px;
+  border-radius: ${props => (props.radius ? props.radius : '2px')};
+  border: ${props => props.border || 'none'};
   box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, .08);
   cursor: pointer;
 
@@ -166,11 +168,13 @@ export const CardOverlay = styled.div`
     ${DropFilesTitle} {
       background: rgba(58, 219, 118, 1);
       opacity: 1;
+      text-align:center;
     };
   `)}
 
   ${({ isFileRejected }) => (isFileRejected && css`
     ${DropFilesTitle} {
+  text-align:center;
       background: red;
       opacity: 1;
     };

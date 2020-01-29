@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { shell } from 'electron';
+import React, { useState, useEffect } from 'react';
+import { remote, shell } from 'electron';
 
 import brandingLogo from 'assets/images/deskfiler-logo.svg';
 import closeWhiteIcon from 'assets/images/closewhite.svg';
@@ -11,33 +11,46 @@ import { Flex, Text, colors } from 'styled';
 
 import * as S from './styled';
 
+const currentWindow = remote.getCurrentWindow();
+
 const titles = {
   plugins: 'Plugins',
   settings: 'Settings',
   logs: 'Logs',
 };
 
-const Menu = () => {
+const Menu = ({ showBar, setShowBar }) => {
   const [uiState, { setUiState }] = useUiState();
   const [auth, { logout }] = useAuth();
-  const [open, setOpen] = useState();
+  const [open, setOpen] = useState(false);
   const { openRegisterWindow, openLoginWindow } = useIpc();
 
+  useEffect(() => {
+    if (showBar && open) {
+      currentWindow.setSize(250, 700);
+    }
+    if (document.documentElement.clientWidth === 250 && !open) {
+      setShowBar(true);
+      currentWindow.setSize(75, 700);
+    }
+  }, [open]);
+
   return (
-    <Flex z={9} position="absolute" right="0px" width="64px" align="center" padding="8px">
-      <S.OpenMenu onClick={() => setOpen(true)}>
-        <S.BurgerIcon src={burgerIcon} />
+    <Flex z={9} position="absolute" right="0px" height="10vh" width={showBar ? '80px' : '64px'} align="center" padding="8px">
+      <S.OpenMenu showBar={showBar} onClick={() => setOpen(true)}>
+        <S.BurgerIcon showBar={showBar} src={burgerIcon} />
       </S.OpenMenu>
       <Flex.Absolute
+        top="0px"
+        left="0px"
         height="100vh"
         width="100vw"
-        transf={open ? 'translateX(-186px)' : 'translateX(64px)'}
+        transf={open ? 'translateX(-186px)' : `translateX(${showBar ? '80px' : '64px'})`}
         transition="transform .3s ease"
       >
         <Flex
           width="250px"
           height="100%"
-          shadow="-2px -2px 8px 2px rgba(0, 0, 0, .15)"
           background={colors.primary}
           onClick={e => e.stopPropagation()}
         >
@@ -105,7 +118,9 @@ const Menu = () => {
           ) : (
             <Flex column width="100%" padding="16px">
               <Text color="white">
-                Signed in as {auth.profile.OZMAIL}
+                Signed in as
+                {' '}
+                {auth.profile.OZMAIL}
               </Text>
               {/* eslint-disable-next-line */}
               <a

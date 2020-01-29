@@ -11,7 +11,7 @@ import * as S from './styled';
 
 const ALLOWED_FILETYPES = ['application/x-tar', 'application/x-gzip'];
 
-const AddPluginCard = () => {
+const AddPluginCard = ({ showBar }) => {
   const [modals, { openModal }] = useModals();
 
   const openInstallModal = async (e, plugin) => {
@@ -26,7 +26,7 @@ const AddPluginCard = () => {
     ipcRenderer.on('unpacked-plugin', openInstallModal);
 
     return () => {
-      ipcRenderer.removeListener('unpacked-plugin', openInstallModal);     
+      ipcRenderer.removeListener('unpacked-plugin', openInstallModal);
     };
   }, []);
 
@@ -58,8 +58,17 @@ const AddPluginCard = () => {
   });
 
   return (
-    <Flex width="33%" height="50%" padding="0px 12px 12px 0px">
+    <Flex
+      width={showBar ? '50px' : '33%'}
+      height={showBar ? '50px' : '50%'}
+      app-region="no-drag"
+      min-height={showBar ? '50px' : '50%'}
+      marginTop={showBar && '26px'}
+      padding={!showBar && '0px 12px 12px 0px'}
+    >
       <S.CardOverlay
+        radius={showBar && '16px'}
+        border={showBar ? '1px solid #c5c5c5' : 'none'}
         {...getRootProps()}
         isDragActive={isDragActive}
         onClick={async () => {
@@ -67,7 +76,7 @@ const AddPluginCard = () => {
             title: 'Add plugin',
             options: {
               filters: [
-                { name: '*.tar', extensions: ['tar', 'gz',] }
+                { name: '*.tar', extensions: ['tar', 'gz'] },
               ],
             },
             properties: ['openFile'],
@@ -81,10 +90,13 @@ const AddPluginCard = () => {
         <S.AddPluginCard>
           <input {...getInputProps()} />
           <S.AppIcon src={addNewIcon} />
+          {!showBar && (
           <S.AppInfo>
             <Flex width="50%" height="1px" background={colors.primaryHover} marginBottom="8px" />
             <Text size="18px" color={colors.primaryHover}>Add new plugin</Text>
           </S.AppInfo>
+          )}
+
         </S.AddPluginCard>
       </S.CardOverlay>
     </Flex>

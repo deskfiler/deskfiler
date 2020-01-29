@@ -42,7 +42,7 @@ autoUpdater.logger.transports.file.level = 'info';
 
 autoUpdater.autoDownload = false;
 
-// Set custom 'deskfiler://' protocol as default 
+// Set custom 'deskfiler://' protocol as default
 if (!app.isDefaultProtocolClient('deskfiler')) {
   app.setAsDefaultProtocolClient('deskfiler');
 }
@@ -80,7 +80,7 @@ if (!isSingleAppInstance) {
     const mainWindow = getMainWindow();
 
     if (mainWindow) {
-      if (process.platform === 'win32') {  
+      if (process.platform === 'win32') {
         // On Windows, custom protocol url can be recieved through a argv argument
         const url = argv.slice(-1)[0];
         downloadPlugin(url, mainWindow);
@@ -107,7 +107,7 @@ if (!isSingleAppInstance) {
 
     log('Created main-renderer window, registering protocol...');
 
-    // Register a custom protocol scheme 
+    // Register a custom protocol scheme
     protocol.registerStringProtocol('deskfiler', (request, callback) => {
       callback();
     }, (err) => {

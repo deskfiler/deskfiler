@@ -21,6 +21,7 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
+    background: transparent !important;
     height: 100%;
     box-sizing: border-box;
   }

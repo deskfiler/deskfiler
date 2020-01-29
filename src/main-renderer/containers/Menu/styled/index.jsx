@@ -86,10 +86,11 @@ export const MenuItem = styled(FoundationMenuItem)`
 `;
 
 export const OpenMenu = styled.div`
+-webkit-app-region:no-drag;
   display: flex;
   justify-content: flex-end;
   cursor: pointer;
-  padding-top: 16px;
+  padding-top: ${({ showBar }) => showBar ? '0' : '16px'};
   &:hover {
     img {
       transform: translateX(-25%);
@@ -99,7 +100,7 @@ export const OpenMenu = styled.div`
 `;
 
 export const BurgerIcon = styled.img`
-  height: 20px;
+  height: ${({ showBar }) => (showBar ? '30px' : '20px')};
   transform: translateX(0%);
   transition: transform .25s ease-in, filter .25s ease-out;
 `;
