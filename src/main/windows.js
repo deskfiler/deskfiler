@@ -45,7 +45,7 @@ async function createPluginControllerWindow({
   ticket,
 }) {
   pluginControllerWindow = new BrowserWindow({
-    minWidth: 800,
+    minWidth: 20,
     minHeight: 600,
     show: showOnStart,
     webPreferences: {
@@ -87,7 +87,7 @@ async function createPluginControllerWindow({
 // Create a window to add funds to user account
 async function createPaymentWindow({ fromId, userId }) {
   paymentWindow = new BrowserWindow({
-    minWidth: 800,
+    minWidth: 20,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -125,7 +125,7 @@ async function createRegisterWindow() {
   log('preload', preload);
 
   registerWindow = new BrowserWindow({
-    minWidth: 800,
+    minWidth: 20,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -160,7 +160,7 @@ async function createLoginWindow() {
   log('preload', preload);
 
   loginWindow = new BrowserWindow({
-    minWidth: 800,
+    minWidth: 20,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -185,7 +185,7 @@ async function createLoginWindow() {
 // Create window to display plugin settings
 async function createPluginConfigWindow({ pluginKey }) {
   pluginConfigWindow = new BrowserWindow({
-    minWidth: 800,
+    minWidth: 20,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -220,14 +220,17 @@ if(!position){
 // Create main application window
 async function createMainWindow() {
   mainWindow = new BrowserWindow({
-    minWidth: 700,
-    minHeight: 600,
+    minWidth: 80,
     x: store.get('windowPosition')[0],
     y: store.get('windowPosition')[1],
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
     },
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true,
+    hasShadows: false,
   });
 
   // Remove menubar for Windows and Linux
@@ -248,6 +251,10 @@ async function createMainWindow() {
     const defaultRatio = 4 / 3;
     mainWindow.setAspectRatio(defaultRatio);
   }
+
+  mainWindow.on('resize', () => {
+    store.set('windowSize', mainWindow.getSize());
+  });
 
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
@@ -398,6 +405,13 @@ async function createMainWindow() {
     closeServer();
 
     mainWindow = null;
+  });
+
+  mainWindow.on('show', () => {
+    const lastSize = store.get('windowSize');
+    if (lastSize) {
+      mainWindow.setSize(...lastSize);
+    }
   });
 }
 
