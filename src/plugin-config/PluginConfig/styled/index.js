@@ -12,3 +12,4 @@ export const PluginLogo = styled.img`
 export const InfoTitle = styled.h2`
   font-size: 20px;
 `;
+
