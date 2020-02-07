@@ -13,12 +13,13 @@ const InputGroup = ({
   const { name, value } = field;
   const { setFieldValue } = form;
   return (
-    <div className="input-group" style={{ height: '35px' }}>
+    <div className="input-group" style={{ height: '35px', WebkitAppRegion: 'no-drag', zIndex: '10' }}>
       <span className="input-group-label">{label}</span>
       <input
         className="input-group-field"
         {...restLib}
         value={value}
+        style={{ zIndex: '10', WebkitAppRegion: 'no-drag' }}
         onChange={(e) => {
           setFieldValue(name, e.target.value);
         }}

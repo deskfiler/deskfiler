@@ -1,5 +1,7 @@
 import styled, { css, keyframes } from 'styled-components';
 import wave from 'assets/images/wave.png';
+import microWave from 'assets/images/wave-min.png';
+import store from 'store';
 
 export const Overlay = styled.div`
   position: absolute;
@@ -185,15 +187,21 @@ const waving = keyframes`
   0% {
     background-position-x: 0%;
   }
+  30% {
+    background-position-x: 100px;
+  }
+  60% {
+    background-position-x: 200px;
+  }
   100% {
-    background-position-x: 870%;
+    background-position-x: 300px;
   }
 `;
 
 export const InstallingOverlay = styled.div`
   position: absolute;
   transition: height 1s ease-in;
-  height: ${props => (props.active ? '70%' : '0%')};
+  height: ${props => (props.active ? '60%' : '0%')};
   bottom: 0;
   width: 100%;
   background: transparent;
@@ -201,8 +209,10 @@ export const InstallingOverlay = styled.div`
   background-size: auto;
   background-repeat-x: repeat;
   background-repeat-y: no-repeat;
-  background-image: url(${wave});
-  animation: ${waving} 1s infinite linear;
+  background-image:  url(${props => (props.showBar ? microWave : wave)});
+  background-position-x: 0px;
+  background-position-y: ${props => (props.showBar ? '9px' : '0px')};
+  animation: ${waving} ${props => (props.showBar ? '1.5s' : '1s')} infinite linear;
   &:after {
     font-family: Roboto;
     font-weight: 500;
