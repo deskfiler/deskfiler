@@ -25,7 +25,6 @@ export default class ContainersErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      //ipcRenderer.send('restart-app')
       return  (
         <Flex width="100%" height="100%" padding="16px">
           <Text.Bold>
