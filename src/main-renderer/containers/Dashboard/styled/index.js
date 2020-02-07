@@ -33,6 +33,7 @@ export const AnimatedDockHandleBar = styled(Flex.Absolute)`
   transition: width .3s ease;
   border-radius: 4px;
   transform: translate(-1px, -1px);
+  -webkit-app-region: no-drag;
 `;
 
 export const AnimatedDockWrapper = styled(Flex.Absolute).attrs({
@@ -43,7 +44,7 @@ export const AnimatedDockWrapper = styled(Flex.Absolute).attrs({
   align-items: center;
   width: 50px;
   margin-right: 7px;
-
+  -webkit-app-region: no-drag;
   background: #fff;
   height: 50px;
   border-radius: 19px;

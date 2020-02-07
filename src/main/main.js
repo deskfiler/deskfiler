@@ -22,6 +22,7 @@ const { LOGS_DIR } = require('./constants');
 
 const {
   downloadPlugin,
+  unpackPlugin,
 } = require('./plugins');
 
 const {
@@ -38,6 +39,7 @@ const rimraf = util.promisify(rmrf);
 
 // Set parameters for autoupdater
 autoUpdater.logger = require('electron-log');
+
 autoUpdater.logger.transports.file.level = 'info';
 
 autoUpdater.autoDownload = false;
@@ -67,6 +69,15 @@ ipcMain.on('clear-local-cache', async (e) => {
 // Handling app restart
 ipcMain.on('restart-app', () => {
   app.relaunch();
+});
+
+// Unpack plugin
+ipcMain.on('received-plugin-tarball', async (event, filePath) => {
+  try {
+    await unpackPlugin(filePath);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // Restrict deskfiler instances to one at a time

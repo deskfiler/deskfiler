@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import * as T from 'prop-types';
 import { Spinner } from 'components';
@@ -12,8 +12,7 @@ import trashcanIcon from 'assets/images/trashcan.svg';
 import * as S from './styled';
 
 const Plugin = ({ pluginKey, showBar }) => {
-  // eslint-disable-next-line
-    const [_, {openModal}] = useModals();
+  const [_, { openModal }] = useModals();
   const [plugin, { run, remove, openSettings }] = usePlugin(pluginKey);
   const {
     acceptRestrictions,
@@ -77,7 +76,7 @@ const Plugin = ({ pluginKey, showBar }) => {
           run();
         }}
       >
-        <S.InstallingOverlay active={isInstalling} />
+        <S.InstallingOverlay active={isInstalling} showBar={showBar} />
         <S.DropFilesTitle showBar={showBar}>{ isFileRejected ? 'Wrong file format' : 'Drop files'}</S.DropFilesTitle>
         <S.AppCard>
           <input {...getInputProps()} />
@@ -138,6 +137,10 @@ const Plugin = ({ pluginKey, showBar }) => {
 
 Plugin.propTypes = {
   pluginKey: T.string.isRequired,
+  showBar: T.bool,
+};
+Plugin.defaultProps = {
+  showBar: false,
 };
 
 export default Plugin;
