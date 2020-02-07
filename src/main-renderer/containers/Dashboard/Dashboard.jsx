@@ -55,7 +55,7 @@ const Dashboard = () => {
         }
       } else {
         store.set('resizable', true);
-        currentWindow.setMinimumSize(700, 500);
+        currentWindow.setMinimumSize(700, 550);
         currentWindow.setMaximumSize(3000, 750);
         const lastSize = await store.get('windowSize');
         currentWindow.setHasShadow(true);
