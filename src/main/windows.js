@@ -244,7 +244,10 @@ async function createMainWindow() {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         const size = mainWindow.getSize();
-        mainWindow.setSize(size[0], parseInt(size[0] * 3 / 4, 10));
+
+        if (size && size[0]) {
+          mainWindow.setSize(size[0], parseInt((size[0] * 3) / 4, 10));
+        }
       }, 100);
     });
   } else {
@@ -401,7 +404,7 @@ async function createMainWindow() {
 
   mainWindow.on('closed', () => {
     // Stop server when mainWindow is closed
-   
+
     closeServer();
 
     mainWindow = null;
