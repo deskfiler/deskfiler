@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { shell, ipcRenderer } from 'electron';
+import { shell } from 'electron';
 import { Formik } from 'formik';
 import { Grid, Cell } from 'react-foundation';
 import { Icon } from 'components';
@@ -84,7 +84,6 @@ const SettingsView = () => {
           <FastCheckbox
             name="startup"
             defaultChecked={store.get('autolaunch')}
-            //onChange={ipcRenderer.send('clear-local-cache')}
           />
           <span>Run on startup</span>
         </div> }

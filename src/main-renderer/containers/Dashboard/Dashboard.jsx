@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { remote ,ipcRenderer} from 'electron';
+import { remote } from 'electron';
 import request from 'request-promise-native';
 import requestDebug from 'request-debug';
 import {
@@ -9,11 +9,11 @@ import { Flex, Text } from 'styled';
 import { Spinner } from 'components';
 import store from 'store';
 
-///import {ipcRenderer} from 'electron';
 import Plugins from '../Plugins';
 import Menu from '../Menu';
 import Settings from '../Settings';
 import Logs from '../Logs';
+
 import DevMenu from './DevMenu';
 import { AnimatedDockHandleBar, AnimatedDockWrapper } from './styled';
 
@@ -22,7 +22,6 @@ const debounce = require('debounce');
 
 
 requestDebug(request);
-
 const Dashboard = () => {
   const [auth] = useAuth();
   const [_, { openModal }] = useModals();
@@ -50,10 +49,14 @@ const Dashboard = () => {
           currentWindow.setSize(80, 750);
           store.set('windowSize', [width, height]);
           currentWindow.setHasShadow(false);
+          currentWindow.setMinimumSize(80, 750);
+          currentWindow.setMaximumSize(80, 750);
           store.set('resizable', false);
         }
       } else {
         store.set('resizable', true);
+        currentWindow.setMinimumSize(700, 500);
+        currentWindow.setMaximumSize(3000, 750);
         const lastSize = await store.get('windowSize');
         currentWindow.setHasShadow(true);
         currentWindow.setSize(...lastSize);
@@ -63,15 +66,10 @@ const Dashboard = () => {
   }, [showBar]);
 
   const resize = debounce(() => {
-    if (!store.get('resizable')) {
-      console.log('set');
-      currentWindow.setSize(80, 750);
-      let size = currentWindow.getSize();
-      if (size[0] < 700) size[0] = 700;
-    } else store.set('windowSize', size);
+    store.set('windowSize', currentWindow.getSize());
   }, 50);
   currentWindow.addListener('resize', resize);
-ipcRenderer.send('clear-local-cache');
+
 
   return (
     <Flex height="100%" width="100%" background="#fff" align={showBar ? 'center' : 'flex-start'}>
