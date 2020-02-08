@@ -1,31 +1,34 @@
-import React from 'react';
-import { useModal } from 'hooks';
-import { shell, ipcRenderer } from 'electron';
+import React, { useState, useEffect } from 'react';
+import { ipcRenderer, shell, remote } from 'electron';
 import {
   Flex,
   Text,
   Modal,
   Button,
-} from 'styled';
+} from '../../main-renderer/styled';
 
-const InstallModal = () => {
-  const [modal, { close }] = useModal('installPlugin');
+const currentWindow = remote.getCurrentWindow();
 
-  if (!modal.isOpen) return null;
+const InstallModalWindow = () => {
+  const [state, setState] = useState(null);
+
+  useEffect(() => {
+    ipcRenderer.on('unpacked-plugin-data', (event, pluginParams) => {
+      setState(pluginParams);
+    });
+  }, []);
+
+  if (!state) return null;
 
   const {
-    params: {
-      plugin: {
-        name,
-        pluginKey,
-        author,
-        legallink,
-        legalhint,
-        icon,
-        note,
-      },
-    },
-  } = modal;
+    pluginKey,
+    name,
+    author,
+    icon,
+    note,
+    legallink,
+    legalhint,
+  } = state;
 
   return (
     <Modal.Container>
@@ -45,9 +48,10 @@ const InstallModal = () => {
             <Text.Medium newline style={{ marginBottom: 10 }}>
               Created by: {author}
             </Text.Medium>
-            <Text.Medium newline hideOverflow style={{ marginBottom: 10 }}>
-              Note: {note}
-            </Text.Medium>
+            {/* We don't have 'note' param */}
+            {/* <Text.Medium newline hideOverflow style={{ marginBottom: 10 }}> */}
+            {/*  Note: {note} */}
+            {/* </Text.Medium> */}
           </Flex>
           <img
             style={{ flex: '0 0 auto', height: 90 }}
@@ -64,6 +68,7 @@ const InstallModal = () => {
           <Text.Medium>
             {'Read more about it on '}
             <a
+              style={{ '-webkit-app-region': 'no-drag' }}
               href={legallink}
               onClick={(e) => {
                 e.preventDefault();
@@ -80,22 +85,22 @@ const InstallModal = () => {
           marginTop="15px"
         >
           <Button
-            style={{ margin: 0 }}
+            style={{ margin: 0, '-webkit-app-region': 'no-drag' }}
             onClick={(e) => {
               e.preventDefault();
               ipcRenderer.send('continue-plugin-installation', { shouldContinue: true });
-              close();
+              currentWindow.close();
             }}
           >
             Install
           </Button>
           <Button
             color="secondary"
-            style={{ margin: 0 }}
+            style={{ margin: 0, '-webkit-app-region': 'no-drag' }}
             onClick={(e) => {
               e.preventDefault();
               ipcRenderer.send('continue-plugin-installation', { shouldContinue: false });
-              close();
+              currentWindow.close();
             }}
           >
             Cancel
@@ -106,4 +111,4 @@ const InstallModal = () => {
   );
 };
 
-export default InstallModal;
+export default InstallModalWindow;

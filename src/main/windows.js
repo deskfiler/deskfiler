@@ -11,6 +11,7 @@ const util = require('util');
 const mkdirp = require('mkdirp');
 const rmrf = require('rimraf');
 
+const debounce = require('debounce');
 const store = require('./store');
 const log = require('./log');
 const baseUrl = require('./baseUrl');
@@ -21,7 +22,6 @@ const {
 } = require('./constants');
 
 const {
-  unpackPlugin,
   preinstallPlugins,
 } = require('./plugins');
 
@@ -35,6 +35,7 @@ let pluginConfigWindow;
 let registerWindow;
 let loginWindow;
 let paymentWindow;
+let installModal;
 
 // Create a plugin instance and open a window for it
 async function createPluginControllerWindow({
@@ -47,7 +48,7 @@ async function createPluginControllerWindow({
   ticket,
 }) {
   pluginControllerWindow = new BrowserWindow({
-    minWidth: 20,
+    minWidth: 800,
     minHeight: 600,
     show: showOnStart,
     webPreferences: {
@@ -89,7 +90,7 @@ async function createPluginControllerWindow({
 // Create a window to add funds to user account
 async function createPaymentWindow({ fromId, userId }) {
   paymentWindow = new BrowserWindow({
-    minWidth: 20,
+    minWidth: 800,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -127,7 +128,7 @@ async function createRegisterWindow() {
   log('preload', preload);
 
   registerWindow = new BrowserWindow({
-    minWidth: 20,
+    minWidth: 800,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -162,7 +163,7 @@ async function createLoginWindow() {
   log('preload', preload);
 
   loginWindow = new BrowserWindow({
-    minWidth: 20,
+    minWidth: 800,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -187,7 +188,7 @@ async function createLoginWindow() {
 // Create window to display plugin settings
 async function createPluginConfigWindow({ pluginKey }) {
   pluginConfigWindow = new BrowserWindow({
-    minWidth: 20,
+    minWidth: 800,
     minHeight: 600,
     show: true,
     webPreferences: {
@@ -215,14 +216,28 @@ async function createPluginConfigWindow({ pluginKey }) {
 }
 
 const position = store.get('windowPosition');
-if(!position){
-  store.set('windowPosition',[0,0])
+if (!position) {
+  store.set('windowPosition', [0, 0]);
 }
+const windowSize = store.get('windowSize');
+if (!windowSize) {
+  store.set('windowSize', [800, 700]);
+}
+const bar = store.get('bar');
+if (!bar) {
+  store.set('bar', false);
+}
+
 
 // Create main application window
 async function createMainWindow() {
+  const [width, height] = store.get('windowSize');
+
   mainWindow = new BrowserWindow({
     minWidth: 80,
+    minHeight: 300,
+    width,
+    height,
     x: store.get('windowPosition')[0],
     y: store.get('windowPosition')[1],
     webPreferences: {
@@ -230,40 +245,53 @@ async function createMainWindow() {
       webSecurity: false,
     },
     transparent: true,
+    titleBarStyle: 'customButtonsOnHover',
     frame: false,
-    alwaysOnTop: true,
     hasShadows: false,
   });
+
 
   // Remove menubar for Windows and Linux
   mainWindow.removeMenu();
 
   mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
 
-  if (process.platform === 'win32') {
+  console.log(process.platform);
+
+  if (/(win32|linux)/.test(process.platform)) {
     let resizeTimeout;
-    mainWindow.on('resize', () => {
+    let prevSize = [width, height];
+
+    const onResize = debounce(() => {
+      // mainWindow.on('resize', (evt) => {
+      console.log('resize trigged');
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         const size = mainWindow.getSize();
+        console.log(size, prevSize);
 
-        if (size && size[0]) {
+        if (size.width - prevSize.width === 1 || size.height - prevSize.height === 1) {
+          return;
+        }
+
+        prevSize = size;
+
+        if (size && size[0] && (size[0] / size[1] === 4 / 3)) {
           mainWindow.setSize(size[0], parseInt((size[0] * 3) / 4, 10));
         }
-      }, 100);
-    });
+      }, 1);
+      // });
+    }, 500);
+    mainWindow.addListener('resize', onResize);
   } else {
     const defaultRatio = 4 / 3;
     mainWindow.setAspectRatio(defaultRatio);
   }
 
-  mainWindow.on('resize', () => {
-    store.set('windowSize', mainWindow.getSize());
-  });
-
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
   }
+
 
   store.onDidChange('pluginData', (newData) => {
     log('plugins store changed');
@@ -285,29 +313,18 @@ async function createMainWindow() {
   }
 
   const autolaunch = await store.get('autolaunch');
-  if(!autolaunch){
-    store.set('autolaunch',false);
+  if (!autolaunch) {
+    store.set('autolaunch', false);
   }
 
   const isPluginsPreinstalled = await store.get('isPluginsPreinstalled');
   if (!isPluginsPreinstalled) {
     preinstallPlugins();
   }
-
-  // Install plugin and add its data to electron-store
-  ipcMain.on('recieved-plugin-tarball', async (event, filePath) => {
-    try {
-      await unpackPlugin(filePath, { mainWindow });
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
-  mainWindow.on('move', ()=>{
-    store.set('windowPosition',mainWindow.getPosition());
-    //console.log('moved')
-  }
-  );
+  const onMove = debounce(() => {
+    store.set('windowPosition', mainWindow.getPosition());
+  }, 500);
+  mainWindow.addListener('move', onMove);
 
   ipcMain.on('open-plugin-controller-window', async (event, {
     pluginKey,
@@ -406,23 +423,43 @@ async function createMainWindow() {
 
   mainWindow.on('closed', () => {
     // Stop server when mainWindow is closed
-   
     closeServer();
-
     mainWindow = null;
   });
+}
 
-  mainWindow.on('show', () => {
-    const lastSize = store.get('windowSize');
-    if (lastSize) {
-      mainWindow.setSize(...lastSize);
-    }
+
+// Create install modal window
+async function createInstallModalWindow(pluginParams) {
+  installModal = new BrowserWindow({
+    width: 500,
+    height: 300,
+    minWidth: 200,
+    minHeight: 200,
+    show: true,
+    webPreferences: {
+      nodeIntegration: true,
+    },
+    frame: false,
+  });
+  await installModal.loadURL(path.join(baseUrl, 'public', 'install-modal-window.html'));
+
+  // delete  devtools
+  if (process.env.NODE_ENV === 'development') {
+    installModal.webContents.openDevTools();
+  }
+
+  installModal.webContents.send('unpacked-plugin-data', pluginParams);
+
+  installModal.on('closed', () => {
+    installModal = null;
   });
 }
 
 const getMainWindow = () => mainWindow;
 
 module.exports = {
+  createInstallModalWindow,
   getMainWindow,
   createMainWindow,
 };

@@ -34,6 +34,8 @@ export const BrandingLogo = styled.img`
 export const HideMenu = styled.div`
   cursor: pointer;
   width: 24px;
+  zIndex: 20;
+  app-region: no-drag;
 `;
 
 export const CloseIcon = styled.img`
@@ -86,23 +88,24 @@ export const MenuItem = styled(FoundationMenuItem)`
 `;
 
 export const OpenMenu = styled.div`
--webkit-app-region:no-drag;
+-webkit-app-region:${({ showBar }) => (showBar ? 'drag' : 'no-drag')};
   display: flex;
   justify-content: flex-end;
   cursor: pointer;
-  padding-top: ${({ showBar }) => showBar ? '0' : '16px'};
+  padding-top: ${({ showBar }) => (showBar ? '0' : '16px')};
   &:hover {
     img {
-      transform: translateX(-25%);
-      filter: drop-shadow(4px 0px 0px rgba(0,0,0,.2));
+      transform: ${({ showBar }) => (showBar ? '' : 'translateX(-25%)')};
+      filter:  ${({ showBar }) => (showBar ? '' : 'drop-shadow(4px 0px 0px rgba(0,0,0,.2))')};
     }
-  }
+  }  
 `;
 
 export const BurgerIcon = styled.img`
   height: ${({ showBar }) => (showBar ? '30px' : '20px')};
   transform: translateX(0%);
   transition: transform .25s ease-in, filter .25s ease-out;
+   -webkit-user-select: none;
 `;
 
 export const OutlineButton = styled.a`

@@ -14,7 +14,6 @@ import InputGroup from 'components/InputGroup';
 
 import { Flex, Text } from 'styled';
 
-import FastCheckbox from '../../components/Checkbox';
 
 import {
   useSettings,
@@ -24,13 +23,16 @@ import {
 } from 'hooks';
 
 import { getPluginPath, createOpenDialog } from 'utils';
+import FastCheckbox from '../../components/Checkbox';
 
 import inputs from './utils/inputsLib';
 
 import * as S from './styled';
 
 import pJson from '../../../package.json';
+
 const store = require('store');
+
 const tabs = {
   general: {
     title: 'General',
@@ -73,14 +75,16 @@ const SettingsView = () => {
   const tabsContent = {
     general: (
       <>
-        {<div  style={{
-          width:"100%",
-          height:"40%"}}>
+        {<div style={{
+          width: '100%',
+          height: '40%',
+        }}
+        >
 
-         <FastCheckbox 
-            name={"startup"}
+          <FastCheckbox
+            name="startup"
             defaultChecked={store.get('autolaunch')}
-            />
+          />
           <span>Run on startup</span>
         </div> }
         {/* <Select {...inputs.language} options={languageOptions} /> */}
@@ -201,7 +205,7 @@ const SettingsView = () => {
                   handleSubmit,
                   resetForm,
                 }) => (
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmit} style={{ 'z-index': '5' }}>
                     <fieldset className="fieldset">
                       <legend>{currentTab.toUpperCase()}</legend>
                       {tabsContent[currentTab]}

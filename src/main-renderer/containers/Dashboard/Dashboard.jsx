@@ -7,7 +7,6 @@ import {
 } from 'hooks';
 import { Flex, Text } from 'styled';
 import { Spinner } from 'components';
-import { Switch, Sizes } from 'react-foundation';
 import store from 'store';
 
 import Plugins from '../Plugins';
@@ -16,14 +15,13 @@ import Settings from '../Settings';
 import Logs from '../Logs';
 
 import DevMenu from './DevMenu';
-
 import { AnimatedDockHandleBar, AnimatedDockWrapper } from './styled';
 
 const currentWindow = remote.getCurrentWindow();
+const debounce = require('debounce');
 
 
 requestDebug(request);
-
 const Dashboard = () => {
   const [auth] = useAuth();
   const [_, { openModal }] = useModals();
@@ -32,7 +30,7 @@ const Dashboard = () => {
 
   const { isLoading } = auth;
   const { skipRegistration, defaultStoragePath } = settings.general;
-  const [showBar, setShowBar] = useState(false);
+  const [showBar, setShowBar] = useState(store.get('bar'));
 
 
   useEffect(() => {
@@ -43,53 +41,68 @@ const Dashboard = () => {
 
   useEffect(initializeIpcSubscription, []);
   useEffect(subscribeOnSaveDialog, [defaultStoragePath]);
-
-
   useEffect(() => {
     const initializeBar = async () => {
       const [width, height] = currentWindow.getSize();
       if (showBar) {
-        console.log('currentWindow.setSize(80, height)')
-        currentWindow.setHasShadow(false);
-        currentWindow.setSize(80, height, true);
-        store.set('windowSize', [width, height]);
+        if (width !== 80) {
+          currentWindow.setSize(80, 750);
+          store.set('windowSize', [width, height]);
+          currentWindow.setHasShadow(false);
+          currentWindow.setMinimumSize(80, 750);
+          currentWindow.setMaximumSize(80, 750);
+          store.set('resizable', false);
+        }
       } else {
+        store.set('resizable', true);
+        currentWindow.setMinimumSize(700, 500);
+        currentWindow.setMaximumSize(3000, 750);
         const lastSize = await store.get('windowSize');
         currentWindow.setHasShadow(true);
-        currentWindow.setSize(...lastSize, true);
+        currentWindow.setSize(...lastSize);
       }
-    }
-
+    };
     initializeBar();
   }, [showBar]);
 
+  const resize = debounce(() => {
+    store.set('windowSize', currentWindow.getSize());
+  }, 50);
+  currentWindow.addListener('resize', resize);
+
+
   return (
-    <Flex height="100%" width="100%" background={showBar ? 'transparent' : 'white'} align={showBar ? 'center' : 'flex-start'}>
+    <Flex height="100%" width="100%" background="#fff" align={showBar ? 'center' : 'flex-start'}>
       <DevMenu />
-      {isLoading
-        ? (
-          <Flex width="100%" height="100%" justify="center" align="center" spacing="8px">
-            <Spinner />
-            <Text.Bold>
-                            Loading...
-            </Text.Bold>
-          </Flex>
-        ) : (
-          <Flex row width={showBar ? '80px' : '100%'} height="100%" justify="center" overflow="hidden">
-            {!showBar && <Plugins />}
-            <Menu setShowBar={setShowBar} showBar={showBar} />
-            {!showBar && <Settings />}
-            <Logs />
-            {showBar && <Plugins showBar />}
-            <AnimatedDockWrapper onClick={() => setShowBar(!showBar)} showBar={showBar}>
-              <Flex column radius="4px" border="1px dashed #c5c5c5" width="30px" height="30px">
-                <AnimatedDockHandleBar showBar={showBar} />
-                <Flex.Absolute top="50%" borderTop="1px dashed #c5c5c5" width="100%" height="1px" />
-              </Flex>
-            </AnimatedDockWrapper>
-          </Flex>
-        )
-            }
+      {isLoading ? (
+        <Flex width="100%" height="100%" justify="center" align="center" spacing="8px">
+          <Spinner />
+          <Text.Bold>
+              Loading...
+          </Text.Bold>
+        </Flex>
+      ) : (
+        <Flex row width={showBar ? '80px' : '100%'} height="100%" justify="center" overflow="hidden" background="#fff" resizable="true">
+          {!showBar && <Plugins />}
+          <Menu setShowBar={setShowBar} showBar={showBar} />
+          {!showBar && <Settings />}
+          <Logs />
+          {showBar && <Plugins showBar={showBar} />}
+          <AnimatedDockWrapper
+            onClick={() => {
+              setShowBar(!store.get('bar'));
+              store.set('bar', !showBar);
+            }}
+            showBar={showBar}
+          >
+            <Flex column radius="4px" border="1px dashed #c5c5c5" width="30px" height="30px">
+              <AnimatedDockHandleBar showBar={showBar} />
+              <Flex.Absolute top="50%" borderTop="1px dashed #c5c5c5" width="100%" height="1px" />
+            </Flex>
+          </AnimatedDockWrapper>
+        </Flex>
+      )
+          }
     </Flex>
   );
 };

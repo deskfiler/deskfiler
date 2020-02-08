@@ -20,7 +20,7 @@ export default class ContainersErrorBoundary extends React.Component {
       this.setState({
         cacheCleared: true,
       });
-    })
+    });
   }
 
   render() {
