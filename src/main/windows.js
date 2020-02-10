@@ -253,8 +253,6 @@ async function createMainWindow() {
 
   mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
 
-  console.log(process.platform);
-
   if (/(win32|linux)/.test(process.platform)) {
     let resizeTimeout;
     let prevSize = [width, height];
