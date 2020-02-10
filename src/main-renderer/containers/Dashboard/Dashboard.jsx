@@ -46,11 +46,11 @@ const Dashboard = () => {
       const [width, height] = currentWindow.getSize();
       if (showBar) {
         if (width !== 80) {
-          currentWindow.setSize(80, 750);
           store.set('windowSize', [width, height]);
           currentWindow.setHasShadow(false);
           currentWindow.setMinimumSize(80, 750);
           currentWindow.setMaximumSize(80, 750);
+          currentWindow.setSize(80, 750);
           store.set('resizable', false);
         }
       } else {
