@@ -51,3 +51,11 @@ ehthumbs.db
 # Windows shortcuts #
 #####################
 *.lnk
+.idea/
+*.iml
+
+example-plugins/bareBone/yarn.lock
+example-plugins/gVision/yarn.lock
+example-plugins/imageTagViewer/yarn.lock
+example-plugins/pdfSplitter/yarn.lock
+example-plugins/weTransferConnect/yarn.lock
