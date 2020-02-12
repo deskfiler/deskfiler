@@ -328,6 +328,7 @@ async function createMainWindow() {
     filePaths,
     ticket,
   }) => {
+    log('open-plugin-controller-window');
     const restrictions = await store.get(`pluginData.${pluginKey}.acceptRestrictions`);
     createPluginControllerWindow({
       pluginKey,
@@ -362,11 +363,8 @@ async function createMainWindow() {
 
   ipcMain.on('open-login-window', () => {
     log('opening login window');
-    if (!loginWindow) {
-      createLoginWindow();
-    } else {
-      loginWindow.show();
-    }
+
+    loginWindow ? loginWindow.show() : createLoginWindow();
   });
 
   // Handle successful login
@@ -438,11 +436,6 @@ async function createInstallModalWindow(pluginParams) {
     frame: false,
   });
   await installModal.loadURL(path.join(baseUrl, 'public', 'install-modal-window.html'));
-
-  // delete  devtools
-  if (process.env.NODE_ENV === 'development') {
-    installModal.webContents.openDevTools();
-  }
 
   installModal.webContents.send('unpacked-plugin-data', pluginParams);
 
