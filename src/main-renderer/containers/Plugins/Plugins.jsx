@@ -7,7 +7,7 @@ import * as T from 'prop-types';
 import Plugin from './Plugin/index';
 import AddPlugin from './AddPlugin';
 
-const Plugins = ({ showBar }) => {
+const Plugins = ({ showBar, setShowBar }) => {
   const [plugins] = usePlugins();
 
   const pluginsKeys = Object.keys(plugins);
@@ -29,12 +29,13 @@ const Plugins = ({ showBar }) => {
       border={showBar ? '1px solid #c5c5c5' : 'none'}
     >
       <AddPlugin showBar={showBar} />
-      {pluginsKeys.map(key => <Plugin showBar={showBar} key={key} pluginKey={key} />)}
+      {pluginsKeys.map(key => <Plugin setShowBar={setShowBar} showBar={showBar} key={key} pluginKey={key} />)}
     </Flex>
   );
 };
 Plugin.propTypes = {
   showBar: T.bool,
+  setShowBar: T.func,
 };
 Plugin.defaultProps = {
   showBar: false,

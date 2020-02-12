@@ -69,8 +69,6 @@ Flex.Absolute = styled(Flex).attrs({ position: 'absolute' })`
   ${fromProp('left', { make: 'left' })};
   ${fromProp('bottom', { make: 'bottom' })};
   ${fromProp('right', { make: 'right' })};
-  
-  
 `;
 
 export default Flex;
