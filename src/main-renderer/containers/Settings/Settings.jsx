@@ -75,7 +75,7 @@ const SettingsView = () => {
   const tabsContent = {
     general: (
       <>
-        {<div style={{
+        <div style={{
           width: '100%',
           height: '40%',
         }}
@@ -86,7 +86,7 @@ const SettingsView = () => {
             defaultChecked={store.get('autolaunch')}
           />
           <span>Run on startup</span>
-        </div> }
+        </div>
         {/* <Select {...inputs.language} options={languageOptions} /> */}
         <span>Default storage path</span>
         <InputGroup
@@ -205,7 +205,7 @@ const SettingsView = () => {
                   handleSubmit,
                   resetForm,
                 }) => (
-                  <form onSubmit={handleSubmit} style={{ 'z-index': '5' }}>
+                  <form onSubmit={handleSubmit} style={{ zIndex: '5' }}>
                     <fieldset className="fieldset">
                       <legend>{currentTab.toUpperCase()}</legend>
                       {tabsContent[currentTab]}

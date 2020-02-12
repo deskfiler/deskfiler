@@ -29,7 +29,7 @@ const Menu = ({ showBar, setShowBar }) => {
       width: '100%',
       position: 'absolute',
       height: '10%',
-      '-webkit-app-region': 'drag',
+      WebkitAppRegion: 'drag',
     }}
     >
       <Flex z={9} position="absolute" right="0px" app-region="" height="10vh" width={showBar ? '80px' : '64px'} align="center" padding="8px">
@@ -70,9 +70,6 @@ const Menu = ({ showBar, setShowBar }) => {
               >
                 <S.BrandingLogo src={brandingLogo} />
                 <S.HideMenu
-                  //style={{ 'webkit-app-region': 'no-drag' }}
-                  //app-region="no-drag"
-                  //zIndex="20"
                   onClick={() => setOpen(false)}
                 >
                   <S.CloseIcon src={closeWhiteIcon} />

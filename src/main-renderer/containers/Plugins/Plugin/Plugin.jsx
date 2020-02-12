@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import * as T from 'prop-types';
 import { Spinner } from 'components';
 import { Flex, Text } from 'styled';
+import store from 'store';
 
 import { usePlugin, useModals } from 'hooks';
 
@@ -11,7 +12,7 @@ import trashcanIcon from 'assets/images/trashcan.svg';
 
 import * as S from './styled';
 
-const Plugin = ({ pluginKey, showBar }) => {
+const Plugin = ({ pluginKey, showBar, setShowBar }) => {
   const [_, { openModal }] = useModals();
   const [plugin, { run, remove, openSettings }] = usePlugin(pluginKey);
   const {
@@ -68,12 +69,16 @@ const Plugin = ({ pluginKey, showBar }) => {
       app-region="no-drag"
     >
       <S.CardOverlay
-        radius={showBar && '6px'}
+        radius={showBar ? '6px' : '0px'}
         {...getRootProps()}
         isDragActive={isDragActive}
         isFileRejected={isFileRejected}
         onClick={() => {
-          run();
+          if (showBar && pluginKey === 'gvision') {
+            setShowBar(!store.get('bar'));
+            store.set('bar', !showBar);
+            setTimeout(() => run(), 500);
+          } else run();
         }}
       >
         <S.InstallingOverlay active={isInstalling} showBar={showBar} />

@@ -68,8 +68,13 @@ const Dashboard = () => {
   const resize = debounce(() => {
     store.set('windowSize', currentWindow.getSize());
   }, 50);
-  currentWindow.addListener('resize', resize);
 
+  useEffect(() => {
+    currentWindow.addListener('resize', resize);
+    return () => {
+      currentWindow.removeListener('resize', resize);
+    };
+  });
 
   return (
     <Flex height="100%" width="100%" background="#fff" align={showBar ? 'center' : 'flex-start'}>
@@ -87,7 +92,7 @@ const Dashboard = () => {
           <Menu setShowBar={setShowBar} showBar={showBar} />
           {!showBar && <Settings />}
           <Logs />
-          {showBar && <Plugins showBar={showBar} />}
+          {showBar && <Plugins setShowBar={setShowBar} showBar={showBar} />}
           <AnimatedDockWrapper
             onClick={() => {
               setShowBar(!store.get('bar'));
