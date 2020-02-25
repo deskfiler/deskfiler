@@ -23,6 +23,7 @@ const { LOGS_DIR } = require('./constants');
 const {
   downloadPlugin,
   unpackPlugin,
+  preinstallPlugins,
 } = require('./plugins');
 
 const {
@@ -107,14 +108,14 @@ if (!isSingleAppInstance) {
   // Restore application on relaunch from dock/taskbar
   app.on('activate', () => {
     const mainWindow = getMainWindow();
-    if (mainWindow === null) createMainWindow();
+    if (mainWindow === null) createMainWindow(preinstallPlugins);
   });
 
   // Event that shows that electron app is ready to work
   app.on('ready', async () => {
     log('App ready, creating window...');
 
-    createMainWindow();
+    createMainWindow(preinstallPlugins);
 
     log('Created main-renderer window, registering protocol...');
 

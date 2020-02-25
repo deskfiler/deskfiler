@@ -5,6 +5,6 @@
   "author": "Ilya Lopukhin",
   "repository": "https://github.com/ilya-lopuhkin/deskfiler-private",
   "dependencies": {
-    "hummus": "^1.0.107"
+    "hummus": "^1.0.108"
   }
 }

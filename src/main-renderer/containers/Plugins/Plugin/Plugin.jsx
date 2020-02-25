@@ -27,6 +27,12 @@ const Plugin = ({ pluginKey, showBar, setShowBar }) => {
 
   const [isFileRejected, setIsFileRejected] = useState(false);
 
+  const switchShowBar = (filePaths) => {
+    setShowBar(!store.get('bar'));
+    store.set('bar', !showBar);
+    setTimeout(() => run(filePaths), 500);
+  };
+
   const onDrop = (files) => {
     let acceptedFiles = files;
 
@@ -40,8 +46,8 @@ const Plugin = ({ pluginKey, showBar, setShowBar }) => {
         return;
       }
     }
-
-    run({ filePaths: Array.from(acceptedFiles).map(file => file.path) });
+    if (showBar && pluginKey === 'wetransferconnect') switchShowBar({ filePaths: Array.from(acceptedFiles).map(file => file.path) });
+    else run({ filePaths: Array.from(acceptedFiles).map(file => file.path) });
   };
 
   const {
@@ -74,11 +80,9 @@ const Plugin = ({ pluginKey, showBar, setShowBar }) => {
         isDragActive={isDragActive}
         isFileRejected={isFileRejected}
         onClick={() => {
-          if (showBar && pluginKey === 'gvision') {
-            setShowBar(!store.get('bar'));
-            store.set('bar', !showBar);
-            setTimeout(() => run(), 500);
-          } else run();
+          if (showBar && pluginKey === 'wetransferconnect') switchShowBar();
+          if (showBar && pluginKey === 'gvision') switchShowBar();
+          else run();
         }}
       >
         <S.InstallingOverlay active={isInstalling} showBar={showBar} />
