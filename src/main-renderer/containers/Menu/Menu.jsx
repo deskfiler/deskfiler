@@ -11,7 +11,6 @@ import { Flex, Text, colors } from 'styled';
 
 import * as S from './styled';
 
-
 const titles = {
   plugins: 'Plugins',
   settings: 'Settings',
@@ -111,7 +110,7 @@ const Menu = ({ showBar, setShowBar }) => {
                 <Flex
                   row
                   width="100%"
-                  padding="16px"
+                  padding="30px"
                   flex="0 0 auto"
                 >
                   <S.OutlineButton onClick={openRegisterWindow}>
@@ -128,7 +127,6 @@ const Menu = ({ showBar, setShowBar }) => {
                     {' '}
                     {auth.profile.OZMAIL}
                   </Text>
-                  {/* eslint-disable-next-line */}
               <a
                 href="#"
                 style={{ padding: '5px 0px' }}

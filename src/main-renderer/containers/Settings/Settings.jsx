@@ -14,6 +14,7 @@ import InputGroup from 'components/InputGroup';
 
 import { Flex, Text } from 'styled';
 
+import FastCheckbox from '../../components/Checkbox';
 
 import {
   useSettings,
@@ -23,7 +24,6 @@ import {
 } from 'hooks';
 
 import { getPluginPath, createOpenDialog } from 'utils';
-import FastCheckbox from '../../components/Checkbox';
 
 import inputs from './utils/inputsLib';
 

@@ -16,7 +16,7 @@ export const Overlay = styled.div`
   background-color: #fff;
   opacity: 0.3;
   z-index: 2;
-  display: ${({isMenuOpen}) => (isMenuOpen ? 'block' : 'none')};
+  display: ${({ isMenuOpen }) => (isMenuOpen ? 'block' : 'none')};
 `;
 
 export const AuthFormTitle = styled.h2`
@@ -38,7 +38,7 @@ export const AnimatedDockHandleBar = styled(Flex.Absolute)`
 
 export const AnimatedDockWrapper = styled(Flex.Absolute).attrs({
   bottom: '15px',
-  right: ({ showBar }) => showBar ? '10px' : '0px',
+  right: ({ showBar }) => (showBar ? '10px' : '0px'),
 })`
   justify-content: center;
   align-items: center;

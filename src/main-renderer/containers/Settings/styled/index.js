@@ -71,6 +71,8 @@ export const SortIcon = styled.img`
 `;
 
 export const CloseIcon = styled.img`
+  z-index:100;
+  -webkit-app-region: no-drag;
   height: 14px;
 `;
 

@@ -93,14 +93,14 @@ function injectPlugin({
     oldScriptNode.parentNode.removeChild(oldScriptNode);
   }
 
-  // Creating a <script/> tag for a new plugin 
+  // Creating a <script/> tag for a new plugin
   const scriptNode = document.createElement('script');
 
   scriptNode.setAttribute('type', 'text/javascript');
   scriptNode.setAttribute('src', newScriptSrc);
   scriptNode.setAttribute('id', 'plugin');
 
-  /* If one of two options - handle accepted files, 
+  /* If one of two options - handle accepted files,
     or open modal to choose files to process, is not specified - use one that is present */
   scriptNode.onload = async () => {
     if (filePaths) {
@@ -144,7 +144,7 @@ function injectPlugin({
       });
     }
   };
-  
+
   // Adding default basic styles for plugin
   const styles = `
     ${fontsCss}
@@ -162,7 +162,7 @@ function injectPlugin({
   body.appendChild(scriptNode);
 }
 
-// Once 'new-plugin-loaded' event is catched from the main thread - gets all passed credentials of a plugin 
+// Once 'new-plugin-loaded' event is catched from the main thread - gets all passed credentials of a plugin
 ipcRenderer.once('new-plugin-loaded', async (event, {
   pluginKey,
   inDevelopment,
@@ -324,7 +324,7 @@ ipcRenderer.once('new-plugin-loaded', async (event, {
       }
       throw new Error('Invalid argument type for "alert" method. Can only be a string or an array');
     },
-    // Focuses on the window with executing plugin 
+    // Focuses on the window with executing plugin
     focus: () => {
       currentWindow.focus();
     },

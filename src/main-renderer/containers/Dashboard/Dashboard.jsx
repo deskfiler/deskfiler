@@ -8,7 +8,7 @@ import {
 import { Flex, Text } from 'styled';
 import { Spinner } from 'components';
 import store from 'store';
-
+import Titlebar from 'react-electron-titlebar';
 import Plugins from '../Plugins';
 import Menu from '../Menu';
 import Settings from '../Settings';
@@ -22,6 +22,7 @@ const debounce = require('debounce');
 
 
 requestDebug(request);
+
 const Dashboard = () => {
   const [auth] = useAuth();
   const [_, { openModal }] = useModals();
@@ -50,14 +51,14 @@ const Dashboard = () => {
           currentWindow.setHasShadow(false);
           currentWindow.setMinimumSize(80, 750);
           currentWindow.setMaximumSize(80, 750);
-          currentWindow.setSize(80, 750);
+          currentWindow.setSize(80, 700);
           store.set('resizable', false);
         }
       } else {
         store.set('resizable', true);
-        currentWindow.setMinimumSize(700, 550);
-        currentWindow.setMaximumSize(3000, 750);
         const lastSize = await store.get('windowSize');
+        currentWindow.setMinimumSize(750, 600);
+        currentWindow.setMaximumSize(3000, 3000);
         currentWindow.setHasShadow(true);
         currentWindow.setSize(...lastSize);
       }
@@ -78,12 +79,13 @@ const Dashboard = () => {
 
   return (
     <Flex height="100%" width="100%" background="#fff" align={showBar ? 'center' : 'flex-start'}>
+      {!showBar && <div style={{ width: '100%', background: '#000' }}><Titlebar /></div>}
       <DevMenu />
       {isLoading ? (
         <Flex width="100%" height="100%" justify="center" align="center" spacing="8px">
           <Spinner />
           <Text.Bold>
-              Loading...
+            Loading...
           </Text.Bold>
         </Flex>
       ) : (
