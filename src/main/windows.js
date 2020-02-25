@@ -227,7 +227,7 @@ if (!bar) {
 
 
 // Create main application window
-async function createMainWindow() {
+async function createMainWindow(preinstallPlugins) {
   const [width, height] = store.get('windowSize');
 
   mainWindow = new BrowserWindow({
@@ -242,11 +242,9 @@ async function createMainWindow() {
       webSecurity: false,
     },
     transparent: true,
-    titleBarStyle: 'customButtonsOnHover',
     frame: false,
     hasShadows: false,
   });
-
 
   // Remove menubar for Windows and Linux
   mainWindow.removeMenu();
@@ -287,7 +285,6 @@ async function createMainWindow() {
     mainWindow.webContents.openDevTools();
   }
 
-
   store.onDidChange('pluginData', (newData) => {
     log('plugins store changed');
     mainWindow.webContents.send('plugins-store-updated', newData);
@@ -317,8 +314,14 @@ async function createMainWindow() {
     preinstallPlugins();
   }
   const onMove = debounce(() => {
+    const { screen } = require('electron');
+    const widthScreen = screen.getPrimaryDisplay().size.width;
     store.set('windowPosition', mainWindow.getPosition());
-  }, 500);
+    const [x, y] = mainWindow.getPosition();
+    const [widthMainWindow] = mainWindow.getSize();
+    if (x < 5) mainWindow.setPosition(0, y);
+    if (x + widthMainWindow > widthScreen - 5) mainWindow.setPosition(widthScreen - widthMainWindow, y);
+  }, 10);
   mainWindow.addListener('move', onMove);
 
   ipcMain.on('open-plugin-controller-window', async (event, {
@@ -417,6 +420,7 @@ async function createMainWindow() {
   mainWindow.on('closed', () => {
     // Stop server when mainWindow is closed
     closeServer();
+
     mainWindow = null;
   });
 }
