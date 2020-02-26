@@ -62,3 +62,4 @@ export const  Title = styled.h1`
   top:4px;
   left:50%;
 `;
+
