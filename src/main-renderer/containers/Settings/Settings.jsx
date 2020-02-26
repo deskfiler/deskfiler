@@ -30,7 +30,9 @@ import inputs from './utils/inputsLib';
 import * as S from './styled';
 
 import pJson from '../../../package.json';
+
 const store = require('store');
+
 const tabs = {
   general: {
     title: 'General',
@@ -73,16 +75,18 @@ const SettingsView = () => {
   const tabsContent = {
     general: (
       <>
-        {<div  style={{
-          width:"100%",
-          height:"40%"}}>
+        <div style={{
+          width: '100%',
+          height: '40%',
+        }}
+        >
 
-         <FastCheckbox 
-            name={"startup"}
+          <FastCheckbox
+            name="startup"
             defaultChecked={store.get('autolaunch')}
-            />
+          />
           <span>Run on startup</span>
-        </div> }
+        </div>
         {/* <Select {...inputs.language} options={languageOptions} /> */}
         <span>Default storage path</span>
         <InputGroup
@@ -201,7 +205,7 @@ const SettingsView = () => {
                   handleSubmit,
                   resetForm,
                 }) => (
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmit} style={{ zIndex: '5' }}>
                     <fieldset className="fieldset">
                       <legend>{currentTab.toUpperCase()}</legend>
                       {tabsContent[currentTab]}

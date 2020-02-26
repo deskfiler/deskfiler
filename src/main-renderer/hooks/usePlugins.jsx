@@ -21,7 +21,7 @@ function pluginsReducer(state, action) {
           ...state[action.key],
           ...action.payload,
         },
-      } : state
+      } : state;
     }
     case 'set':
       return {

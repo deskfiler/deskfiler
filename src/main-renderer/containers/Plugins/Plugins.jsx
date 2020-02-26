@@ -1,11 +1,13 @@
 import React from 'react';
 import { usePlugins } from 'hooks';
 import { Flex } from 'styled';
+import * as T from 'prop-types';
+
 
 import Plugin from './Plugin/index';
 import AddPlugin from './AddPlugin';
 
-const Plugins = ({ showBar }) => {
+const Plugins = ({ showBar, setShowBar }) => {
   const [plugins] = usePlugins();
 
   const pluginsKeys = Object.keys(plugins);
@@ -21,15 +23,22 @@ const Plugins = ({ showBar }) => {
       height={showBar ? '80%' : '100%'}
       paddingRight={!showBar && '48px'}
       overflow="auto"
-      align="center"
+      align={showBar && 'center'}
       radius={showBar ? '18px' : '0px'}
       background={showBar ? '#fff' : 'transparent'}
       border={showBar ? '1px solid #c5c5c5' : 'none'}
     >
-      {pluginsKeys.map(key => <Plugin showBar={showBar} key={key} pluginKey={key} />)}
       <AddPlugin showBar={showBar} />
+      {pluginsKeys.map(key => <Plugin setShowBar={setShowBar} showBar={showBar} key={key} pluginKey={key} />)}
     </Flex>
   );
+};
+Plugin.propTypes = {
+  showBar: T.bool,
+  setShowBar: T.func,
+};
+Plugin.defaultProps = {
+  showBar: false,
 };
 
 export default Plugins;

@@ -22,6 +22,8 @@ const { LOGS_DIR } = require('./constants');
 
 const {
   downloadPlugin,
+  unpackPlugin,
+  preinstallPlugins,
 } = require('./plugins');
 
 const {
@@ -38,6 +40,7 @@ const rimraf = util.promisify(rmrf);
 
 // Set parameters for autoupdater
 autoUpdater.logger = require('electron-log');
+
 autoUpdater.logger.transports.file.level = 'info';
 
 autoUpdater.autoDownload = false;
@@ -69,6 +72,15 @@ ipcMain.on('restart-app', () => {
   app.relaunch();
 });
 
+// Unpack plugin
+ipcMain.on('received-plugin-tarball', async (event, filePath) => {
+  try {
+    await unpackPlugin(filePath);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 // Restrict deskfiler instances to one at a time
 const isSingleAppInstance = app.requestSingleInstanceLock();
 
@@ -96,14 +108,14 @@ if (!isSingleAppInstance) {
   // Restore application on relaunch from dock/taskbar
   app.on('activate', () => {
     const mainWindow = getMainWindow();
-    if (mainWindow === null) createMainWindow();
+    if (mainWindow === null) createMainWindow(preinstallPlugins);
   });
 
   // Event that shows that electron app is ready to work
   app.on('ready', async () => {
     log('App ready, creating window...');
 
-    createMainWindow();
+    createMainWindow(preinstallPlugins);
 
     log('Created main-renderer window, registering protocol...');
 

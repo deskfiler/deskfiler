@@ -6,6 +6,7 @@ export const PluginSettings = styled.div`
   height: 100vh;
   padding: 20px 30px;
   font-size: .875rem;
+  -webkit-app-region: no-drag;
 `;
 
 export const Divider = styled.hr`

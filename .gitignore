@@ -1,11 +1,12 @@
 node_modules
-  
+
 # Build folder and files #
 ##########################
 builds/
 
 # Development folders and files #
 #################################
+.idea/
 .tmp/
 dist/
 plugins-dist/
@@ -50,3 +51,7 @@ ehthumbs.db
 # Windows shortcuts #
 #####################
 *.lnk
+.idea/
+*.iml
+
+

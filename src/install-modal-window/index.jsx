@@ -2,10 +2,10 @@ import React from 'react';
 import {
   render,
 } from 'react-dom';
-
 import 'foundation-sites/dist/css/foundation.min.css';
 
-import PluginConfig from './PluginConfig';
+
+import InstallModalWindow from './InstallModalWindow';
 
 
-render(<PluginConfig />, document.getElementById('root'));
+render(<InstallModalWindow />, document.getElementById('root'));

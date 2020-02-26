@@ -35,6 +35,12 @@ const plugins = [
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify('development'),
   }),
+  new HtmlWebpackPlugin({
+    template: path.resolve('src', 'install-modal-window', 'index.tpl.html'),
+    inject: 'body',
+    filename: 'public/install-modal-window.html',
+    chunks: ['installModal'],
+  }),
   new Dotenv(),
 ];
 

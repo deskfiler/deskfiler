@@ -82,7 +82,7 @@ export default () => {
       ipcRenderer.removeListener('save-dialog', onSaveDialog);
     };
   };
-  
+
   return {
     initializeIpcSubscription,
     subscribeOnSaveDialog,
