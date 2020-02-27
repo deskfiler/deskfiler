@@ -256,12 +256,9 @@ async function createMainWindow(preinstallPlugins) {
     let prevSize = [width, height];
 
     const onResize = debounce(() => {
-      // mainWindow.on('resize', (evt) => {
-      console.log('resize trigged');
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         const size = mainWindow.getSize();
-        console.log(size, prevSize);
 
         if (size.width - prevSize.width === 1 || size.height - prevSize.height === 1) {
           return;
