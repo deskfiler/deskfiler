@@ -79,7 +79,7 @@ const Dashboard = () => {
 
   return (
     <Flex height="100%" width="100%" background="#fff" align={showBar ? 'center' : 'flex-start'}>
-      {!showBar && <div style={{ width: '100%', background: '#fff' }}><Titlebar /><Title>Deskfiler</Title></div>}
+      {!showBar && <div style={{ width: '100%', background: '#ccc' }}><Titlebar /><Title>Deskfiler</Title></div>}
       <DevMenu />
       {isLoading ? (
         <Flex width="100%" height="100%" justify="center" align="center" spacing="8px">
