@@ -20,9 +20,6 @@ const {
   HOME_DIR,
   PRELOADS_DIR,
 } = require('./constants');
-
-
-
 const { closeServer } = require('./server');
 
 const rimraf = util.promisify(rmrf);
@@ -419,7 +416,7 @@ async function createMainWindow(preinstallPlugins) {
 
   mainWindow.on('closed', () => {
     // Stop server when mainWindow is closed
-   
+
     closeServer();
 
     mainWindow = null;
@@ -429,7 +426,6 @@ async function createMainWindow(preinstallPlugins) {
 
 // Create install modal window
 async function createInstallModalWindow(pluginParams) {
-  console.log('woooorkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
   installModal = new BrowserWindow({
     width: 500,
     height: 300,
