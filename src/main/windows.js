@@ -1,31 +1,23 @@
-const {
-  ipcMain,
-  BrowserWindow,
-  webContents,
-} = require('electron');
+import { ipcMain, BrowserWindow, webContents } from 'electron';
 
-const { dissoc } = require('ramda');
-const path = require('path');
-const util = require('util');
+import { dissoc } from 'ramda';
+import { join } from 'path';
+import { promisify } from 'util';
 
-const mkdirp = require('mkdirp');
-const rmrf = require('rimraf');
+import mkdirp from 'mkdirp';
+import rmrf from 'rimraf';
 
-const debounce = require('debounce');
-const store = require('./store');
-const log = require('./log');
-const baseUrl = require('./baseUrl');
-const isIt = require('./utils/whichEnvIsIt');
-const {
-  HOME_DIR,
-  PRELOADS_DIR,
-} = require('./constants');
+import debounce from 'debounce';
+import { get, set, onDidChange, delete } from './store';
+import log from './log';
+import baseUrl from './baseUrl';
+import isIt from './utils/whichEnvIsIt';
+import { HOME_DIR, PRELOADS_DIR } from './constants';
 
 
+import { closeServer } from './server';
 
-const { closeServer } = require('./server');
-
-const rimraf = util.promisify(rmrf);
+const rimraf = promisify(rmrf);
 
 let mainWindow;
 let pluginControllerWindow;
@@ -57,7 +49,7 @@ async function createPluginControllerWindow({
 
   pluginControllerWindow.removeMenu();
 
-  await pluginControllerWindow.loadURL(path.join(baseUrl, 'public', 'plugin.html'));
+  await pluginControllerWindow.loadURL(join(baseUrl, 'public', 'plugin.html'));
   if (process.env.NODE_ENV === 'development') {
     pluginControllerWindow.webContents.openDevTools();
   }
@@ -75,9 +67,9 @@ async function createPluginControllerWindow({
 
   pluginControllerWindow.on('closed', async () => {
     pluginControllerWindow = null;
-    const plugin = await store.get(`pluginData.${pluginKey}`);
+    const plugin = await get(`pluginData.${pluginKey}`);
     if (plugin) {
-      store.set(`pluginData.${pluginKey}`, {
+      set(`pluginData.${pluginKey}`, {
         ...plugin,
         isWorking: false,
       });
@@ -93,7 +85,7 @@ async function createPaymentWindow({ fromId, userId }) {
     show: true,
     webPreferences: {
       nodeIntegration: true,
-      preload: path.join(__dirname, '/preloads/paymentPreload.js'),
+      preload: join(__dirname, '/preloads/paymentPreload.js'),
     },
   });
 
@@ -121,7 +113,7 @@ async function createRegisterWindow() {
 
   const preloadName = `registerPreload${isIt('production').env ? '.prod' : ''}.js`;
 
-  const preload = `${path.join(PRELOADS_DIR, preloadName)}`;
+  const preload = `${join(PRELOADS_DIR, preloadName)}`;
 
   log('preload', preload);
 
@@ -156,7 +148,7 @@ async function createLoginWindow() {
 
   const preloadName = `loginPreload${isIt('production').env ? '.prod' : ''}.js`;
 
-  const preload = `${path.join(PRELOADS_DIR, preloadName)}`;
+  const preload = `${join(PRELOADS_DIR, preloadName)}`;
 
   log('preload', preload);
 
@@ -196,7 +188,7 @@ async function createPluginConfigWindow({ pluginKey }) {
 
   pluginConfigWindow.removeMenu();
 
-  await pluginConfigWindow.loadURL(path.join(baseUrl, 'public', 'config.html'));
+  await pluginConfigWindow.loadURL(join(baseUrl, 'public', 'config.html'));
 
   if (process.env.NODE_ENV === 'development') {
     pluginConfigWindow.webContents.openDevTools();
@@ -213,31 +205,31 @@ async function createPluginConfigWindow({ pluginKey }) {
   });
 }
 
-const position = store.get('windowPosition');
+const position = get('windowPosition');
 if (!position) {
-  store.set('windowPosition', [0, 0]);
+  set('windowPosition', [0, 0]);
 }
-const windowSize = store.get('windowSize');
+const windowSize = get('windowSize');
 if (!windowSize) {
-  store.set('windowSize', [800, 700]);
+  set('windowSize', [800, 700]);
 }
-const bar = store.get('bar');
+const bar = get('bar');
 if (!bar) {
-  store.set('bar', false);
+  set('bar', false);
 }
 
 
 // Create main application window
 async function createMainWindow(preinstallPlugins) {
-  const [width, height] = store.get('windowSize');
+  const [width, height] = get('windowSize');
 
   mainWindow = new BrowserWindow({
     minWidth: 80,
     minHeight: 300,
     width,
     height,
-    x: store.get('windowPosition')[0],
-    y: store.get('windowPosition')[1],
+    x: get('windowPosition')[0],
+    y: get('windowPosition')[1],
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
@@ -250,7 +242,7 @@ async function createMainWindow(preinstallPlugins) {
   // Remove menubar for Windows and Linux
   mainWindow.removeMenu();
 
-  mainWindow.loadURL(path.join(baseUrl, 'public', 'index.html'));
+  mainWindow.loadURL(join(baseUrl, 'public', 'index.html'));
 
   if (/(win32|linux)/.test(process.platform)) {
     let resizeTimeout;
@@ -285,15 +277,15 @@ async function createMainWindow(preinstallPlugins) {
     mainWindow.webContents.openDevTools();
   }
 
-  store.onDidChange('pluginData', (newData) => {
+  onDidChange('pluginData', (newData) => {
     log('plugins store changed');
     mainWindow.webContents.send('plugins-store-updated', newData);
   });
 
-  const settings = await store.get('settings');
+  const settings = await get('settings');
 
   if (!settings) {
-    store.set('settings', {
+    set('settings', {
       general: {
         masterPin: 'admin',
         runOnStartUp: false,
@@ -304,19 +296,19 @@ async function createMainWindow(preinstallPlugins) {
     });
   }
 
-  const autolaunch = await store.get('autolaunch');
+  const autolaunch = await get('autolaunch');
   if (!autolaunch) {
-    store.set('autolaunch', false);
+    set('autolaunch', false);
   }
 
-  const isPluginsPreinstalled = await store.get('isPluginsPreinstalled');
+  const isPluginsPreinstalled = await get('isPluginsPreinstalled');
   if (!isPluginsPreinstalled) {
     preinstallPlugins();
   }
   const onMove = debounce(() => {
     const { screen } = require('electron');
     const widthScreen = screen.getPrimaryDisplay().size.width;
-    store.set('windowPosition', mainWindow.getPosition());
+    set('windowPosition', mainWindow.getPosition());
     const [x, y] = mainWindow.getPosition();
     const [widthMainWindow] = mainWindow.getSize();
     if (x < 5) mainWindow.setPosition(0, y);
@@ -332,7 +324,7 @@ async function createMainWindow(preinstallPlugins) {
     ticket,
   }) => {
     log('open-plugin-controller-window');
-    const restrictions = await store.get(`pluginData.${pluginKey}.acceptRestrictions`);
+    const restrictions = await get(`pluginData.${pluginKey}.acceptRestrictions`);
     createPluginControllerWindow({
       pluginKey,
       inDevelopment,
@@ -373,16 +365,16 @@ async function createMainWindow(preinstallPlugins) {
   // Handle successful login
   ipcMain.on('logged-in', (event, user) => {
     log('logged in as', user.email);
-    store.set('user', user);
+    set('user', user);
     mainWindow.webContents.send('logged-in');
   });
 
   // Uninstall and remove data from all plugins
   ipcMain.on('manifest-delete-all', async () => {
     try {
-      store.delete('pluginData');
-      await rimraf(path.join(process.cwd(), 'installed-plugins'));
-      await mkdirp(path.join(process.cwd(), 'installed-plugins'));
+      delete('pluginData');
+      await rimraf(join(process.cwd(), 'installed-plugins'));
+      await mkdirp(join(process.cwd(), 'installed-plugins'));
       if (pluginControllerWindow) {
         pluginControllerWindow.close();
         pluginControllerWindow = null;
@@ -396,15 +388,15 @@ async function createMainWindow(preinstallPlugins) {
   ipcMain.on('remove-plugin', async (e, pluginKey) => {
     log(`removing plugin ${pluginKey} requested`);
     try {
-      const plugins = await store.get('pluginData');
+      const plugins = await get('pluginData');
 
       log(`deleting ${pluginKey} from store...`);
-      store.set('pluginData', dissoc(pluginKey, plugins));
+      set('pluginData', dissoc(pluginKey, plugins));
 
       log('done');
 
       log(`deleting ${pluginKey} from physical disk...`);
-      await rimraf(path.join(process.cwd(), 'installed-plugins', pluginKey));
+      await rimraf(join(process.cwd(), 'installed-plugins', pluginKey));
 
       log('done');
 
@@ -419,7 +411,7 @@ async function createMainWindow(preinstallPlugins) {
 
   mainWindow.on('closed', () => {
     // Stop server when mainWindow is closed
-   
+
     closeServer();
 
     mainWindow = null;
@@ -429,7 +421,6 @@ async function createMainWindow(preinstallPlugins) {
 
 // Create install modal window
 async function createInstallModalWindow(pluginParams) {
-  console.log('woooorkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
   installModal = new BrowserWindow({
     width: 500,
     height: 300,
@@ -441,7 +432,7 @@ async function createInstallModalWindow(pluginParams) {
     },
     frame: false,
   });
-  await installModal.loadURL(path.join(baseUrl, 'public', 'install-modal-window.html'));
+  await installModal.loadURL(join(baseUrl, 'public', 'install-modal-window.html'));
 
   installModal.webContents.send('unpacked-plugin-data', pluginParams);
 
@@ -452,7 +443,7 @@ async function createInstallModalWindow(pluginParams) {
 
 const getMainWindow = () => mainWindow;
 
-module.exports = {
+export default {
   createInstallModalWindow,
   getMainWindow,
   createMainWindow,
