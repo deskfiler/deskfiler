@@ -2,6 +2,7 @@ import React from 'react';
 import { FastField } from 'formik';
 import store from 'store';
 import { Flex } from 'styled';
+
 const Checkbox = ({ form, field, lib }) => {
   const {
     label, name, value, ...restField

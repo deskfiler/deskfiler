@@ -30,7 +30,9 @@ import inputs from './utils/inputsLib';
 import * as S from './styled';
 
 import pJson from '../../../package.json';
+
 const store = require('store');
+
 const tabs = {
   general: {
     title: 'General',

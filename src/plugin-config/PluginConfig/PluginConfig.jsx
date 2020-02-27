@@ -15,7 +15,6 @@ import { createOpenDialog } from 'utils';
 import * as S from './styled';
 
 const pluginConfigWindow = remote.getCurrentWindow();
-
 const compTypes = (props, values) => ({
   input: (
     <Input

@@ -1,6 +1,8 @@
 import React from 'react';
 import { usePlugins } from 'hooks';
 import { Flex } from 'styled';
+import * as T from 'prop-types';
+
 
 import Plugin from './Plugin/index';
 import AddPlugin from './AddPlugin';
@@ -30,6 +32,13 @@ const Plugins = ({ showBar, setShowBar }) => {
       {pluginsKeys.map(key => <Plugin setShowBar={setShowBar} showBar={showBar} key={key} pluginKey={key} />)}
     </Flex>
   );
+};
+Plugin.propTypes = {
+  showBar: T.bool,
+  setShowBar: T.func,
+};
+Plugin.defaultProps = {
+  showBar: false,
 };
 
 export default Plugins;

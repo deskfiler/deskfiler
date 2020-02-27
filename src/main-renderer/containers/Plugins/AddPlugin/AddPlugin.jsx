@@ -4,10 +4,13 @@ import { Flex, colors, Text } from 'styled';
 import { ipcRenderer } from 'electron';
 import { useModals } from 'hooks';
 import { createOpenDialog } from 'utils';
+import * as T from 'prop-types';
+
 
 import addNewIcon from 'assets/images/app_newone.svg';
 
 import * as S from './styled';
+import Plugin from '../Plugin';
 
 const ALLOWED_FILETYPES = ['application/x-tar', 'application/x-gzip'];
 
@@ -101,6 +104,12 @@ const AddPluginCard = ({ showBar }) => {
       </S.CardOverlay>
     </Flex>
   );
+};
+Plugin.propTypes = {
+  showBar: T.bool,
+};
+Plugin.defaultProps = {
+  showBar: false,
 };
 
 export default AddPluginCard;

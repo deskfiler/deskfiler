@@ -31,7 +31,6 @@ export const Settings = styled.div`
   border-right: 1px solid #eee;
   overflow-y: auto;
   z-index: 1000;
-
 `;
 
 export const SettingsMenuItem = styled.div`
@@ -55,6 +54,7 @@ export const SettingsMenuTitle = styled(SettingsMenuItem)`
 export const SettingsMenuTab = styled(SettingsMenuItem)`
   background: #1D4779;
   border-bottom: 1px solid #0f294b;
+
   color: ${({ isSelected }) => (isSelected ? '#f4c036' : '#fff')};
   cursor: pointer;
   &:hover {
@@ -66,6 +66,7 @@ export const SortIcon = styled.img`
   height: 17px;
   margin-left: 3px;
   cursor: pointer;
+
 `;
 
 export const CloseIcon = styled.img`
@@ -83,3 +84,4 @@ export const Link = styled.a`
   display: block;
   -webkit-app-region: no-drag;
 `;
+

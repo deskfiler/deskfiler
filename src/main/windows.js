@@ -20,6 +20,7 @@ const {
   HOME_DIR,
   PRELOADS_DIR,
 } = require('./constants');
+
 const { closeServer } = require('./server');
 
 const rimraf = util.promisify(rmrf);
@@ -221,7 +222,13 @@ if (!windowSize) {
 const bar = store.get('bar');
 if (!bar) {
   store.set('bar', false);
+
 }
+const bar = store.get('bar');
+if (!bar) {
+  store.set('bar', false);
+}
+
 
 
 // Create main application window
@@ -416,7 +423,6 @@ async function createMainWindow(preinstallPlugins) {
 
   mainWindow.on('closed', () => {
     // Stop server when mainWindow is closed
-
     closeServer();
 
     mainWindow = null;

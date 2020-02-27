@@ -144,4 +144,5 @@ const Plugin = ({ pluginKey, showBar, setShowBar }) => {
   );
 };
 
+
 export default Plugin;
