@@ -19,7 +19,7 @@ const AddPluginCard = ({ showBar }) => {
   };
 
   const addPlugin = (files) => {
-    ipcRenderer.send('recieved-plugin-tarball', files);
+    ipcRenderer.send('received-plugin-tarball', files);
   };
 
   useEffect(() => {

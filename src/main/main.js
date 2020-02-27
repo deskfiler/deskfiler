@@ -22,6 +22,8 @@ const { LOGS_DIR } = require('./constants');
 
 const {
   downloadPlugin,
+  unpackPlugin,
+  preinstallPlugins,
 } = require('./plugins');
 
 const {
@@ -67,6 +69,15 @@ ipcMain.on('clear-local-cache', async (e) => {
 // Handling app restart
 ipcMain.on('restart-app', () => {
   app.relaunch();
+});
+
+// Unpack plugin
+ipcMain.on('received-plugin-tarball', async (event, filePath) => {
+  try {
+    await unpackPlugin(filePath);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // Restrict deskfiler instances to one at a time

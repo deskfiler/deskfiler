@@ -133,7 +133,7 @@ has-unicode@^2.0.0:
   resolved "https://registry.yarnpkg.com/has-unicode/-/has-unicode-2.0.1.tgz#e0e6fe6a28cf51138855e086d1691e771de2a8b9"
   integrity sha1-4Ob+aijPUROIVeCG0Wkedx3iqLk=
 
-hummus@^1.0.107:
+hummus@1.0.107:
   version "1.0.107"
   resolved "https://registry.yarnpkg.com/hummus/-/hummus-1.0.107.tgz#9231d2679842694f32dab85cf7aa385e0ca261f1"
   integrity sha512-L6l5QooIDoad8564TerzEru/Y1pstLknrju1RPNulsiqLHLo2YKxs2MVpvAX1y9DdM0U542sw49tEHRMEIHP/w==

@@ -30,6 +30,8 @@ export const Settings = styled.div`
   position: relative;
   border-right: 1px solid #eee;
   overflow-y: auto;
+  z-index: 1000;
+
 `;
 
 export const SettingsMenuItem = styled.div`
@@ -42,6 +44,7 @@ export const SettingsMenuItem = styled.div`
   background: #fff;
   border-bottom: 1px solid black;
   cursor: pointer;
+  -webkit-app-region: no-drag;
 `;
 
 export const SettingsMenuTitle = styled(SettingsMenuItem)`
@@ -66,13 +69,17 @@ export const SortIcon = styled.img`
 `;
 
 export const CloseIcon = styled.img`
+  z-index:100;
+  -webkit-app-region: no-drag;
   height: 14px;
 `;
 
 export const Button = styled(FoundationButton)`
   width: 50%;
+  -webkit-app-region: no-drag;
 `;
 
 export const Link = styled.a`
   display: block;
+  -webkit-app-region: no-drag;
 `;

@@ -31,7 +31,7 @@ const Modal = styled(Flex)`
   z-index: 9;
   padding: 20px 30px;
   background: #fff;
-  ${props => appearances[props.appearance || 'default']}
+  ${({ border }) => (border ? appearances[border || 'default'] : '')}
 `;
 
 Modal.Small = styled(Modal)`

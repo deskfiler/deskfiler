@@ -1,3 +1,4 @@
+
 const {
   ipcMain,
 } = require('electron');
@@ -25,6 +26,8 @@ const {
   LOGS_DIR,
 } = require('./constants');
 
+const { createInstallModalWindow } = require('./windows');
+
 const rimraf = util.promisify(rmrf);
 
 // Download plugin from deskfiler store via deskfiler:// protocol
@@ -33,22 +36,22 @@ const downloadPlugin = async (url, mainWindow) => {
     const downloadsTempDir = path.join(TEMP_DIR, 'downloads');
     try {
       log('downloading plugin');
-  
+
       await mkdirp(downloadsTempDir);
-  
+
       mainWindow.focus();
-  
+
       const downloadUrl = `https:${url.split(':')[1]}`;
       const fileName = downloadUrl.split('/').slice(-1)[0];
-  
+
       await download(mainWindow, downloadUrl, {
         directory: downloadsTempDir,
-        onProgress: (progress) => { log(`download progress: ${progress * 100}%`); }
+        onProgress: (progress) => { log(`download progress: ${progress * 100}%`); },
       });
-  
+
       log('plugin downloaded!');
       const filePath = path.join(downloadsTempDir, fileName);
-  
+
       await unpackPlugin(filePath, { mainWindow });
     } catch (err) {
       log('error during download', err);
@@ -147,12 +150,11 @@ const unpackPlugin = async (filePath, params) => {
     log('added plugin to plugins list');
 
     const {
-      mainWindow,
       skipConfirmation,
     } = params || {};
 
     if (!skipConfirmation) {
-      mainWindow.webContents.send('unpacked-plugin', {
+      createInstallModalWindow({
         pluginKey,
         name,
         author,
@@ -245,7 +247,7 @@ const preinstallPlugins = async () => {
   try {
     if (isIt('production')) {
       const pluginsPath = path.join(APP_DIR, '..', '..', 'dist', 'plugins');
-      
+
       for (const plugin of PREPACKED_PLUGINS) {
         const filePath = path.join(pluginsPath, `${plugin}.tar.gz`);
         if (fs.existsSync(filePath)) {

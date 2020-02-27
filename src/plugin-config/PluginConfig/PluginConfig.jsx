@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'; 
+import React, { useRef, useState, useEffect } from 'react';
 import { remote, ipcRenderer } from 'electron';
 import { Formik } from 'formik';
 import { Grid, Cell, Button } from 'react-foundation';

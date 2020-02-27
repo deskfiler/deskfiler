@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import * as T from 'prop-types';
 import { Spinner } from 'components';
 import { Flex, Text } from 'styled';
+import store from 'store';
 
 import { usePlugin, useModals } from 'hooks';
 
@@ -11,9 +12,8 @@ import trashcanIcon from 'assets/images/trashcan.svg';
 
 import * as S from './styled';
 
-const Plugin = ({ pluginKey, showBar }) => {
-  // eslint-disable-next-line
-    const [_, {openModal}] = useModals();
+const Plugin = ({ pluginKey, showBar, setShowBar }) => {
+  const [_, { openModal }] = useModals();
   const [plugin, { run, remove, openSettings }] = usePlugin(pluginKey);
   const {
     acceptRestrictions,
@@ -26,6 +26,12 @@ const Plugin = ({ pluginKey, showBar }) => {
   } = plugin;
 
   const [isFileRejected, setIsFileRejected] = useState(false);
+
+  const switchShowBar = (filePaths) => {
+    setShowBar(!store.get('bar'));
+    store.set('bar', !showBar);
+    setTimeout(() => run(filePaths), 500);
+  };
 
   const onDrop = (files) => {
     let acceptedFiles = files;
@@ -40,8 +46,8 @@ const Plugin = ({ pluginKey, showBar }) => {
         return;
       }
     }
-
-    run({ filePaths: Array.from(acceptedFiles).map(file => file.path) });
+    if (showBar && pluginKey === 'wetransferconnect') switchShowBar({ filePaths: Array.from(acceptedFiles).map(file => file.path) });
+    else run({ filePaths: Array.from(acceptedFiles).map(file => file.path) });
   };
 
   const {
@@ -69,15 +75,17 @@ const Plugin = ({ pluginKey, showBar }) => {
       app-region="no-drag"
     >
       <S.CardOverlay
-        radius={showBar && '6px'}
+        radius={showBar ? '6px' : '0px'}
         {...getRootProps()}
         isDragActive={isDragActive}
         isFileRejected={isFileRejected}
         onClick={() => {
-          run();
+          if (showBar && pluginKey === 'wetransferconnect') switchShowBar();
+          if (showBar && pluginKey === 'gvision') switchShowBar();
+          else run();
         }}
       >
-        <S.InstallingOverlay active={isInstalling} />
+        <S.InstallingOverlay active={isInstalling} showBar={showBar} />
         <S.DropFilesTitle showBar={showBar}>{ isFileRejected ? 'Wrong file format' : 'Drop files'}</S.DropFilesTitle>
         <S.AppCard>
           <input {...getInputProps()} />
@@ -134,10 +142,6 @@ const Plugin = ({ pluginKey, showBar }) => {
       </S.CardOverlay>
     </Flex>
   );
-};
-
-Plugin.propTypes = {
-  pluginKey: T.string.isRequired,
 };
 
 export default Plugin;

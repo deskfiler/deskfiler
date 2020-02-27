@@ -6,6 +6,9 @@ builds/
 
 # Development folders and files #
 #################################
+*.lnk
+*.iml
+.idea/
 .tmp/
 dist/
 plugins-dist/
@@ -49,4 +52,6 @@ ehthumbs.db
 
 # Windows shortcuts #
 #####################
-*.lnk
+
+
+

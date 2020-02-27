@@ -16,7 +16,7 @@ export const Overlay = styled.div`
   background-color: #fff;
   opacity: 0.3;
   z-index: 2;
-  display: ${({isMenuOpen}) => (isMenuOpen ? 'block' : 'none')};
+  display: ${({ isMenuOpen }) => (isMenuOpen ? 'block' : 'none')};
 `;
 
 export const AuthFormTitle = styled.h2`
@@ -33,17 +33,18 @@ export const AnimatedDockHandleBar = styled(Flex.Absolute)`
   transition: width .3s ease;
   border-radius: 4px;
   transform: translate(-1px, -1px);
+  -webkit-app-region: no-drag;
 `;
 
 export const AnimatedDockWrapper = styled(Flex.Absolute).attrs({
   bottom: '15px',
-  right: ({ showBar }) => showBar ? '10px' : '0px',
+  right: ({ showBar }) => (showBar ? '10px' : '0px'),
 })`
   justify-content: center;
   align-items: center;
   width: 50px;
   margin-right: 7px;
-
+  -webkit-app-region: no-drag;
   background: #fff;
   height: 50px;
   border-radius: 19px;
@@ -55,3 +56,10 @@ export const AnimatedDockWrapper = styled(Flex.Absolute).attrs({
     }
   }
 `;
+export const  Title = styled.h1`
+  font-size:13px;
+  position:absolute;
+  top:4px;
+  left:50%;
+`;
+
