@@ -22,7 +22,7 @@ module.exports = () => ({
       path.join(__dirname, 'src', 'main', 'preloads', 'registerPreload.js'),
     ],
     installModal: [
-      path.join(__dirname, 'src', 'install-modal-window', 'index.jsx'),
+      path.join(__dirname, 'src', 'install-modal-window', 'index.js'),
     ],
   },
   output: {

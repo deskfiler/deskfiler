@@ -21,8 +21,6 @@ const {
   PRELOADS_DIR,
 } = require('./constants');
 
-
-
 const { closeServer } = require('./server');
 
 const rimraf = util.promisify(rmrf);
@@ -33,6 +31,7 @@ let pluginConfigWindow;
 let registerWindow;
 let loginWindow;
 let paymentWindow;
+let installModal;
 
 // Create a plugin instance and open a window for it
 async function createPluginControllerWindow({
@@ -270,7 +269,6 @@ async function createMainWindow(preinstallPlugins) {
           mainWindow.setSize(size[0], parseInt((size[0] * 3) / 4, 10));
         }
       }, 1);
-      // });
     }, 500);
     mainWindow.addListener('resize', onResize);
   } else {
