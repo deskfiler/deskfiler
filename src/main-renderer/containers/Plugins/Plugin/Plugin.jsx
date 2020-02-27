@@ -144,12 +144,5 @@ const Plugin = ({ pluginKey, showBar, setShowBar }) => {
   );
 };
 
-Plugin.propTypes = {
-  pluginKey: T.string.isRequired,
-  showBar: T.bool,
-};
-Plugin.defaultProps = {
-  showBar: false,
-};
 
 export default Plugin;

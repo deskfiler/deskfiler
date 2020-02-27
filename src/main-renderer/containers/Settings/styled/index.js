@@ -30,8 +30,7 @@ export const Settings = styled.div`
   position: relative;
   border-right: 1px solid #eee;
   overflow-y: auto;
-  z-index: 0;
-
+  z-index: 1000;
 `;
 
 export const SettingsMenuItem = styled.div`
@@ -85,3 +84,4 @@ export const Link = styled.a`
   display: block;
   -webkit-app-region: no-drag;
 `;
+
