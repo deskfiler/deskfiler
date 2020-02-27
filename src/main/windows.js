@@ -222,13 +222,7 @@ if (!windowSize) {
 const bar = store.get('bar');
 if (!bar) {
   store.set('bar', false);
-
 }
-const bar = store.get('bar');
-if (!bar) {
-  store.set('bar', false);
-}
-
 
 
 // Create main application window
