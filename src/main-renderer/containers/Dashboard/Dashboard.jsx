@@ -87,7 +87,7 @@ const Dashboard = () => {
     <Flex height="100%" width="100%" background="#fff" align={showBar ? 'center' : 'flex-start'}>
       {!showBar && isDarvin && (
         <TitleWrapper>
-          <Titlebar />
+          <Titlebar isFullscreen />
           <Title>Deskfiler</Title>
         </TitleWrapper>
       )}
@@ -97,7 +97,6 @@ const Dashboard = () => {
           <Flex app-region="drag" height="100%" width="100%" />
           <TitleBar
             style={{ marginLeft: 'auto', width: '138px' }}
-            isFullscreen={isFullscreen}
             controls
             onMinimizeClick={() => currentWindow.minimize()}
             onCloseClick={() => currentWindow.close()}
