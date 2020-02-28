@@ -95,7 +95,7 @@ const Dashboard = () => {
       {!showBar && !isDarvin && (
         <Flex row width="100%">
           <Flex app-region="drag" height="100%" width="100%" />
-          <TitleBar
+          <WindowsTitlebar
             style={{ marginLeft: 'auto', width: '138px' }}
             controls
             onMinimizeClick={() => currentWindow.minimize()}
