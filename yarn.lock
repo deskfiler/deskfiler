@@ -9135,10 +9135,10 @@ rcedit@^2.0.0:
   resolved "https://registry.yarnpkg.com/rcedit/-/rcedit-2.1.0.tgz#37ae6ad1fc8d7734b2e445ec3d378ace89d4076d"
   integrity sha512-Nrd/65LzMjFmKpS9d2fqIxVYdW0M8ovsN0PgZhCrPMQss2yznkp6/zjEQ1a9DzzoGv2uuN3yDJAeHybOD5ZNKA==
 
-react-desktop@0.3.8:
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/react-desktop/-/react-desktop-0.3.8.tgz#534b9539fd48eebd03d272cfd20553c61d7681c4"
-  integrity sha512-eMAYSeKjFecRPUE0VYA0xf8s8Loyzp9FG3oqtpfHcR3iRlr4MX7O/s83yCYX4j/1Kpo+W3KYkDP8zrCFAQX3cQ==
+react-desktop@^0.3.9:
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/react-desktop/-/react-desktop-0.3.9.tgz#775c36bdcc7603dbe99825740d2b501e8e61ea66"
+  integrity sha512-vyyEH/mK0P8mU7m/kaD8MeA/7T0R3x19pBGpMY8AROcazJuOuXNBi2fPqNosDNBqQbVLgCcH3py+tciCI+mvTA==
   dependencies:
     radium "=0.19.6"
 
