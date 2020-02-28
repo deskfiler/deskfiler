@@ -36,7 +36,6 @@ const Dashboard = () => {
   const { isLoading } = auth;
   const { skipRegistration, defaultStoragePath } = settings.general;
   const [showBar, setShowBar] = useState(store.get('bar'));
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const isDarvin = process.platform === 'darwin';
 
 
@@ -82,12 +81,22 @@ const Dashboard = () => {
       currentWindow.removeListener('resize', resize);
     };
   });
+  const onBarHandler = () => {
+    if (currentWindow.isFullScreen()) {
+      currentWindow.setFullScreen(false);
+      setShowBar(!store.get('bar'));
+      store.set('bar', !showBar);
+    } else {
+      setShowBar(!store.get('bar'));
+      store.set('bar', !showBar);
+    }
+  };
 
   return (
     <Flex height="100%" width="100%" background="#fff" align={showBar ? 'center' : 'flex-start'}>
       {!showBar && isDarvin && (
         <TitleWrapper>
-          <Titlebar isFullscreen />
+          <Titlebar />
           <Title>Deskfiler</Title>
         </TitleWrapper>
       )}
@@ -101,8 +110,7 @@ const Dashboard = () => {
             onMinimizeClick={() => currentWindow.minimize()}
             onCloseClick={() => currentWindow.close()}
             onMaximizeClick={() => {
-              currentWindow.setFullScreen(!isFullscreen);
-              setIsFullscreen(!isFullscreen);
+              currentWindow.setFullScreen(!currentWindow.isFullScreen());
             }}
           />
           <Title>Deskfiler</Title>
@@ -125,10 +133,7 @@ const Dashboard = () => {
           <Logs />
           {showBar && <Plugins setShowBar={setShowBar} showBar={showBar} />}
           <AnimatedDockWrapper
-            onClick={() => {
-              setShowBar(!store.get('bar'));
-              store.set('bar', !showBar);
-            }}
+            onClick={onBarHandler}
             showBar={showBar}
           >
             <Flex column radius="4px" border="1px dashed #c5c5c5" width="30px" height="30px">
