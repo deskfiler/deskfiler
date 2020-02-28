@@ -134,6 +134,7 @@
     "mkdirp": "^0.5.1",
     "ramda": "^0.26.1",
     "react": "^16.9.0",
+    "react-desktop": "^0.3.9",
     "react-dom": "^16.9.0",
     "react-dropzone": "^10.1.9",
     "react-electron-titlebar": "^1.0.9",

@@ -9,6 +9,7 @@ import { Flex, Text } from 'styled';
 import { Spinner } from 'components';
 import store from 'store';
 import Titlebar from 'react-electron-titlebar';
+import { TitleBar } from 'react-desktop/windows';
 import Plugins from '../Plugins';
 import Menu from '../Menu';
 import Settings from '../Settings';
@@ -25,6 +26,7 @@ const debounce = require('debounce');
 
 requestDebug(request);
 
+
 const Dashboard = () => {
   const [auth] = useAuth();
   const [_, { openModal }] = useModals();
@@ -34,6 +36,7 @@ const Dashboard = () => {
   const { isLoading } = auth;
   const { skipRegistration, defaultStoragePath } = settings.general;
   const [showBar, setShowBar] = useState(store.get('bar'));
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
 
   useEffect(() => {
@@ -81,11 +84,27 @@ const Dashboard = () => {
 
   return (
     <Flex height="100%" width="100%" background="#fff" align={showBar ? 'center' : 'flex-start'}>
-      {!showBar && (
-      <TitleWrapper>
-        <Titlebar />
-        <Title> <span style={{ color: '#0a0a0a' }}>Deskfiler</span></Title>
-      </TitleWrapper>
+      {!showBar && process.platform === 'darwin' && (
+        <TitleWrapper>
+          <Titlebar />
+          <Title> <span style={{ color: '#0a0a0a' }}>Deskfiler</span></Title>
+        </TitleWrapper>
+      )}
+
+      {!showBar && process.platform !== 'darwin' && (
+        <div>
+          <TitleBar
+            isFullscreen={isFullscreen}
+            controls
+            onMinimizeClick={() => currentWindow.minimize()}
+            onCloseClick={() => currentWindow.close()}
+            onMaximizeClick={() => {
+              currentWindow.setFullScreen(!isFullscreen);
+              setIsFullscreen(!isFullscreen);
+            }}
+          />
+          <Title> <span style={{ color: '#0a0a0a' }}>Deskfiler</span></Title>
+        </div>
       )}
 
       <DevMenu />

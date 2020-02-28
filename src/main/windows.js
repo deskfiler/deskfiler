@@ -240,7 +240,6 @@ async function createMainWindow(preinstallPlugins) {
       nodeIntegration: true,
       webSecurity: false,
     },
-    transparent: true,
     frame: false,
     hasShadows: false,
   });
