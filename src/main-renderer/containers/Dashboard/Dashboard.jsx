@@ -15,7 +15,9 @@ import Settings from '../Settings';
 import Logs from '../Logs';
 
 import DevMenu from './DevMenu';
-import { AnimatedDockHandleBar, AnimatedDockWrapper, Title } from './styled';
+import {
+  AnimatedDockHandleBar, AnimatedDockWrapper, Title, TitleWrapper,
+} from './styled';
 
 const currentWindow = remote.getCurrentWindow();
 const debounce = require('debounce');
@@ -79,7 +81,12 @@ const Dashboard = () => {
 
   return (
     <Flex height="100%" width="100%" background="#fff" align={showBar ? 'center' : 'flex-start'}>
-      {!showBar && <div style={{ width: '100%', background: '#ccc' }}><Titlebar /><Title>Deskfiler</Title></div>}
+      {!showBar && (
+      <TitleWrapper>
+        <Titlebar />
+        <Title> <span style={{ color: '#0a0a0a' }}>Deskfiler</span></Title>
+      </TitleWrapper>
+      )}
 
       <DevMenu />
       {isLoading ? (

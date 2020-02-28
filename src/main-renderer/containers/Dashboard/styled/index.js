@@ -56,10 +56,13 @@ export const AnimatedDockWrapper = styled(Flex.Absolute).attrs({
     }
   }
 `;
-export const  Title = styled.h1`
-  font-size:13px;
+export const Title = styled.h1`
+  font-size:15px;
   position:absolute;
-  top:4px;
-  left:50%;
+  top:1px;
+  left:calc(50% - 26px);
 `;
-
+export const TitleWrapper = styled.div`
+width:100%;
+background: linear-gradient(to bottom, rgba(217,214,217,1) 0%, rgba(225,222,225,1) 44%, rgba(227,224,227,1) 58%, rgba(217,214,217,1) 93%, rgba(176,176,176,1) 100%);
+`;
