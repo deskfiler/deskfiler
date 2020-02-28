@@ -37,6 +37,7 @@ const Dashboard = () => {
   const { skipRegistration, defaultStoragePath } = settings.general;
   const [showBar, setShowBar] = useState(store.get('bar'));
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const isDarvin = process.platform === 'darwin';
 
 
   useEffect(() => {
@@ -84,16 +85,18 @@ const Dashboard = () => {
 
   return (
     <Flex height="100%" width="100%" background="#fff" align={showBar ? 'center' : 'flex-start'}>
-      {!showBar && process.platform === 'darwin' && (
+      {!showBar && isDarvin && (
         <TitleWrapper>
           <Titlebar />
-          <Title> <span style={{ color: '#0a0a0a' }}>Deskfiler</span></Title>
+          <Title>Deskfiler</Title>
         </TitleWrapper>
       )}
 
-      {!showBar && process.platform !== 'darwin' && (
-        <div>
+      {!showBar && !isDarvin && (
+        <Flex row width="100%">
+          <Flex app-region="drag" height="100%" width="100%" />
           <TitleBar
+            style={{ marginLeft: 'auto', width: '138px' }}
             isFullscreen={isFullscreen}
             controls
             onMinimizeClick={() => currentWindow.minimize()}
@@ -103,8 +106,8 @@ const Dashboard = () => {
               setIsFullscreen(!isFullscreen);
             }}
           />
-          <Title> <span style={{ color: '#0a0a0a' }}>Deskfiler</span></Title>
-        </div>
+          <Title>Deskfiler</Title>
+        </Flex>
       )}
 
       <DevMenu />

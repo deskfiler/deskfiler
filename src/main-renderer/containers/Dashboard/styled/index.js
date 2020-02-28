@@ -61,6 +61,7 @@ export const Title = styled.h1`
   position:absolute;
   top:1px;
   left:calc(50% - 26px);
+  color: '#0a0a0a'
 `;
 export const TitleWrapper = styled.div`
 width:100%;
