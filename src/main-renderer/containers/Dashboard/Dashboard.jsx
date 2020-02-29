@@ -8,8 +8,8 @@ import {
 import { Flex, Text } from 'styled';
 import { Spinner } from 'components';
 import store from 'store';
-import Titlebar from 'react-electron-titlebar';
-import { TitleBar } from 'react-desktop/windows';
+import MacOsTitleBar from 'react-electron-titlebar';
+import { TitleBar as WindowsTitlebar } from 'react-desktop/windows';
 import Plugins from '../Plugins';
 import Menu from '../Menu';
 import Settings from '../Settings';
@@ -96,7 +96,7 @@ const Dashboard = () => {
     <Flex height="100%" width="100%" background="#fff" align={showBar ? 'center' : 'flex-start'}>
       {!showBar && isDarvin && (
         <TitleWrapper>
-          <Titlebar />
+          <MacOsTitleBar />
           <Title>Deskfiler</Title>
         </TitleWrapper>
       )}
