@@ -1,6 +1,6 @@
 {
   "name": "Deskfiler",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "main": "./dist/main.prod.js",
   "author": "Ilya Lopukhin",
   "repository": "https://github.com/ilya-lopuhkin/deskfiler-private",
