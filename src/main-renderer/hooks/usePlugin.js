@@ -52,7 +52,7 @@ export default function usePlugin(pluginKey) {
           const { ticket: { userticket } } = newPluginInfo;
           openModal('alert', {
             title: 'Surprise!',
-            data: `Thanks for installing ${pluginKey}, we have loaded your account with $${userticket.OZVALUE} as a welcome gift!`
+            data: `Thanks for installing ${pluginKey}, we have loaded your account with $${userticket.OZVALUE} as a welcome gift!`,
           });
         }
       } else {
