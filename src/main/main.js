@@ -109,6 +109,8 @@ if (!isSingleAppInstance) {
   app.on('activate', () => {
     const mainWindow = getMainWindow();
     if (mainWindow === null) createMainWindow(preinstallPlugins);
+    // Start local server to host plugins
+    createServer();
   });
 
   // Event that shows that electron app is ready to work
