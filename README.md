@@ -1,4 +1,4 @@
-# Deskfiler ![master build](https://github.com/ilya-lopukhin/deskfiler-private/workflows/CI/badge.svg?branch=master)
+# Deskfiler
 <!--{h1:.massive-header.-with-tagline}-->
 
 > An Open Source electron plugin ecosystem for JS developers that makes tools for the desktop on Windows, Mac and Linux
