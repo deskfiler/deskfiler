@@ -125,7 +125,7 @@
     "electron-updater": "^4.2.0",
     "fast-csv": "^3.4.0",
     "fetch-cookie": "^0.7.3",
-    "file-type": "^12.4.0",
+    "file-type": "^16.5.4",
     "formik": "^1.5.8",
     "foundation-sites": "^6.5.3",
     "fs": "^0.0.1-security",
